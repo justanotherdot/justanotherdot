@@ -19,7 +19,7 @@ I had written a [post over at
 Medium](https://medium.com/@justanotherdot/sapir-whorf-and-you-f4b45ff2f216)
 and while I liked the overall editing experience, I knew I'd eventually find
 some things lacking e.g. Mathjax integration and the like, of which I was able
-to sort of hack into my [previous tumblr](http://tumblr.justanotherdot.com/)
+to sort of hack into my [previous tumblr](http://justanotherdot.tumblr.com/)
 thanks to having access to the HTML of my blog, and is another thing I'll need
 to add here.
 
