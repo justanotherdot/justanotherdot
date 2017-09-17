@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.2/css/bulma.min.css" />
+    <title>justanotherdot &#8226;</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+
+        <div class="columns">
+          <div class="column is-half">
+            <h1 class="title">
+              justanotherdot &#8226;
+            </h1>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+
+          <div class="column is-half">
+
+            <h1>{{tag}}</h1>
+            {{#posts}}
+            <li>
+              <a href="{{url}}">{{title}} <span class="date">{{date}}</span> </a>
+            </li>
+            {{/posts}}
+
+        </div>
+
+      </section>
+    </body>
+  </html>
