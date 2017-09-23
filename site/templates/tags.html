@@ -9,27 +9,13 @@
   <body>
     <section class="section">
       <div class="container">
-
         <div class="columns">
-          <div class="column is-half">
-            <h1 class="title">
-              justanotherdot &#8226;
-            </h1>
-            <h1 class="subtitle">
-              Ryan James Spencer
-            </h1>
+
+          <div class="column is-one-quarter">
+            {{>templates/brand.html}}
           </div>
-        </div>
-
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <div class="columns is-centered">
 
           <div class="column is-half">
-
             <h1>{{tag}}</h1>
             {{#posts}}
             <li>
@@ -37,8 +23,9 @@
             </li>
             {{/posts}}
 
+          </div>
         </div>
-
-      </section>
-    </body>
-  </html>
+      </div>
+    </section>
+  </body>
+</html>
