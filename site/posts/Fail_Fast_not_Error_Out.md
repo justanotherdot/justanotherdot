@@ -31,10 +31,10 @@ after the roll out to make sure everything is ok.
 A computation does not need to crash the program in order to fail fast:
 
 * Errors are for irrecoverable states of program transition; the program
-depends on writing to disk, and the disk has been ripped out of the server rack
-and can no longer be accessed via the kernel drivers. The kernel tells us
-something very bad is up, and we die. This is fine, because there's no sensible
-state to transition to in this scenario.
+depends on writing to disk for some critical task, and the disk has been ripped
+out of the server rack and can no longer be accessed via the kernel drivers.
+The kernel tells us something very bad is up, and we die. This is fine, because
+there's no sensible state to transition to in this scenario.
 
 * Exceptions are for situations where something bad happened, but it's not bad
 enough to cause us to fail completely, i.e. we can do something to transition
@@ -57,11 +57,8 @@ which is effectively a lightweight proof system that gives us static guarantees
 and checks at compile time (a form of 'fail fast' but without the problem of
 leaving 'ticking time bombs' in our code base that may still present themselves
 in production), then it makes no sense to fail fast in an error-prone way.
-Chaining computations together in monads and applicatives in the context of
-safe types such as Maybe or Either give us a much more elegant way to handle
-errors without polluting the code (in the way that Go programs are renowed for
-doing so). Abstractions such as monads and friends allow us to do this elegancy
-and tersely.
+Abstractions such as monads and friends allow us to do this elegantly and
+tersely.
 
 It is far more ideal to let pure computations transition gracefully to new
 states, failures to be found at _compile time_, and production code to be
