@@ -16,12 +16,17 @@
           </div>
 
           <div class="column is-half">
-            <h1>{{tag}}</h1>
-            {{#posts}}
-            <li>
-              <a href="{{url}}">{{title}}</a> on <span class="date">{{date}}</span>
-            </li>
-            {{/posts}}
+            <h2 class="subtitle is-5">Tagged with <strong>{{tag}}</strong></h2>
+
+            <div class="content">
+              <ul>
+                {{#posts}}
+                <li>
+                  <a href="{{url}}">{{title}}</a> on <span class="date">{{date}}</span>
+                </li>
+                {{/posts}}
+              </ul>
+            </div>
 
           </div>
         </div>

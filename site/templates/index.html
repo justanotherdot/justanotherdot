@@ -18,30 +18,29 @@
           <div class="column">
 
             <h2 class="subtitle is-5">Posts</h2>
-            <ul>
-              {{#posts}}
-              <li>
-                <a href="{{url}}">{{title}}</a>
-              </li>
-              {{/posts}}
-            </ul>
-
-
+            <div class="content">
+              <ul>
+                {{#posts}}
+                <li>
+                  <a href="{{url}}">{{title}}</a>
+                </li>
+                {{/posts}}
+              </ul>
+            </div>
 
           </div>
 
-            <div class="column">
+          <div class="column">
 
-              <h2 class="subtitle is-5">Tags</h2>
-              <div class="tags">
-                {{#tags}}
-                <a class="tag" href="{{url}}">{{tag}}</a>
-                {{/tags}}
-              </div>
-
+            <h2 class="subtitle is-5">Tags</h2>
+            <div class="tags">
+              {{#tags}}
+              <a class="tag" href="{{url}}">{{tag}}</a>
+              {{/tags}}
             </div>
 
+          </div>
+        </div>
       </section>
-
     </body>
   </html>
