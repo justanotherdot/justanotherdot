@@ -5,7 +5,6 @@ date: Thu  1 Mar 15:48:02 AEDT 2018
 tags: [learning, education]
 ---
 
-# Proficiency is Tiered and other Lies We Tell Ourselves
 Tiered categorisations of knowledge and proficiency are fundamentally flawed as
 they rest on the notion that all knowledge can eventually be obtained,
 retained, and divvied up amongst n-many categories. Such categorisations also
