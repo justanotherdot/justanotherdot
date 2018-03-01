@@ -23,23 +23,23 @@ fringes are fuzzy:
 
 
 - Fundamentals
-  - There is usually a corpus of knowledge that everyone can agree upon is
-    pivotal to ‘being competent/dangerous’ in a particular subject matter.
-    These may overlap to other skills and it may be unclear *which* skills they
-    overlap in, but what matters is that these skills are relatively obvious in
-    the domain of note.
+    - There is usually a corpus of knowledge that everyone can agree upon is
+      pivotal to ‘being competent/dangerous’ in a particular subject matter.
+      These may overlap to other skills and it may be unclear *which* skills they
+      overlap in, but what matters is that these skills are relatively obvious in
+      the domain of note.
 - Nice-to-Haves
-  - This is the knowledge that might be good to spend a bit of time on as it
-    refines and builds on fundamentals to introduce more powerful techniques
-    and practices. This is where the only clarity is that they are definitely
-    not fundamentals and they are definitely not esoteric.
+    - This is the knowledge that might be good to spend a bit of time on as it
+      refines and builds on fundamentals to introduce more powerful techniques
+      and practices. This is where the only clarity is that they are definitely
+      not fundamentals and they are definitely not esoteric.
 - Trivia
-  - This is the stuff you probably don’t need to know, like that some AIX
-    machines have a weird bug in certain prompts where inputting uppercase
-    characters will cause the machine to reboot or that earlier, alternative
-    architectures supported 7-bit bytes. These tidbits of information
-    (sometimes not so miniscule!) are probably very costly to pick up and don’t
-    give you much in return.
+    - This is the stuff you probably don’t need to know, like that some AIX
+      machines have a weird bug in certain prompts where inputting uppercase
+      characters will cause the machine to reboot or that earlier, alternative
+      architectures supported 7-bit bytes. These tidbits of information
+      (sometimes not so miniscule!) are probably very costly to pick up and don’t
+      give you much in return.
 
 These tags map very much to the progression of learning a subject: when you
 start learning a subject, everything is rough and unclear; you should focus on
@@ -87,5 +87,3 @@ continually learn, and their capacity to both work away and in teams is more
 worth it’s weight in gold than if someone is a self-proclaimed 10x engineer
 capable of cranking a lot of (read: complicated, un-maintainable, mal-scoped)
 code.
-
-
