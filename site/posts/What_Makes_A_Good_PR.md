@@ -83,7 +83,7 @@ As the joke goes:
 It's important to remember that a PR is not to encompass a single ticket or
 issue. Tickets can have several PRs attached to them and all it takes is
 lobbing `[FOO-123]` on top of one's PR title for Jira or marking `#<issue
-number` in your description in GitHub. I like to call this act 'linking' and
+number>` in your description in GitHub. I like to call this act 'linking' and
 it's useful for stakeholders to track down all the changes that have fed into a
 particular ticket.
 
