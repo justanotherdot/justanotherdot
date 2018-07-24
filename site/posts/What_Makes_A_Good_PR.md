@@ -5,8 +5,6 @@ date: Fri 20 Jul 20:40:08 AEST 2018
 tags: [software, git]
 ---
 
-> Given enough eyeballs, all bugs are shallow. -Linus' Law
-
 Pull Requests (or PRs) are a tango between two parties; the code author and the
 code reviewer which I will simply refer to as the 'author' and 'reviewer' in the
 remainder of this article. In a pull request, the author has provided code to
@@ -16,12 +14,13 @@ mechanism to the author.
 ## Code review is not a gate keeping task
 
 I once worked for an organisation whose code review process centered around a
-total lack of faith in its developers ability to deliver quality product. This
-meant the process was utterly broken as it meant tech leads were the gate
-keepers of their respective stacks and that the average developer would have to
-resort to underhanded tactics in order to get their changes in, regardless of
-quality or prospective bugs. Unfortunately, this also meant that the gate
-keepers felt more justified for keeping things safe; a vicious cycle indeed!
+total lack of faith in its developers ability to deliver quality product; tech
+leads acted as the gate keepers to their respective stacks forcing the average
+developer to resort to underhanded tactics in order to get their changes
+merged, regardless of quality or prospective bugs. This, in turn, meant the
+gate keepers felt justified under the guise of 'keeping things safe'. Thus,
+code wasn't being checked properly and wrong or flimsy changes would trickle
+into master, making the code review process utterly broken.
 
 As a software engineer, every line of code you ship is code you, or someone
 else, will need to maintain, and as such, you should be fighting to deliver the
@@ -30,10 +29,10 @@ to help people bring their code into the light of day where asking questions is
 the chief tool a reviewer employs**. This can include, but is not limited to,
 probing to see if:
 
-* A thought is fully fleshed out
-* This implementation is the right one to make or is solving the right problem
-* There are changes that are principally unsound or dangerous
-* Any other general performance or semantic concerns might be present
+* Is the thought fully fleshed out?
+* Is this implementation correct for the problem it aims to solve?
+* Are the changes sound and principled?
+* Are there any performance or semantic concerns?
 
 I'm purposefully leaving out stylistic choices here as the discussion often
 leads to the argument around adoption of some automated code-formatting tool.
@@ -59,13 +58,12 @@ stage for too long, which brings me to my next point.
 
 ## PRs are for small chunks of code to merge often
 
-A PR should represent about a days worth of work. This is beneficial to both
+A PR should represent up to a day's worth of work. This is beneficial to both
 parties in that it facilitates a 'merge often' approach for devs (and devs get
-the little adrenaline kick from CI and approvals going green and clicking
-`merge`) and reviewers can much more easily review a smaller hunk of changes. A
-reviewer reviewing five PRs in the course of a week has to spend less time
-grokking those individual changes than to review five days worth of work in a
-single PR.
+the little adrenaline kick from clicking that green `merge` button) and
+reviewers can much more easily review a smaller hunk of changes. A reviewer
+reviewing five PRs in the course of a week has to spend less time grokking
+those individual changes than to review five days worth of work in a single PR.
 
 Massive projects poised around scaled tooling and reviews such as the Linux
 kernel would flat out reject a patch with, say, 3k additions and 1k removals. If
@@ -80,11 +78,10 @@ parties time. Opening a PR to refactor changes and another PR to add new
 functionality is a much better way to get appropriate attention from reviewers.
 As the joke goes:
 
-> 10 lines = 10 possible bugs
-> 100 lines = lgtm
+> 10 lines = 10 possible bugs, 100 lines = lgtm
 
 It's important to remember that a PR is not to encompass a single ticket or
-issue. Ticket's can have several PRs attached to them and all it takes is
+issue. Tickets can have several PRs attached to them and all it takes is
 lobbing `[FOO-123]` on top of one's PR title for Jira or marking `#<issue
 number` in your description in GitHub. I like to call this act 'linking' and
 it's useful for stakeholders to track down all the changes that have fed into a
@@ -93,16 +90,16 @@ particular ticket.
 ## Context matters
 
 Reviewers need to discuss with the author about the purpose of a set of changes
-and how close or far off they are from that goal, but if the reviewer is unclear
-about this goal, it's difficult for them to strike up an insightful discussion
-with the author.
+and how close or far off they are from that goal, but if the reviewer is
+unclear about this goal, it's difficult for them to strike up a discussion with
+the author.
 
 In the context of OSS, raising a patch directly to a project such as the Linux
 kernel is poor practice. If you want to make a change in any capacity it's best
 first to contact the people who own the code on public channels. This provides
-auditing and clear context for others. The same is true for many public
-platforms for hosting code: if you want to make a change it's poor form to
-simply lodge a PR proposing your new feature or 'fix'.
+auditing and clear context for others. **Your first instinct should be to raise
+a PR unless it's a feature. If you feel uncertain about whether or not your
+change is warranted, it's best to raise an issue first, instead.**
 
 That said, raising PRs should feel natural; PRs are cheap and can be closed and
 their branches pruned as need be, but regardless of the cost of raising a PR,
@@ -123,26 +120,24 @@ mention may be:
 The traditional approach for this was to include commentary in your actual
 commit messages and headers. I don't think times have really changed in this
 regard and the more context you sprinkle about the better, so long as you are
-clear about your intent and you don't waste the readers time.
+clear about your intent and you don't waste the reader's time.
 
 ## Check out changes locally when it makes sense
 
 A really healthy habit for reasonably sized changes is to always check out a PR
-and see if it works for you. CI should always be there as an arbiter of
-regressions. Other projects have really complicated processes for testing full
-'e2e/raw hardware' tests like this like Intel's [zero-day testing
+and see if it works for you. Some projects have powerful processes for testing
+full 'e2e/raw hardware' scenarios such as Intel's [zero-day testing
 bot](https://01.org/lkp/documentation/0-day-test-service) which actually boots
-up machines to test out differing version of the kernel. While CI and automated
-testing and building are powerful, it's important to sometimes get a human eye
-on things to verify things such as faulty tests. We all make mistakes, and
-reviewers are there to give sanity checks to our changes.
+up machines to test out differing version of the Linux kernel. While continuous
+integration can catch a lot, it's important to sometimes get a human eye for
+regressions that may not, or cannot, be encoded in automated tests. We all make
+mistakes, and reviewers are there to add a layer of sanity checks to our
+changes.
 
 Use common sense. If a change is pretty sensible (e.g. a single line change to
-upate a variable name), you probably don't need to spend the time pulling the
-change down, compiling, running the tests, etc. The developers mantra is "don't
-be the machine" and nothing is different here! If CI has done more work than you
-or you're repeating stuff CI is doing, you better have a good reason to mimic
-the machine.
+update a variable name), you probably don't need to spend the time pulling the
+change down, compiling, running the tests, and so forth. As the developer's
+mantra goes, "Don't be the machine"!
 
 ## Clean up your mess
 
@@ -155,3 +150,14 @@ run without arguments, this will delete the current branch you are on locally
 and remotely so long as the branch specified to `git wash` is not master and the
 remote branch is not protected. If you need other git functionality like this,
 any script in your path with the name `git-<thing>` can be run as `git <thing>`.
+
+## Conclusion
+
+Reviewing many small changes is much more manageable for a reviewer than
+reviewing large, tangled changes. Decomposition in programming gives us the
+ability to stitch together many small, verified solutions that lead up to an
+equally trustworthy result and the same is no different in the process of
+supplying code changes to a project; breaking up the changes you need to make
+into reasonable chunks that can fit in everyone's heads not only helps to
+provide code changes faster but it also paves foundations for robust and
+resilient code.
