@@ -23,7 +23,7 @@ thin as time has waned on since I've read them. However, I do wish to make this
 more of a regular habit and, in the end, hopefully I can at least express the
 delight I've had getting through some of these wonderful wading pools of words.
 
-## [Coder's at Work](https://www.amazon.com/Coders-Work-Reflections-Craft-Programming/dp/1430219483/ref=sr_1_1?ie=UTF8&qid=1544954623&sr=8-1&keywords=coders+at+work)
+## [Coders at Work](https://www.amazon.com/Coders-Work-Reflections-Craft-Programming/dp/1430219483/ref=sr_1_1?ie=UTF8&qid=1544954623&sr=8-1&keywords=coders+at+work)
 
 This had so many fantastic insights into programming in the large as well as the
 small for some of my heroes as well as some people I had never heard of before.
@@ -80,12 +80,10 @@ that still doesn't mean people can't try. Things of note:
   crucial but it's also important to know that things like leadership and
   empathy takes just as much effort to refine and perfect
 
-I feel like a good follow up to this was reading John Allspaw's article [_On
-Being a Senior Engineer_]
-(https://www.kitchensoap.com/2012/10/25/on-being-a-senior-engineer/). In it,
-Allspaw hits on several soft skills that 'senior' software engineers absolutely
-must uphold on a day to day basis, and I really don't see them being that
-different from soft skills that others should be upholding as well as they
+I feel like a good follow up to this was reading John Allspaw's article [_On Being a Senior Engineer_](https://www.kitchensoap.com/2012/10/25/on-being-a-senior-engineer/).
+In it, Allspaw hits on several soft skills that 'senior' software engineers
+absolutely must uphold on a day to day basis, and I really don't see them being
+that different from soft skills that others should be upholding as well as they
 increase in seniority.
 
 ## [Choose Boring Tech](http://mcfunley.com/choose-boring-technology), [Run Less Software](https://www.intercom.com/blog/run-less-software/), and [You Need a Novelty
