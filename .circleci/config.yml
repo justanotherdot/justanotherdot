@@ -8,4 +8,4 @@ jobs:
           name: Build static site image
           command: |
             docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
-            docker build --build-arg AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY -t justanotherdot/blog:$CIRCLE_SHA1 .
+            docker build -t justanotherdot/blog:$CIRCLE_SHA1 .
