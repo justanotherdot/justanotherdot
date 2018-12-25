@@ -6,9 +6,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build static site
+          name: Build static site image
           command: |
-            curl -O https://github.com/s3tools/s3cmd/releases/download/v2.0.2/s3cmd-2.0.2.tar.gz
-            tar -xvzf s3cmd-2.0.2.tar.gz
-            s3cmd get https://justanotherdot.nyc3.digitaloceanspaces.com/build-site
-            build-site
+            docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
+            docker build -t justanotherdot/blog:$CIRCLE_BRANCH .
