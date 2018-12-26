@@ -17,11 +17,17 @@ main = site $ do
                             , "tags" .= tags
                             , "url" .= ("/index.html" :: String)
                             ]
+      rssContext :: Value
+      rssContext = object [ "posts" .= posts
+                          , "domain" .= ("https://justanotherdot.com" :: String)
+                          , "url" .= ("/rss.xml" :: String)
+                          ]
 
   -- Render index page and posts
   writeTemplate "templates/index.html" [indexContext]
   writeTemplate "templates/post.html" posts
   writeTemplate "templates/tags.html" tags
+  writeTemplate "templates/rss.xml" [rssContext]
 
 
 makeTagUrl :: String -> String
