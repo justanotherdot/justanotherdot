@@ -7,28 +7,21 @@
     <title>&#8226; {{title}}</title>
   </head>
   <body>
-
     <section class="section">
       <div class="container">
         <div class="columns">
-
-            <div class="column is-one-quarter">
-              {{>templates/brand.html}}
+          <div class="column is-one-quarter">
+            {{>templates/brand.html}}
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">{{title}}</h1>
+            <h2 class="subtitle is-5">on {{date}}</h2>
+            <div class="content is-medium">
+              {{content}}
             </div>
-
-            <div class="column is-half">
-
-              <h1 class="title is-2">{{title}}</h1>
-              <h2 class="subtitle is-5">on {{date}}</h2>
-
-              <div class="content is-medium">
-                {{{content}}}
-              </div>
-
           </div>
         </div>
       </div>
     </section>
-
   </body>
 </html>

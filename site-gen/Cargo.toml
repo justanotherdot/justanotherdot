@@ -5,6 +5,6 @@ authors = ["Ryan James Spencer <spencer.ryanjames@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-serde = "1.0.98"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.8"
 ramhorns = "0.5.0"
-pulldown-cmark = "0.5.3"
