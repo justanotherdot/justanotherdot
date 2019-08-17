@@ -26,7 +26,6 @@ struct Post {
     title: String,
     author: String,
     date: String,
-    date_iso8601: String,
     date_month_day_year: String,
     #[md]
     content: String,
@@ -39,6 +38,7 @@ struct Post {
 struct Tag {
     url: String,
     tag: String,
+    posts: Vec<Post>,
 }
 
 impl PartialEq for Tag {
@@ -96,8 +96,9 @@ where
         Some(tags) => tags
             .into_iter()
             .map(|tag| Tag {
-                url: format!("/tags/{}", tag),
+                url: format!("tags/{}.html", tag),
                 tag: tag,
+                posts: vec![],
             })
             .collect(),
     };
@@ -106,7 +107,6 @@ where
     let date_shifted = date_iso8601.with_timezone(&FixedOffset::east(10 * 3600));
     let date = date_shifted.format("%B %e %Y, %_I:%M%p").to_string();
     let date_month_day_year = date_shifted.format("%D").to_string();
-    let date_iso8601 = date_iso8601.to_string();
 
     let url = path
         .file_name()
@@ -121,7 +121,6 @@ where
         title: header.title,
         author: header.author,
         date,
-        date_iso8601,
         date_month_day_year,
         url,
         content: markdown.to_string(),
@@ -135,10 +134,10 @@ fn render_post(post: &Post, tpl: &Template) -> String {
     rendered
 }
 
-//fn render_tags(tags: &Vec<Tag>, tpl: &Template) -> String {
-//let rendered = tpl.render(tags);
-//rendered
-//}
+fn render_tag(tags: &Tag, tpl: &Template) -> String {
+    let rendered = tpl.render(tags);
+    rendered
+}
 
 fn render_index(blog: &Blog, tpl: &Template) -> String {
     let rendered = tpl.render(blog);
@@ -188,22 +187,30 @@ fn main() {
             }
             acc
         });
-
-    //let tpl = template("../site/templates/tags.html");
-    //let rendered = render_tags(&tags, &tpl);
-    //println!("{}", rendered);
-    //std::fs::write("../deploy/tags.html", rendered).expect("failed to write tags to deploy");
+    let tags: BTreeSet<_> = tags
+        .into_iter()
+        .map(|tag| Tag {
+            posts: posts.clone(),
+            ..tag
+        })
+        .collect();;
 
     let tpl = template("../site/templates/index.html");
     let blog = Blog {
         title: BLOG_TITLE,
         posts: posts.clone(),
-        tags: tags.into_iter().collect(),
+        tags: tags.clone().into_iter().collect(),
     };
     let rendered = render_index(&blog, &tpl);
     std::fs::write("../deploy/index.html", rendered).expect("failed to write post to deploy");
 
-    // TODO: Render tags.
+    let tpl = template("../site/templates/tags.html");
+    for tag in tags.iter() {
+        let rendered = render_tag(&tag, &tpl);
+        std::fs::write(format!("../deploy/{}", tag.url), rendered)
+            .expect("failed to write post to deploy");
+    }
+
     // TODO: Render rss.
     // TODO: Brand
 }
