@@ -21,13 +21,13 @@
               Ryan James Spencer
             </h1>
           </div>
-          <div class="column is-half">
+          <div class="column">
             <h2 class="subtitle is-5">Tagged with <strong>{{tag}}</strong></h2>
             <div class="content">
               <ul>
                 {{#posts}}
                 <li>
-                  <a href="{{url}}">{{title}}</a> on <span class="date">{{date}}</span>
+                  <span class="content is-small">{{date_month_day_year}}</span> <a href="{{url}}">{{title}}</a>
                 </li>
                 {{/posts}}
               </ul>
