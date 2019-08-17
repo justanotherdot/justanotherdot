@@ -1,7 +1,7 @@
 ---
 title: Proficiency is Tiered and other Lies We Tell Ourselves
 author: Ryan James Spencer
-date: Thu  1 Mar 15:48:02 AEDT 2018
+date: 2018-03-01T05:48:02Z
 tags: [learning, education]
 ---
 

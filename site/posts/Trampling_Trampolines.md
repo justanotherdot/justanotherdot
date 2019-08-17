@@ -1,7 +1,7 @@
 ---
 title: Trampling Trampolines
 author: Ryan James Spencer
-date: Thu 24 May 19:40:17 AEST 2018
+date: 2018-05-24T09:40:17Z
 tags: [javascript, python, code]
 ---
 

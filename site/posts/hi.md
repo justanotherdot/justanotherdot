@@ -1,7 +1,7 @@
 ---
 title: A Start
 author: Ryan James Spencer
-date: Sun 17 Sep 16:06:55 2017
+date: 2017-09-17T06:06:55Z
 tags: [haskell]
 ---
 
