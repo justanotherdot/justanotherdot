@@ -11,6 +11,7 @@ use std::path::Path;
 use walkdir::WalkDir;
 
 static BLOG_TITLE: &str = "justanotherdot";
+static BLOG_DOMAIN: &str = "https://justanotherdot.com";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct PostHeader {
@@ -26,10 +27,13 @@ struct Post {
     title: String,
     author: String,
     date: String,
+    date_rfc822: String,
+    date_iso8601: String,
     date_month_day_year: String,
     #[md]
     content: String,
     url: String,
+    domain: String,
     tags: Vec<Tag>,
 }
 
@@ -38,6 +42,14 @@ struct Post {
 struct Tag {
     url: String,
     tag: String,
+    posts: Vec<Post>,
+}
+
+// TODO: Drop clone.
+#[derive(Content, Clone, Debug)]
+struct Rss {
+    url: String,
+    domain: String,
     posts: Vec<Post>,
 }
 
@@ -107,6 +119,8 @@ where
     let date_shifted = date_iso8601.with_timezone(&FixedOffset::east(10 * 3600));
     let date = date_shifted.format("%B %e %Y, %_I:%M%p").to_string();
     let date_month_day_year = date_shifted.format("%D").to_string();
+    let date_rfc822 = date_shifted.format("%a, %d %b %Y %T %z").to_string();
+    let date_iso8601 = date_iso8601.to_string();
 
     let url = path
         .file_name()
@@ -121,27 +135,30 @@ where
         title: header.title,
         author: header.author,
         date,
+        date_rfc822,
+        date_iso8601,
         date_month_day_year,
         url,
+        domain: BLOG_DOMAIN.to_string(),
         content: markdown.to_string(),
         tags: tags.clone(),
     }
 }
 
-// TODO: should take Post and PostHeader
 fn render_post(post: &Post, tpl: &Template) -> String {
-    let rendered = tpl.render(post);
-    rendered
+    tpl.render(post)
 }
 
 fn render_tag(tags: &Tag, tpl: &Template) -> String {
-    let rendered = tpl.render(tags);
-    rendered
+    tpl.render(tags)
+}
+
+fn render_rss(rss: &Rss, tpl: &Template) -> String {
+    tpl.render(rss)
 }
 
 fn render_index(blog: &Blog, tpl: &Template) -> String {
-    let rendered = tpl.render(blog);
-    rendered
+    tpl.render(blog)
 }
 
 fn template(path: &str) -> Template {
@@ -210,6 +227,15 @@ fn main() {
         std::fs::write(format!("../deploy/{}", tag.url), rendered)
             .expect("failed to write post to deploy");
     }
+
+    let tpl = template("../site/templates/rss.xml");
+    let rss = Rss {
+        domain: BLOG_DOMAIN.to_string(),
+        url: "/rss.xml".to_string(),
+        posts: posts.clone(),
+    };
+    let rendered = render_rss(&rss, &tpl);
+    std::fs::write("../deploy/rss.xml", rendered).expect("failed to write post to deploy");
 
     // TODO: Render rss.
     // TODO: Brand
