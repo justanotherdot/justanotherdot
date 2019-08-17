@@ -1,6 +1,8 @@
+extern crate chrono;
 extern crate ramhorns;
 extern crate serde;
 
+use chrono::{DateTime, FixedOffset, TimeZone};
 use ramhorns::{Content, Template};
 use serde::{Deserialize, Serialize};
 
@@ -39,10 +41,16 @@ struct Blog<'a> {
     tags: Vec<Tag>,
 }
 
+#[allow(dead_code)]
+fn parse_header(_path: &str) -> PostHeader {
+    unimplemented!()
+}
+
 fn main() {
     // TODO: Sort posts.
     // TODO: Pre-render templates upfront?
-    // TODO: Function to strip headers and parse into YAML.
+    // TODO: Port all dates on posts as ISO8601, format differently post-parsing.
+    // TODO: Pin version of bulma and embed.
     let source = std::fs::read_to_string("../site/templates/post.html").unwrap_or_else(|_| {
         eprintln!("could not read template");
         std::process::exit(1);
@@ -52,6 +60,7 @@ fn main() {
         eprintln!("could not read post");
         std::process::exit(1);
     });
+
     let markdown_raw = markdown.split("---").collect::<Vec<&str>>();
     let markdown = markdown_raw.get(2).unwrap();
 
@@ -69,10 +78,16 @@ fn main() {
             .collect(),
     };
 
+    let date = DateTime::parse_from_rfc3339(&header.date).expect("failed to parse date");
+    dbg!(date.with_timezone(&chrono::offset::Utc));
+    let date = date.with_timezone(&FixedOffset::east(10 * 3600));
+    dbg!(&date);
+    let date = date.format("%B %e %Y, %_I:%M%p").to_string();
+
     let posts = vec![Post {
         title: &header.title,
         author: &header.author,
-        date: &header.date,
+        date: &date,
         url: "name-of-markdown.html",
         content: &markdown,
         tags: tags.clone(),
