@@ -1,7 +1,7 @@
 ---
 title: Reading Review for 2018
 author: Ryan James Spencer
-date: Wed 12 Dec 2018 20:09:20 AEDT
+date: 2018-12-12T10:09:20Z
 tags: [software, reading, soft skills]
 ---
 

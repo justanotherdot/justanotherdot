@@ -1,7 +1,7 @@
 ---
 title: Fail Fast not Error Out
 author: Ryan James Spencer
-date: Sat  7 Oct 12:50:02 2017
+date: 2017-10-07T02:50:02Z
 tags: [software]
 ---
 

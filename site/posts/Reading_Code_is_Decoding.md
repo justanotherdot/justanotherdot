@@ -1,7 +1,7 @@
 ---
 title: Reading Code is Decoding
 author: Ryan James Spencer
-date: Sat 27 Jan 13:43:09 AEDT 2018
+date: 2018-01-27T03:43:09Z
 tags: [software, reading]
 ---
 

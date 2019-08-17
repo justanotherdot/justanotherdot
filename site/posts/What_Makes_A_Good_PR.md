@@ -1,7 +1,7 @@
 ---
 title: What makes a good pull request?
 author: Ryan James Spencer
-date: Fri 20 Jul 20:40:08 AEST 2018
+date: 2018-07-20T10:40:08Z
 tags: [software, git]
 ---
 

@@ -1,10 +1,15 @@
 extern crate chrono;
 extern crate ramhorns;
 extern crate serde;
+extern crate walkdir;
 
-use chrono::{DateTime, FixedOffset, TimeZone};
+use chrono::{DateTime, FixedOffset};
 use ramhorns::{Content, Template};
 use serde::{Deserialize, Serialize};
+use std::path::Path;
+use walkdir::WalkDir;
+
+static BLOG_TITLE: &str = "justanotherdot";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct PostHeader {
@@ -42,21 +47,21 @@ struct Blog<'a> {
 }
 
 #[allow(dead_code)]
-fn parse_header(_path: &str) -> PostHeader {
+fn parse_post_header(_path: &str) -> PostHeader {
     unimplemented!()
 }
+// fn format_date_to_sydney_timezone
 
-fn main() {
-    // TODO: Sort posts.
-    // TODO: Pre-render templates upfront?
-    // TODO: Port all dates on posts as ISO8601, format differently post-parsing.
-    // TODO: Pin version of bulma and embed.
-    let source = std::fs::read_to_string("../site/templates/post.html").unwrap_or_else(|_| {
-        eprintln!("could not read template");
-        std::process::exit(1);
-    });
-    let tpl = Template::new(source).unwrap();
-    let markdown = std::fs::read_to_string("../site/posts/hi.md").unwrap_or_else(|_| {
+// fn parse_post() -> Post
+
+// TODO: should take Post and PostHeader
+fn render_post<A>(path: A, tpl: &Template) -> String
+where
+    A: AsRef<Path>,
+{
+    let path = path.as_ref();
+    let path_str = path.to_str().unwrap();
+    let markdown = std::fs::read_to_string(path_str).unwrap_or_else(|_| {
         eprintln!("could not read post");
         std::process::exit(1);
     });
@@ -79,26 +84,56 @@ fn main() {
     };
 
     let date = DateTime::parse_from_rfc3339(&header.date).expect("failed to parse date");
-    dbg!(date.with_timezone(&chrono::offset::Utc));
     let date = date.with_timezone(&FixedOffset::east(10 * 3600));
-    dbg!(&date);
     let date = date.format("%B %e %Y, %_I:%M%p").to_string();
 
-    let posts = vec![Post {
+    let url_str = path
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .replace(".md", ".html")
+        .to_lowercase();
+
+    let post = Post {
         title: &header.title,
         author: &header.author,
         date: &date,
-        url: "name-of-markdown.html",
+        url: &url_str,
         content: &markdown,
         tags: tags.clone(),
-    }];
-
+    };
+    let posts = vec![post.clone()];
     let _blog = Blog {
-        title: "justanotherdot",
+        title: BLOG_TITLE,
         posts: posts.clone(),
         tags: tags.clone(),
     };
 
-    let rendered = tpl.render(&posts[0]);
-    println!("{}", rendered);
+    let rendered = tpl.render(&post);
+    rendered
+}
+
+fn main() {
+    // TODO: Sort posts.
+    // TODO: Pre-render templates upfront?
+    // TODO: Port all dates on posts as ISO8601, format differently post-parsing.
+    // TODO: Pin version of bulma and embed.
+    let source = std::fs::read_to_string("../site/templates/post.html").unwrap_or_else(|_| {
+        eprintln!("could not read template");
+        std::process::exit(1);
+    });
+    let tpl = Template::new(source).unwrap();
+
+    for entry in WalkDir::new("../site/posts")
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
+        println!("{}", entry.path().display());
+        let path = entry.path();
+        // TODO: Ensure we have markdown and only markdown (`.md`)
+        if path.is_file() {
+            render_post(path, &tpl);
+        }
+    }
 }
