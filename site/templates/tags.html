@@ -12,12 +12,17 @@
         <div class="columns">
 
           <div class="column is-one-quarter">
-            {{>templates/brand.html}}
+            <a href="https://justanotherdot.com">
+              <h1 class="title">
+                justanotherdot &#8226;
+              </h1>
+            </a>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
           </div>
-
           <div class="column is-half">
             <h2 class="subtitle is-5">Tagged with <strong>{{tag}}</strong></h2>
-
             <div class="content">
               <ul>
                 {{#posts}}
@@ -27,7 +32,6 @@
                 {{/posts}}
               </ul>
             </div>
-
           </div>
         </div>
       </div>
