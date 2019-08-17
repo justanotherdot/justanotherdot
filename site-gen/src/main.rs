@@ -21,13 +21,13 @@ struct PostHeader {
 
 // TODO: Drop clone.
 #[derive(Content, Clone, Debug)]
-struct Post<'a> {
-    title: &'a str,
-    author: &'a str,
-    date: &'a str,
+struct Post {
+    title: String,
+    author: String,
+    date: String,
     #[md]
-    content: &'a str,
-    url: &'a str,
+    content: String,
+    url: String,
     tags: Vec<Tag>,
 }
 
@@ -42,20 +42,11 @@ struct Tag {
 #[derive(Content, Clone, Debug)]
 struct Blog<'a> {
     title: &'a str,
-    posts: Vec<Post<'a>>,
+    posts: Vec<Post>,
     tags: Vec<Tag>,
 }
 
-#[allow(dead_code)]
-fn parse_post_header(_path: &str) -> PostHeader {
-    unimplemented!()
-}
-// fn format_date_to_sydney_timezone
-
-// fn parse_post() -> Post
-
-// TODO: should take Post and PostHeader
-fn render_post<A>(path: A, tpl: &Template) -> String
+fn parse_post<A>(path: A) -> Post
 where
     A: AsRef<Path>,
 {
@@ -95,22 +86,19 @@ where
         .replace(".md", ".html")
         .to_lowercase();
 
-    let post = Post {
-        title: &header.title,
-        author: &header.author,
-        date: &date,
-        url: &url_str,
-        content: &markdown,
+    Post {
+        title: header.title,
+        author: header.author,
+        date: date,
+        url: url_str,
+        content: markdown.to_string(),
         tags: tags.clone(),
-    };
-    let posts = vec![post.clone()];
-    let _blog = Blog {
-        title: BLOG_TITLE,
-        posts: posts.clone(),
-        tags: tags.clone(),
-    };
+    }
+}
 
-    let rendered = tpl.render(&post);
+// TODO: should take Post and PostHeader
+fn render_post(post: &Post, tpl: &Template) -> String {
+    let rendered = tpl.render(post);
     rendered
 }
 
@@ -125,15 +113,35 @@ fn main() {
     });
     let tpl = Template::new(source).unwrap();
 
+    let mut posts = vec![];
     for entry in WalkDir::new("../site/posts")
         .into_iter()
         .filter_map(|e| e.ok())
     {
-        println!("{}", entry.path().display());
+        //println!("{}", entry.path().display());
         let path = entry.path();
         // TODO: Ensure we have markdown and only markdown (`.md`)
+        //if path.is_file() && path.extension().unwrap() == ".md" {
         if path.is_file() {
-            render_post(path, &tpl);
+            let post = parse_post(path);
+            posts.push(post);
         }
     }
+    posts.sort_by_key(|p| p.date.clone());
+
+    for post in posts {
+        let rendered = render_post(&post, &tpl);
+        std::fs::write(format!("../deploy/posts/{}", &post.url), rendered)
+            .expect("failed to write post to deploy");
+    }
+
+    // TODO: Render tags.
+    // TODO: Render index.
+    // TODO: Render rss.
+    //let posts = vec![post.clone()];
+    //let _blog = Blog {
+    //title: BLOG_TITLE,
+    //posts: posts.clone(),
+    //tags: tags.clone(),
+    //};
 }
