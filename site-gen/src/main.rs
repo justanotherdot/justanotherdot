@@ -170,6 +170,11 @@ fn template(path: &str) -> Template {
 }
 
 fn main() {
+    // TODO: Replace `deploy` hardcoding.
+    std::fs::create_dir_all("../deploy/posts").expect("could not make posts dir");
+    std::fs::create_dir_all("../deploy/tags").expect("could not make tags dir");
+    std::fs::create_dir_all("../deploy/assets").expect("could not make assets dir");
+
     // TODO: Pre-render templates upfront?
     // TODO: Pin version of bulma and embed.
     let tpl = template("../site/templates/post.html");
