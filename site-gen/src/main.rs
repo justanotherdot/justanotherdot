@@ -108,7 +108,7 @@ where
         Some(tags) => tags
             .into_iter()
             .map(|tag| Tag {
-                url: format!("tags/{}.html", tag),
+                url: format!("/tags/{}.html", tag),
                 tag: tag,
                 posts: vec![],
             })
@@ -129,7 +129,7 @@ where
         .unwrap()
         .replace(".md", ".html")
         .to_lowercase();
-    let url = format!("posts/{}", url);
+    let url = format!("/posts/{}", url);
 
     Post {
         title: header.title,
@@ -212,7 +212,11 @@ fn main() {
     let tags: BTreeSet<_> = tags
         .into_iter()
         .map(|tag| Tag {
-            posts: posts.clone(),
+            posts: posts
+                .clone()
+                .into_iter()
+                .filter(|p| p.tags.iter().find(|x| x.tag == tag.tag).is_some())
+                .collect(),
             ..tag
         })
         .collect();;
