@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate lazy_static;
 extern crate chrono;
 extern crate ramhorns;
 extern crate serde;
@@ -11,13 +13,16 @@ use std::ffi::OsStr;
 use std::path::Path;
 use walkdir::WalkDir;
 
-// TODO: Take by env var, provide default maybe. (can do this with clap).
-static JUSTANOTHERDOT_TITLE: &str = "justanotherdot";
-static JUSTANOTHERDOT_DOMAIN: &str = "https://justanotherdot.com";
-// TODO replace hardcoded places.
-static JUSTANOTHERDOT_DEPLOY_PREFIX: &str = "deploy";
-// TODO replace hardcoded places.
-static JUSTANOTHERDOT_TEMPLATE_ROOT: &str = "site";
+lazy_static! {
+    static ref JUSTANOTHERDOT_TITLE: &'static str =
+        option_env!("JUSTANOTHERDOT_TITLE").unwrap_or("justanotherdot");
+    static ref JUSTANOTHERDOT_DOMAIN: &'static str =
+        option_env!("JUSTANOTHERDOT_DOMAIN").unwrap_or("https://justanotherdot.com");
+    static ref JUSTANOTHERDOT_DEPLOY_PREFIX: &'static str =
+        option_env!("JUSTANOTHERDOT_DEPLOY_PREFIX").unwrap_or("deploy");
+    static ref JUSTANOTHERDOT_TEMPLATE_ROOT: &'static str =
+        option_env!("JUSTANOTHERDOT_TEMPLATE_ROOT").unwrap_or("site");
+}
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct PostHeader {
@@ -33,7 +38,6 @@ struct Post {
     author: String,
     date: String,
     date_rfc822: String,
-    date_iso8601: String,
     date_month_day_year: String,
     #[md]
     content: String,
@@ -121,7 +125,6 @@ where
     let date = date_shifted.format("%B %e %Y, %_I:%M%p").to_string();
     let date_month_day_year = date_shifted.format("%D").to_string();
     let date_rfc822 = date_shifted.format("%a, %d %b %Y %T %z").to_string();
-    let date_iso8601 = date_iso8601.to_string();
 
     let url = path
         .file_name()
@@ -137,7 +140,6 @@ where
         author: header.author,
         date,
         date_rfc822,
-        date_iso8601,
         date_month_day_year,
         url,
         domain: JUSTANOTHERDOT_DOMAIN.to_string(),
@@ -186,29 +188,30 @@ fn main() {
 
     // TODO: Pre-render templates upfront?
     // TODO: Pin version of bulma and embed.
-    let tpl = PostTemplate(template("site/templates/post.html"));
+    let tpl = &format!("{}/templates/post.html", JUSTANOTHERDOT_TEMPLATE_ROOT);
+    let tpl = PostTemplate(template(tpl));
 
-    let mut posts = vec![];
-    for entry in WalkDir::new("site/posts")
+    let mut posts = WalkDir::new(&format!("{}/posts", JUSTANOTHERDOT_TEMPLATE_ROOT))
         .into_iter()
         .filter_map(|e| e.ok())
-    {
-        let path = entry.path();
-        if path.is_file() && path.extension() == Some(OsStr::new("md")) {
-            let post = parse_post(path);
-            posts.push(post);
-        }
-    }
+        .fold(vec![], |mut acc, entry| {
+            let path = entry.path();
+            if path.is_file() && path.extension() == Some(OsStr::new("md")) {
+                let post = parse_post(path);
+                acc.push(post);
+            }
+            acc
+        });
     posts.sort_by_key(|p| p.date.clone());
 
-    for post in posts.iter() {
+    posts.iter().for_each(|post| {
         let rendered = render_post(&post, &tpl);
         std::fs::write(
             format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, &post.url),
             rendered,
         )
         .expect("failed to write post to deploy");
-    }
+    });
 
     let tags = posts
         .clone()
@@ -231,7 +234,8 @@ fn main() {
         })
         .collect();;
 
-    let tpl = IndexTemplate(template("site/templates/index.html"));
+    let tpl = format!("{}/templates/index.html", JUSTANOTHERDOT_TEMPLATE_ROOT);
+    let tpl = IndexTemplate(template(&tpl));
     let blog = Blog {
         title: JUSTANOTHERDOT_TITLE,
         posts: posts.clone(),
@@ -244,7 +248,8 @@ fn main() {
     )
     .expect("failed to write post to deploy");
 
-    let tpl = TagsTemplate(template("site/templates/tags.html"));
+    let tpl = format!("{}/templates/tags.html", JUSTANOTHERDOT_TEMPLATE_ROOT);
+    let tpl = TagsTemplate(template(&tpl));
     for tag in tags.iter() {
         let rendered = render_tag(&tag, &tpl);
         std::fs::write(
@@ -254,7 +259,8 @@ fn main() {
         .expect("failed to write post to deploy");
     }
 
-    let tpl = RssTemplate(template("site/templates/rss.xml"));
+    let tpl = format!("{}/templates/rss.xml", JUSTANOTHERDOT_TEMPLATE_ROOT);
+    let tpl = RssTemplate(template(&tpl));
     let rss = Rss {
         domain: JUSTANOTHERDOT_DOMAIN.to_string(),
         url: "/rss.xml".to_string(),
@@ -266,6 +272,4 @@ fn main() {
         rendered,
     )
     .expect("failed to write post to deploy");
-
-    // TODO: Brand
 }
