@@ -7,6 +7,7 @@ use chrono::{DateTime, FixedOffset};
 use ramhorns::{Content, Template};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
+use std::ffi::OsStr;
 use std::path::Path;
 use walkdir::WalkDir;
 
@@ -193,9 +194,7 @@ fn main() {
         .filter_map(|e| e.ok())
     {
         let path = entry.path();
-        // TODO: Ensure we have markdown and only markdown (`.md`)
-        //if path.is_file() && path.extension().unwrap() == ".md" {
-        if path.is_file() {
+        if path.is_file() && path.extension() == Some(OsStr::new("md")) {
             let post = parse_post(path);
             posts.push(post);
         }
