@@ -10,8 +10,13 @@ use std::collections::BTreeSet;
 use std::path::Path;
 use walkdir::WalkDir;
 
-static BLOG_TITLE: &str = "justanotherdot";
-static BLOG_DOMAIN: &str = "https://justanotherdot.com";
+// TODO: Take by env var, provide default maybe. (can do this with clap).
+static JUSTANOTHERDOT_TITLE: &str = "justanotherdot";
+static JUSTANOTHERDOT_DOMAIN: &str = "https://justanotherdot.com";
+// TODO replace hardcoded places.
+static JUSTANOTHERDOT_DEPLOY_PREFIX: &str = "deploy";
+// TODO replace hardcoded places.
+static JUSTANOTHERDOT_TEMPLATE_ROOT: &str = "site";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct PostHeader {
@@ -81,10 +86,10 @@ struct Blog<'a> {
     tags: Vec<Tag>,
 }
 
-//struct PostTemplate(Template);
-//struct IndexTemplate(Template);
-//struct RssTemplate(Template);
-//struct TagsTemplate(Template);
+struct PostTemplate<'a>(Template<'a>);
+struct IndexTemplate<'a>(Template<'a>);
+struct RssTemplate<'a>(Template<'a>);
+struct TagsTemplate<'a>(Template<'a>);
 
 fn parse_post<A>(path: A) -> Post
 where
@@ -92,10 +97,7 @@ where
 {
     let path = path.as_ref();
     let path_str = path.to_str().unwrap();
-    let markdown = std::fs::read_to_string(path_str).unwrap_or_else(|_| {
-        eprintln!("could not read post");
-        std::process::exit(1);
-    });
+    let markdown = std::fs::read_to_string(path_str).expect("could not read post");
 
     let markdown_raw = markdown.split("---").collect::<Vec<&str>>();
     let markdown = markdown_raw.get(2).unwrap();
@@ -139,48 +141,56 @@ where
         date_iso8601,
         date_month_day_year,
         url,
-        domain: BLOG_DOMAIN.to_string(),
+        domain: JUSTANOTHERDOT_DOMAIN.to_string(),
         content: markdown.to_string(),
         tags: tags.clone(),
     }
 }
 
-fn render_post(post: &Post, tpl: &Template) -> String {
-    tpl.render(post)
+fn render_post(post: &Post, tpl: &PostTemplate) -> String {
+    tpl.0.render(post)
 }
 
-fn render_tag(tags: &Tag, tpl: &Template) -> String {
-    tpl.render(tags)
+fn render_tag(tags: &Tag, tpl: &TagsTemplate) -> String {
+    tpl.0.render(tags)
 }
 
-fn render_rss(rss: &Rss, tpl: &Template) -> String {
-    tpl.render(rss)
+fn render_rss(rss: &Rss, tpl: &RssTemplate) -> String {
+    tpl.0.render(rss)
 }
 
-fn render_index(blog: &Blog, tpl: &Template) -> String {
-    tpl.render(blog)
+fn render_index(blog: &Blog, tpl: &IndexTemplate) -> String {
+    tpl.0.render(blog)
 }
 
 fn template(path: &str) -> Template {
-    let source = std::fs::read_to_string(path).unwrap_or_else(|_| {
-        eprintln!("could not read template");
-        std::process::exit(1);
-    });
+    let source = std::fs::read_to_string(path).expect("could not read template");
     Template::new(source).unwrap()
 }
 
+fn create_deploy_dirs() -> Result<Vec<()>, std::io::Error> {
+    ["posts", "tags", "assets"]
+        .into_iter()
+        .map(|p| {
+            let path = format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, p);
+            let path = Path::new(&path);
+            std::fs::create_dir_all(path)
+        })
+        .collect()
+}
+
 fn main() {
-    // TODO: Replace `deploy` hardcoding.
-    std::fs::create_dir_all("../deploy/posts").expect("could not make posts dir");
-    std::fs::create_dir_all("../deploy/tags").expect("could not make tags dir");
-    std::fs::create_dir_all("../deploy/assets").expect("could not make assets dir");
+    create_deploy_dirs().unwrap_or_else(|_| {
+        eprintln!("could not create initial directories");
+        std::process::exit(1);
+    });
 
     // TODO: Pre-render templates upfront?
     // TODO: Pin version of bulma and embed.
-    let tpl = template("../site/templates/post.html");
+    let tpl = PostTemplate(template("site/templates/post.html"));
 
     let mut posts = vec![];
-    for entry in WalkDir::new("../site/posts")
+    for entry in WalkDir::new("site/posts")
         .into_iter()
         .filter_map(|e| e.ok())
     {
@@ -196,7 +206,7 @@ fn main() {
 
     for post in posts.iter() {
         let rendered = render_post(&post, &tpl);
-        std::fs::write(format!("../deploy/{}", &post.url), rendered)
+        std::fs::write(format!("deploy/{}", &post.url), rendered)
             .expect("failed to write post to deploy");
     }
 
@@ -221,31 +231,30 @@ fn main() {
         })
         .collect();;
 
-    let tpl = template("../site/templates/index.html");
+    let tpl = IndexTemplate(template("site/templates/index.html"));
     let blog = Blog {
-        title: BLOG_TITLE,
+        title: JUSTANOTHERDOT_TITLE,
         posts: posts.clone(),
         tags: tags.clone().into_iter().collect(),
     };
     let rendered = render_index(&blog, &tpl);
-    std::fs::write("../deploy/index.html", rendered).expect("failed to write post to deploy");
+    std::fs::write("deploy/index.html", rendered).expect("failed to write post to deploy");
 
-    let tpl = template("../site/templates/tags.html");
+    let tpl = TagsTemplate(template("site/templates/tags.html"));
     for tag in tags.iter() {
         let rendered = render_tag(&tag, &tpl);
-        std::fs::write(format!("../deploy/{}", tag.url), rendered)
+        std::fs::write(format!("deploy/{}", tag.url), rendered)
             .expect("failed to write post to deploy");
     }
 
-    let tpl = template("../site/templates/rss.xml");
+    let tpl = RssTemplate(template("site/templates/rss.xml"));
     let rss = Rss {
-        domain: BLOG_DOMAIN.to_string(),
+        domain: JUSTANOTHERDOT_DOMAIN.to_string(),
         url: "/rss.xml".to_string(),
         posts: posts.clone(),
     };
     let rendered = render_rss(&rss, &tpl);
-    std::fs::write("../deploy/rss.xml", rendered).expect("failed to write post to deploy");
+    std::fs::write("deploy/rss.xml", rendered).expect("failed to write post to deploy");
 
-    // TODO: Render rss.
     // TODO: Brand
 }
