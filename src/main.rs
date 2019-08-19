@@ -1,5 +1,3 @@
-#[macro_use]
-extern crate lazy_static;
 extern crate chrono;
 extern crate ramhorns;
 extern crate serde;
@@ -13,16 +11,10 @@ use std::ffi::OsStr;
 use std::path::Path;
 use walkdir::WalkDir;
 
-lazy_static! {
-    static ref JUSTANOTHERDOT_TITLE: &'static str =
-        option_env!("JUSTANOTHERDOT_TITLE").unwrap_or("justanotherdot");
-    static ref JUSTANOTHERDOT_DOMAIN: &'static str =
-        option_env!("JUSTANOTHERDOT_DOMAIN").unwrap_or("https://justanotherdot.com");
-    static ref JUSTANOTHERDOT_DEPLOY_PREFIX: &'static str =
-        option_env!("JUSTANOTHERDOT_DEPLOY_PREFIX").unwrap_or("deploy");
-    static ref JUSTANOTHERDOT_TEMPLATE_ROOT: &'static str =
-        option_env!("JUSTANOTHERDOT_TEMPLATE_ROOT").unwrap_or("site");
-}
+const JUSTANOTHERDOT_TITLE: &'static str = "justanotherdot";
+const JUSTANOTHERDOT_DOMAIN: &'static str = "https://justanotherdot.com";
+const JUSTANOTHERDOT_DEPLOY_PREFIX: &'static str = "deploy";
+const JUSTANOTHERDOT_TEMPLATE_ROOT: &'static str = "site";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct PostHeader {
@@ -53,7 +45,6 @@ struct Tag {
     posts: Vec<Post>,
 }
 
-// TODO: Drop clone.
 #[derive(Content, Clone, Debug)]
 struct Rss {
     url: String,
@@ -81,7 +72,6 @@ impl Ord for Tag {
     }
 }
 
-// TODO: Drop clone.
 #[derive(Content, Clone, Debug)]
 struct Blog<'a> {
     title: &'a str,
@@ -232,7 +222,7 @@ fn main() {
                 .collect(),
             ..tag
         })
-        .collect();;
+        .collect();
 
     let tpl = format!("{}/templates/index.html", JUSTANOTHERDOT_TEMPLATE_ROOT);
     let tpl = IndexTemplate(template(&tpl));
