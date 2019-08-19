@@ -26,7 +26,6 @@ struct PostHeader {
     tags: Option<Vec<String>>,
 }
 
-// TODO: Drop clone.
 #[derive(Content, Clone, Debug)]
 struct Post {
     title: String,
@@ -42,7 +41,6 @@ struct Post {
     tags: Vec<Tag>,
 }
 
-// TODO: Drop clone.
 #[derive(Content, Clone, Debug)]
 struct Tag {
     url: String,
@@ -206,8 +204,11 @@ fn main() {
 
     for post in posts.iter() {
         let rendered = render_post(&post, &tpl);
-        std::fs::write(format!("deploy/{}", &post.url), rendered)
-            .expect("failed to write post to deploy");
+        std::fs::write(
+            format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, &post.url),
+            rendered,
+        )
+        .expect("failed to write post to deploy");
     }
 
     let tags = posts
@@ -238,13 +239,20 @@ fn main() {
         tags: tags.clone().into_iter().collect(),
     };
     let rendered = render_index(&blog, &tpl);
-    std::fs::write("deploy/index.html", rendered).expect("failed to write post to deploy");
+    std::fs::write(
+        &format!("{}/index.html", JUSTANOTHERDOT_DEPLOY_PREFIX),
+        rendered,
+    )
+    .expect("failed to write post to deploy");
 
     let tpl = TagsTemplate(template("site/templates/tags.html"));
     for tag in tags.iter() {
         let rendered = render_tag(&tag, &tpl);
-        std::fs::write(format!("deploy/{}", tag.url), rendered)
-            .expect("failed to write post to deploy");
+        std::fs::write(
+            format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, tag.url),
+            rendered,
+        )
+        .expect("failed to write post to deploy");
     }
 
     let tpl = RssTemplate(template("site/templates/rss.xml"));
@@ -254,7 +262,11 @@ fn main() {
         posts: posts.clone(),
     };
     let rendered = render_rss(&rss, &tpl);
-    std::fs::write("deploy/rss.xml", rendered).expect("failed to write post to deploy");
+    std::fs::write(
+        &format!("{}/rss.xml", JUSTANOTHERDOT_DEPLOY_PREFIX),
+        rendered,
+    )
+    .expect("failed to write post to deploy");
 
     // TODO: Brand
 }
