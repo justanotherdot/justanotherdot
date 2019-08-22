@@ -30,6 +30,7 @@ struct Post {
     author: String,
     date: String,
     date_rfc822: String,
+    date_iso8601: String,
     date_month_day_year: String,
     #[md]
     content: String,
@@ -119,6 +120,7 @@ where
     let date = date_shifted.format("%B %e %Y, %_I:%M%p").to_string();
     let date_month_day_year = date_shifted.format("%D").to_string();
     let date_rfc822 = date_shifted.format("%a, %d %b %Y %T %z").to_string();
+    let date_iso8601 = date_iso8601.to_string();
 
     let url = path
         .file_name()
@@ -134,6 +136,7 @@ where
         author: header.author,
         date,
         date_rfc822,
+        date_iso8601,
         date_month_day_year,
         url,
         domain: JUSTANOTHERDOT_DOMAIN.to_string(),
@@ -200,7 +203,7 @@ fn main() {
             }
             acc
         });
-    posts.sort_by_key(|p| p.date.clone());
+    posts.sort_by_key(|p| std::cmp::Reverse(p.date_iso8601.clone()));
 
     posts.iter().for_each(|post| {
         let rendered = render_post(&post, &tpl);
