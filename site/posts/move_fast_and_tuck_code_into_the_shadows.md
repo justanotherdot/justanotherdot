@@ -1,7 +1,7 @@
 ---
 title: Move Fast and Tuck Code Into the Shadows
 author: Ryan James Spencer
-date: 2019-08-19T06:10:36Z
+date: 2019-08-23T11:51:00Z
 tags: [code, software]
 ---
 
@@ -44,7 +44,8 @@ than having a lot of logic caked into modules to check flags. Keeping flags
 macro and mutually exclusive is important because it means changes are kept
 cohesive and conflict free. One thing people tend to forget about is the
 original feature-flag: versioning. In the end it doesn't matter which technique
-you employ so long as you can 1. toggle and 2. keep differences clear.
+you employ so long as you can 1. **toggle between changes** and 2. **keep
+differences clear**.
 
 You can start something similar to this approach by focusing on leaving written
 code in a disconnected state but being aggressive about it finding its way to
