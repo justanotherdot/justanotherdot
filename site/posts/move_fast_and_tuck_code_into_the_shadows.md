@@ -8,15 +8,14 @@ tags: [code, software]
 Migrations are a part of life as a dev. They help [cut down tech
 debt](https://lethain.com/migrations/) but they can be risky. It's always less
 risky merging in _new_ and _different_ sets of changes rather than changing
-things in-place. This buys you time to move over to the new changes. _You_ gain
-the control toggling the switch granted switching doesn't adversely affect some
-shared, mutable store of data.
+things in-place. This buys you time. _You_ gain the control over the switch
+granted switching doesn't adversely affect some shared, mutable store of data.
 
 The [parallel implementation
 approach](http://sevangelatos.com/john-carmack-on-parallel-implementations/) is
 brilliance incarnate; you keep a functional reference implementation and you
-copy it as your 'experimental' version whose sole aim is to eventually 'win
-out'. The article is pure platinum, but Carmack hits a good point,
+copy it as your 'experimental' version whose sole aim is to eventually replace
+(and hence become) the new reference. However, Carmack hits a good point,
 
 > It is often tempting to shortcut this by passing in some kind of option flag
 > to existing code, rather than enabling a full parallel implementation. It is
@@ -30,12 +29,12 @@ tihngs I've already thought about:
 * Having a duplicated directories messes up navigation for a lot of editors and
   is unnecessary bloat
 * `git flow` styled approaches and any vcs-based approach will never work
-  because it lends into the 'change in place' idea by merging the reference
-  with the experiment
+  because it lends into the 'change in place' idea by merging the reference with
+  the experiment
 * feature flags work if they are kept macro and cohesive, but like what Carmack
-  says, for every path of checking taking is another whole set of branches one
-  needs to keep in their head when worrying about how various 'versions' of the
-  system work
+  says, for every path checking is another whole set of branches one needs to
+  keep in their head when worrying about how various 'versions' of the system
+  work
 
 Otherwise, there are many ways to define clear boundaries between the reference
 and experimental implementation. The most popular solution out of many is
