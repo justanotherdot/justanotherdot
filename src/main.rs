@@ -1,10 +1,14 @@
 extern crate chrono;
 extern crate ramhorns;
+extern crate regex;
 extern crate serde;
 extern crate walkdir;
+#[macro_use]
+extern crate lazy_static;
 
 use chrono::{DateTime, FixedOffset};
 use ramhorns::{Content, Template};
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeSet;
 use std::ffi::OsStr;
@@ -15,6 +19,10 @@ const JUSTANOTHERDOT_TITLE: &'static str = "justanotherdot";
 const JUSTANOTHERDOT_DOMAIN: &'static str = "https://justanotherdot.com";
 const JUSTANOTHERDOT_DEPLOY_PREFIX: &'static str = "deploy";
 const JUSTANOTHERDOT_TEMPLATE_ROOT: &'static str = "site";
+
+lazy_static! {
+    static ref WHITESPACE_RE: Regex = Regex::new(r"\s+").unwrap();
+}
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 struct PostHeader {
@@ -108,7 +116,7 @@ where
         Some(tags) => tags
             .into_iter()
             .map(|tag| Tag {
-                url: format!("/tags/{}.html", tag),
+                url: format!("/tags/{}.html", WHITESPACE_RE.replace_all(&tag, r"_")),
                 tag: tag,
                 posts: vec![],
             })
