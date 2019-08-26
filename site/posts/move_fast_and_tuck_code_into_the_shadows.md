@@ -7,9 +7,9 @@ tags: [code, software]
 
 Migrations are a part of life as a dev. They help [cut down tech
 debt](https://lethain.com/migrations/) but they can be risky. It's always less
-risky merging in _new_ and _different_ sets of changes rather than changing
-things in-place. This buys you time. _You_ gain the control over the switch
-granted switching doesn't adversely affect some shared, mutable store of data.
+risky merging in _new_ and _different_ sets of changes rather than changing code
+in-place. This buys you time. _You_ gain the control over the switch granted
+switching doesn't adversely affect some shared, mutable store of data.
 
 The [parallel implementation
 approach](http://sevangelatos.com/john-carmack-on-parallel-implementations/) is
@@ -31,10 +31,6 @@ tihngs I've already thought about:
 * `git flow` styled approaches and any vcs-based approach will never work
   because it lends into the 'change in place' idea by merging the reference with
   the experiment
-* feature flags work if they are kept macro and cohesive, but like what Carmack
-  says, for every path checking is another whole set of branches one needs to
-  keep in their head when worrying about how various 'versions' of the system
-  work
 
 Otherwise, there are many ways to define clear boundaries between the reference
 and experimental implementation. The most popular solution out of many is

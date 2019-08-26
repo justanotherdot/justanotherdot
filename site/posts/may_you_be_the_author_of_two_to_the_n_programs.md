@@ -9,7 +9,7 @@ The sheer propensity of articles detailing productivity tips for software
 developers under the auspices of them becoming better employees is alarming.
 What about our mental health? Why not more articles about our productivity from
 the point of view of improving our ability to deal with discomfort, burn out,
-imposter system, and so on?
+imposter syndrome, and so on?
 
 **Progress is key.**
 
@@ -20,8 +20,8 @@ right around the corner and we put unfair stress on ourselves to both reach a
 deadline _and_ achieve excellence. **We cannot be happy and, therefore, productive
 if we are unable to be flexible. The only way is to accept mess.**
 
-[Art and Fear](https://www.goodreads.com/book/show/187633.Art_and_Fear) is
-chiefly about two things:
+The book [Art and Fear](https://www.goodreads.com/book/show/187633.Art_and_Fear)
+is chiefly about two things:
 
 * Proliferation and practice are the way to improvement
 * Successes can only be determined based on one's own history
