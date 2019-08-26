@@ -5,44 +5,58 @@ date: 2019-08-23T11:51:00Z
 tags: [code, software]
 ---
 
-Earlier in the year I got burnt out from work. Because I also had other
-stressors happening in my life, I decided I would go seek medical attention.
-Being diagnosed with OCD as part of these sessions was paradoxically both
-shocking and not much of a surprise.
+The sheer propensity of articles detailing productivity tips for software
+developers under the auspices of them becoming better employees is alarming.
+What about our mental health? Why not more articles about our productivity from
+the point of view of improving our ability to deal with discomfort, burn out,
+imposter system, and so on?
 
-I have been working through particular processes for accepting mess. In my line
-of work having a pedantic attitude towards what I do has helped me excel. It has
-also held me back in a number of ways. **If you can't seem to defer some
-decisions as you hack on a solution, a striving for perfection is probably
-holding you back.**
+**Progress is key.**
 
-How do you get around this? Art & Fear's primary tenants are twofold:
+[Speed matters](http://jsomers.net/blog/speed-matters) because it principally
+enables us to make progress with our work and our life. Half-finished projects
+weigh on us like mangled fruit on a dying tree. Project deadlines sneer at us
+right around the corner and we put unfair stress on ourselves to both reach a
+deadline _and_ achieve excellence. **We cannot be happy and, therefore, productive
+if we are unable to be flexible. The only way is to accept mess.**
 
-* Don't compare your processes or personal history of accomplishments to others
-* Be prolific
+[Art and Fear](https://www.goodreads.com/book/show/187633.Art_and_Fear) is
+chiefly about two things:
 
-An analogy is given in the book of a pottery teacher who divides his class into
-two: one half will be judged by the quantity of pottery they produce, the other
-will be judged by the quality. The story goes that the prolific pottery pupils
-(couldn't resist the alliteration) produce far better work than the
-qualitatively focused pupils as they are continuously practicing whereas the
-qualatatively focuesd group spent far too much time thinking.
+* Proliferation and practice are the way to improvement
+* Successes can only be determined based on one's own history
 
-Thought is important, but what is even more important is making mistakes and
-learning from them. I think there is something else here at play, too; accepting
-mess.
+One analogy that is given in the book is a pottery instructor who divides his
+class in two. Half of the class will be judged by quantity and the other half by
+quality. In the end, it is the quantity group that has the best work through the
+simple act of constantly learning from their failures. Reflection and planning
+_are_ crucial but the quantity-based group's ability to accept the mess that
+comes with failures is what drives their progress. Fantastic! All we need to do
+is just constantly crank things out and we'll be masters of our medium in no
+time.
 
-How does one go about accepting more mess in their programming?
+Except for some of us mess instills great discomfort.
 
-* Take projects from start to finish in some allotted time
-* When the project is done, sit with your discomfort about it. Don't try to
-  change subjects, move onto new things, fix what's there, simply sit with the
-  discomfort and try to track how you feel. With time, and a lot of these
-  sessions, you'll see that there isn't much to cause you great harm if you
-  have a bit of mess. In fact, you will probably feel a lot better that you
-  are completing things!
+At the beginning of the year I went to therapy. I was burnt out from work and
+other stressors in life. Many sessions later I am diagnosed with Obsessive
+Compulsive Disorder, which in some ways was a shock and in others not a
+surprise. Eventually, exposure therapy comes up as a tool to help tackle the
+anxiety and stress from parts of my affliction. There I was, sitting with my
+discomfort, watching it, not trying to solve it nor run away from it, and sure
+enough, the discomfort would melt away with time. I started convincing some part
+of myself that the discomfort I was dredging up was _not_ based on fact and I
+found myself able to do things I had been so slow or entirely unable to do for
+ages.
 
-"but I work in a feature factory!" is a fair complaint I hear a lot. If you work
-in any kind of dysfunctional workplace, though, you won't be given the chance to
-revisit things, and not having that capacity means you need to move on, as well
-as dealing with the immediate discomfort you (may) experience.
+**It has dawned on me that sitting with the discomfort of what you produce is part
+of learning from the failures.**
+
+You _can_ defer some decisions for later and put in rudimentary solutions in the
+meantime. You _will_ probably save time by making progress in this manner that
+will allow you to revisit those same problems you deferred. Sure, this may not
+always be the case for those trapped in [feature
+factories](https://cutle.fish/blog/12-signs-youre-working-in-a-feature-factory),
+but that's an organisational issue rather than a personal one. You owe it to
+your mental health to grow more flexible by accepting mess.
+
+May you the author of 2^N programs.
