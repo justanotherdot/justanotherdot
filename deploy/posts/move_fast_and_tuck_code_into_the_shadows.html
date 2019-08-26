@@ -26,9 +26,9 @@
             <div class="content is-medium">
               <p>Migrations are a part of life as a dev. They help <a href="https://lethain.com/migrations/">cut down tech
 debt</a> but they can be risky. It's always less
-risky merging in <em>new</em> and <em>different</em> sets of changes rather than changing
-things in-place. This buys you time. <em>You</em> gain the control over the switch
-granted switching doesn't adversely affect some shared, mutable store of data.</p>
+risky merging in <em>new</em> and <em>different</em> sets of changes rather than changing code
+in-place. This buys you time. <em>You</em> gain the control over the switch granted
+switching doesn't adversely affect some shared, mutable store of data.</p>
 <p>The <a href="http://sevangelatos.com/john-carmack-on-parallel-implementations/">parallel implementation
 approach</a> is
 brilliance incarnate; you keep a functional reference implementation and you
@@ -49,10 +49,6 @@ is unnecessary bloat</li>
 <li><code>git flow</code> styled approaches and any vcs-based approach will never work
 because it lends into the 'change in place' idea by merging the reference with
 the experiment</li>
-<li>feature flags work if they are kept macro and cohesive, but like what Carmack
-says, for every path checking is another whole set of branches one needs to
-keep in their head when worrying about how various 'versions' of the system
-work</li>
 </ul>
 <p>Otherwise, there are many ways to define clear boundaries between the reference
 and experimental implementation. The most popular solution out of many is
