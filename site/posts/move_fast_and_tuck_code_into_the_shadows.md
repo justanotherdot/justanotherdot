@@ -24,7 +24,7 @@ copy it as your 'experimental' version whose sole aim is to eventually replace
 > you usually compromise both implementations to some degree.
 
 I am keen to start experimenting more with the Carmack approach, though. Some
-tihngs I've already thought about:
+things I've already thought about:
 
 * Having a duplicated directories messes up navigation for a lot of editors and
   is unnecessary bloat
