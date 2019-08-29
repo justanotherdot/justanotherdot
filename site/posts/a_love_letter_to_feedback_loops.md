@@ -5,11 +5,10 @@ date: 2019-08-28T10:16:00Z
 tags: [productivity]
 ---
 
-Feedback loops are everywhere and they're **awesome**. Almost every self-help or
-productivity-oriented book has some variant of a feedback loop. In essence,
-whenever there is some system with inputs, outputs, and some readjustment based
-on the outputs of the system, that's a feedback loop. The analysis of the output
-'feeds back' to the input and the system is now different, and hopefully better,
+Feedback loops are everywhere and they're **awesome**. In essence, whenever
+there is some system with inputs, outputs, and some readjustment based on the
+outputs of the system, that's a feedback loop. The analysis of the output 'feeds
+back' to the input and the system is now different, and hopefully better,
 because of it.
 
 what about refinement of the feedback loops themselves? Truly productive people
