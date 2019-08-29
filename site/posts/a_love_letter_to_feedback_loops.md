@@ -1,7 +1,7 @@
 ---
 title: A Love Letter to Feedback Loops
 author: Ryan James Spencer
-date: 2019-08-28T10:16:00Z
+date: 2019-08-29T11:28:00Z
 tags: [productivity]
 ---
 
