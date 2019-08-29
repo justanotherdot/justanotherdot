@@ -42,8 +42,8 @@ creation of S3.
 
 When it comes to feedback loops for humans, we need to take risks to make
 failures to learn. We learn more from our failures than our successes, but we
-can't make huge failures all the time. Ray Dalio's
-[Principles](https://www.goodreads.com/book/show/34536488-principles) describes
+can't make huge failures all the time. [Ray Dalio's
+Principles](https://www.goodreads.com/book/show/34536488-principles) describes
 the process as reaching for goals (taking risk), experiencing failure
 (inevitably), learning from the failures (growth), and then upping the audacity
 of said goals. This is pretty cool because it means it's not only OK to
