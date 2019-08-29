@@ -57,5 +57,5 @@ us,](https://increment.com/testing/i-test-in-production/)
 > It’s better to practice risky things often and in small chunks, with a limited
 > blast radius, than to avoid risky things altogether.
 
-bold risks! You can't think through everything. Sometimes you'll need to tinker,
-make mistakes, refine, and take bolder risks next time!
+You can't think through everything. Sometimes you'll need to tinker; take bold
+risks, make mistakes, refine, and repeat.
