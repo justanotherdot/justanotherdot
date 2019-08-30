@@ -1,7 +1,7 @@
 ---
 title: A Love Letter to Patterns
 author: Ryan James Spencer
-date: TODO -2019-08-29T11:28:00Z
+date: 2019-08-30T11:47:00Z
 tags: [productivity]
 ---
 
