@@ -10,59 +10,11 @@
     <language>en-us</language>
     
     <item>
-      <title>A Love Letter to Patterns</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
-      <link>https://justanotherdot.com/posts/a_love_letter_to_patterns.html</link>
-      <guid>https://justanotherdot.com/posts/a_love_letter_to_patterns.html</guid>
-      <pubDate>Fri, 30 Aug 2019 21:47:00 +1000</pubDate>
-      <description></description>
-      <content:encoded><![CDATA[
-        <p>Patterns are how we tend to carve up the world around us. Like <a href="https://www.justanotherdot.com/posts/a_love_letter_to_feedback_loops.html">feedback
-loops</a>,
-they are everywhere once we start noticing them. Roger Antonsen <a href="https://www.ted.com/talks/roger_antonsen_math_is_the_hidden_secret_to_understanding_the_world">feels that
-mathematics is all about discovering
-patterns</a>.
-When the pattern is discovered, we come up with a language to describe that
-pattern and give us a handle on playing with it. When we have both of those we
-can start tinkering and playing with assumptions.</p>
-<p>Patterns are usually globbed together with abstractions. Abstractions are
-usually misunderstood. What people tend to call abstractions are actually
-indirections. Abstractions are actually the rough structure or form of an idea
-or concept. The abstraction of a program is a specification for the program
-itself. I don't think patterns and abstractions are the same.</p>
-<p>So how are they useful in your day to day? You may or may not realise you do
-what I'm about to describe but I'm fairly certain most of us do this regardless
-of us being conscious of it. Becoming more conscious of this process makes it
-more powerful, so let's shed some light.</p>
-<p>When you are working, there is generally a discovery of patterns. You build a
-trust framework around these patterns; if a pattern is useful, you keep using
-it. Perhaps a pattern betrays you. Maybe you sit and dabble with it to make it
-work again at the same capacity it used to serve you. If you're ruthless enough,
-you ditch the pattern entirely and move onto new ones.</p>
-<p>Consider a scenario where you are rigging up some code that needs to walk across
-a directory and perform an action on every file. You see a third party library
-is more ergonomic than the standard library so you use it, instead. If you're
-conscious about this as a pattern, you'll trust it and reuse it tirelessly until
-it stabs you in the back. It <em>doesn't</em> pay for you to go fiddle around with the
-standard library functionality or some other third party library because you'll
-be wasting time. This is also why trying to 'save' a forsaken pattern can come
-with a high cost. It <em>does</em> pay to generally treat patterns as throwaway in the
-spirit of speed. There's tons of these every day, in every language, and even
-beyond coding, so you will not run out if you decide a pattern isn't delivering.</p>
-<p>As patterns age and you spend some time thinking about them you'll find you can
-increasingly discover ways to generalise them further. Patterns are amazing
-because they let you turn all the boilerplate into habits which means you'll
-have the mental room to solve other problems with deliberate attention.</p>
-
-        ]]></content:encoded>
-    </item>
-    
-    <item>
       <title>A Love Letter to Principles</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/a_love_letter_to_principles.html</link>
       <guid>https://justanotherdot.com/posts/a_love_letter_to_principles.html</guid>
-      <pubDate>Fri, 30 Aug 2019 21:47:00 +1000</pubDate>
+      <pubDate>Sun, 01 Sep 2019 18:43:00 +1000</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Programmers make assertions all the time with a wide range of utilities: tests,
@@ -111,6 +63,54 @@ life' that a home represents is the same as these principles I've talked about
 here. So perhaps achieving excellence isn't quite the goal and instead the goal
 is simply to keep chipping away at these ideals we want our code and our culture
 to embody.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>A Love Letter to Patterns</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/a_love_letter_to_patterns.html</link>
+      <guid>https://justanotherdot.com/posts/a_love_letter_to_patterns.html</guid>
+      <pubDate>Fri, 30 Aug 2019 21:47:00 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Patterns are how we tend to carve up the world around us. Like <a href="https://www.justanotherdot.com/posts/a_love_letter_to_feedback_loops.html">feedback
+loops</a>,
+they are everywhere once we start noticing them. Roger Antonsen <a href="https://www.ted.com/talks/roger_antonsen_math_is_the_hidden_secret_to_understanding_the_world">feels that
+mathematics is all about discovering
+patterns</a>.
+When the pattern is discovered, we come up with a language to describe that
+pattern and give us a handle on playing with it. When we have both of those we
+can start tinkering and playing with assumptions.</p>
+<p>Patterns are usually globbed together with abstractions. Abstractions are
+usually misunderstood. What people tend to call abstractions are actually
+indirections. Abstractions are actually the rough structure or form of an idea
+or concept. The abstraction of a program is a specification for the program
+itself. I don't think patterns and abstractions are the same.</p>
+<p>So how are they useful in your day to day? You may or may not realise you do
+what I'm about to describe but I'm fairly certain most of us do this regardless
+of us being conscious of it. Becoming more conscious of this process makes it
+more powerful, so let's shed some light.</p>
+<p>When you are working, there is generally a discovery of patterns. You build a
+trust framework around these patterns; if a pattern is useful, you keep using
+it. Perhaps a pattern betrays you. Maybe you sit and dabble with it to make it
+work again at the same capacity it used to serve you. If you're ruthless enough,
+you ditch the pattern entirely and move onto new ones.</p>
+<p>Consider a scenario where you are rigging up some code that needs to walk across
+a directory and perform an action on every file. You see a third party library
+is more ergonomic than the standard library so you use it, instead. If you're
+conscious about this as a pattern, you'll trust it and reuse it tirelessly until
+it stabs you in the back. It <em>doesn't</em> pay for you to go fiddle around with the
+standard library functionality or some other third party library because you'll
+be wasting time. This is also why trying to 'save' a forsaken pattern can come
+with a high cost. It <em>does</em> pay to generally treat patterns as throwaway in the
+spirit of speed. There's tons of these every day, in every language, and even
+beyond coding, so you will not run out if you decide a pattern isn't delivering.</p>
+<p>As patterns age and you spend some time thinking about them you'll find you can
+increasingly discover ways to generalise them further. Patterns are amazing
+because they let you turn all the boilerplate into habits which means you'll
+have the mental room to solve other problems with deliberate attention.</p>
 
         ]]></content:encoded>
     </item>

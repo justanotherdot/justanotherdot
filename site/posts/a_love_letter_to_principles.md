@@ -1,7 +1,7 @@
 ---
 title: A Love Letter to Principles
 author: Ryan James Spencer
-date: 2019-08-30T11:47:00Z
+date: 2019-09-01T08:43:00Z
 tags: [productivity]
 ---
 
