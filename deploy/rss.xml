@@ -20,13 +20,13 @@
         <p>Programmers make assertions all the time with a wide range of utilities: tests,
 types, written prose, and so on. Assertions are how we establish some ideal of
 the system at any particular scope. Maybe there is a requirement that all
-services in an ecosystem do not rely on the internal implementation details or
-perhaps that exceptions should not be thrown in library code. Perhaps a team
-decides that despite correctness being of the utmost important, it doesn't give
+services in an ecosystem do not rely on each-other's internal implementation
+details or that exceptions should not be thrown in library code. Perhaps a team
+decides that despite correctness being of the utmost importance, it doesn't give
 anyone the right to be an asshole.</p>
-<p>Ray Dalio <a href="https://www.goodreads.com/book/show/34536488-principles">wrote a whole book on the
-matter</a> and feels they
-are at the center for decision making and iterative improvement,</p>
+<p>Ray Dalio <a href="https://www.goodreads.com/book/show/34536488-principles">wrote a whole book on the matter of
+principles</a> and feels
+they are at the center for decision making and iterative improvement,</p>
 <blockquote>
 <p>Principles are fundamental truths that serve as the foundations for behavior
 that gets you what you want out of life. They can be applied again and again
@@ -36,37 +36,40 @@ in similar situations to help you achieve your goals.</p>
 mind, simply the application of principles. We <em>assert</em> that an invariant is
 upheld during each iteration of a loop, that some postcondition is still met
 after execution of a function, that a system is composable and modular from
-applying principles sat around the locus of flexibility.</p>
+applying principles sat around the locus of flexibility. In some cases these are
+machine-checked, in others they rely on humans to verify. Regardless of checking
+they are still present.</p>
 <p>When you have autonomy in a team it is key that you take initiative to achieve
-excellence. The problem with autonomy is precisely a constant issue of what to
-work on. Principles provide a 'north star' metric that enables you to say &quot;is
-the error handling in this code dividing concerns between external versus
-external errors?&quot; or possibly &quot;is our incident report process shaming people it
-comes into contact with?&quot; <strong>With principles we can scrutinize, but also work
-towards, some ideal. Hence our application of these ideals is the work we
-undertake.</strong></p>
+excellence. The problem with initiative is precisely an issue of what to work
+on. Principles provide a 'north star' metric that enables you to say &quot;is the
+error handling in this code dividing concerns between internal versus external
+concerns?&quot; or possibly &quot;do people feel supported and empowered to make the
+changes they need ot make across the broader company?&quot; <strong>With principles we can
+scrutinize, but also work towards, some ideal. Hence our application of these
+ideals is the work we undertake.</strong></p>
 <p>One could easily take principles from elsewhere but that would leave us with
 little to no understanding of how to form our own principles that best suit our
 needs and desires. What is the trick? The process I'm about to describe is
 probably not the only way to go about carving up principles but it's one that
-has worked for me and others:</p>
+has worked for me and others.</p>
 <p><a href="https://www.justanotherdot.com/posts/a_love_letter_to_feedback_loops.html">Feedback
 loops</a>
 are how we take risks and reflect. Experiencing this cycle for long enough means
 we start noticing
 <a href="https://www.justanotherdot.com/posts/a_love_letter_to_patterns.html">patterns</a>
 that can take the form of principles. A principle is really just a pattern that
-can describe some ideal clearly. You make failures (decision), you learn from
-failures (reflection), you get principles.</p>
+can describe some ideal clearly. You make failures (by way of decisions), you
+learn from failures (by way of reflection), you get principles.</p>
 <p>I've been thoroughly enjoying <a href="https://www.goodreads.com/book/show/16158601-turn-the-ship-around">Turn that Ship
 Around!</a> and
-one of the mentioned mechanisms is changing the focus from avoiding errors to
-achieving excellence. In this same manner I think the best principles are
-formed. When I talked about <a href="https://www.justanotherdot.com/posts/make_a_home.html">treating your codebase as a home you want to
+one of the mentioned mechanisms towards getting a &quot;leader-leader&quot; culture is
+changing the focus from avoiding errors to achieving excellence. In this same
+manner I think the best principles are formed. When I talked about <a href="https://www.justanotherdot.com/posts/make_a_home.html">treating
+your codebase as a home you want to
 build</a>, this 'idealised
 life' that a home represents is the same as these principles I've talked about
-here. In that sense, excellence is really just the code and the culture we wish
-to embody.</p>
+here. In that sense, from a programmer's perspective, excellence is really just
+the code and the culture we wish to embody.</p>
 
         ]]></content:encoded>
     </item>
