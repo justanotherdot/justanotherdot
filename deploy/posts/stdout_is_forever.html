@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; Stdout is Forever</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h1 class="title">
+                justanotherdot &#8226;
+              </h1>
+            </a>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">Stdout is Forever</h1>
+            <h2 class="subtitle is-5">on August 30 2019,  9:47PM</h2>
+            <div class="content is-medium">
+              <p>Debuggers are worth their weight in gold but stdout is the diamond in the rough.
+Things like REPLs, automatic tracing, stacktraces, etc. all can help pinpoint
+particular problems, but they all wind up being about two things: poking and
+prodding. A lot of what I do with stdout is the same I'd be doing in a debugger;
+print, play, and evaluate code and values.</p>
+<h2>A useful macro or two</h2>
+<p>Rust has the <code>dbg!</code> macro and I love it. It's short enough to type and it shows
+you what file you are in and line you are on and how the code looks plus its
+value after evaluation. e.g. <code>dbg!(dbg!(12) == dbg!(1 + 11))</code> will print</p>
+<pre><code>[src/main.rs:2] 12 = 12
+[src/main.rs:2] 1 + 11 = 12
+[src/main.rs:2] dbg!(12) == dbg!(1 + 11) = true
+</code></pre>
+<p>Two important quirks with this are,</p>
+<ol>
+<li>No arguments passed means you just get the file and line number</li>
+<li>The code still behaves the way it used to except now you have tracing</li>
+</ol>
+<p>This gives us just enough information to be lethal. The code display is possible
+because this happens at compile time but should be possible to replicate in
+languages that have macro support. Another option is to write an editor macro or
+function. I have been using Vim for a long while but I'm sure you could do the
+same in VSCode, Emacs, etc.</p>
+<p>Let's say you have some code,</p>
+<pre><code>func AddOne(x Int) Int {
+  return x + 1
+}
+</code></pre>
+<p>and you want to lay down some tracing so you highlight the <code>x + 1</code> and hit a
+keyboard shortcut which transforms the code into the following,</p>
+<pre><code>func AddOne(x Int) Int {
+  fmt.Printf(&quot;[src/main.go:8] x + 1: %#v&quot;, x + 1)
+  return x + 1
+}
+</code></pre>
+<p>We could have also used the
+<a href="https://golang.org/pkg/runtime/#Caller"><code>runtime.Caller</code></a> function to get
+filename and line number but we can get that spliced in via our editor to avoid
+an import. If you are curious what the <code>runtime.Caller</code> code looks like here it
+is (and, yes, I'm ignore error handling here since this is throwaway code):</p>
+<pre><code>func AddOne(x Int) Int {
+	_, file, line, _ := runtime.Caller(0)
+	fmt.Printf(&quot;[%v:%v] x + 1: %#v\n&quot;, file, line, x+1)
+  return x + 1
+}
+</code></pre>
+<h2>Laying traps</h2>
+<p>I recently had to extend some ruby for a legacy codebase and had some failing
+tests. There was a lot of code <code>rescue</code>ing exceptions making it difficult to
+pinpoint why. The tests wouldn't give me a backtrace. Was it an error in the
+data or something I was doing in code? In hindsight I could have gone and
+stripped out the exception handlers but I may not have had that choice. Imagine
+it was a library function with our code as the callback. Here's a rough way I
+tend to do this as a pattern with stdout.</p>
+<p>First, I 'lay traps' in a binary-search fashion,</p>
+<pre><code>def foo
+  puts &quot;A&quot;
+  &lt;snip&gt;
+  puts &quot;B&quot; # Middle of function
+  &lt;snip&gt;
+  puts &quot;C&quot;
+end
+</code></pre>
+<p>It sometimes pays to do a lot of tracing before running tests/code if it takes
+far too long to run. With <code>dbg!</code> this is really easy because I don't have to
+think about what to pass to the printing function since an empty <code>dbg!()</code> call
+simply emits the filename and line number. This is basically building a manual
+stacktrace. By putting a statement at the beginning, middle, and end we can
+choose quickly where to put more statements.</p>
+<h2>Catching the bug</h2>
+<p>Eventually with this approach I would hone in on where things were acting awry.
+I could then start playing with values and comparing things. We can print
+assertions to see if they hold up or mess around with alternative solutions that
+may work if the problem is clear.</p>
+<p>I had a large JSON blob that was getting deserialized into a hash. I had no
+simple functionality for the test to tell me what the difference was between
+hashes so I narrowed down on which particular fields didn't match. I realised
+that a chunk of code wasn't running that I previously had no tracing in and
+eventually chalked it up to the fact that the data was only partially valid
+since some extra code wasn't being run as it would try to access a field that
+wasn't there, throw an exception, get rescued, and returned early (and
+silently). The error wasn't propagated hence the value came back partially
+constructed.</p>
+<p>When people practice martial arts, they can forget to breath. When people debug
+they can forget to print. It doesn't cost you anything except time to lay down
+print statements. If you don't have access to assertions and stack traces,
+stdout can cut down the time for you. I probably don't need to say that caution
+should be taken that print statements that expose secrets or sensitive data
+should definitely be stripped before reaching production but most linters can
+stop this as part of CI.</p>
+<h2>Summary</h2>
+<ol>
+<li>Editor or language macros, functions, etc. that print a value with filename,
+line number, the code in question, and the final, evaluated value are
+invaluable</li>
+<li>stdout and your editor will usually give you most of what you need to swiftly
+ascertain bugs</li>
+</ol>
+<p>Debuggers can be useful for things like <a href="https://jvns.ca/blog/2018/04/28/debugging-a-segfault-on-linux/">gdb and core
+dumps</a> where you
+can explore the call stack after a segfault. Most browsers support breakpoint
+functionality but you can always be savage and shove items onto the window for
+your development session so you can explore with values during execution.</p>
+<h4>Acknowledgements</h4>
+<p><em>The name of this post is inspired from <a href="https://twitter.com/bodil/status/878563460233277440?s=20">Bodil
+Stokke</a> when
+responding to what &quot;What are everyone's fave debugging tools for languages you
+write code in?&quot;</em></p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
