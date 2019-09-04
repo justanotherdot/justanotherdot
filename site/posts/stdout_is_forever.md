@@ -1,7 +1,7 @@
 ---
 title: Stdout is Forever
 author: Ryan James Spencer
-date: 2019-08-30T11:47:00Z
+date: 2019-09-04T05:49:00Z
 tags:
   - code
   - debugging
