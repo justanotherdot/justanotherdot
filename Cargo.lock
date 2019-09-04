@@ -183,7 +183,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "regex"
-version = "1.3.0"
+version = "1.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "aho-corasick 0.7.6 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -241,7 +241,7 @@ dependencies = [
  "chrono 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ramhorns 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "regex 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "regex 1.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.99 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_yaml 0.8.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "walkdir 2.2.9 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -433,7 +433,7 @@ dependencies = [
 "checksum ramhorns 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "7525e62204b1d821d987e7cf07ef1a51b237495a1caad61001740008387f261c"
 "checksum ramhorns-derive 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "64b3a6039d79d457d97d977da3f72ea190527daac2fdd28b822df0346d666563"
 "checksum redox_syscall 0.1.56 (registry+https://github.com/rust-lang/crates.io-index)" = "2439c63f3f6139d1b57529d16bc3b8bb855230c8efcc5d3a896c8bea7c3b1e84"
-"checksum regex 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "fc98360d9e6ad383647702acc90f80b0582eac3ea577ab47d96325d3575de908"
+"checksum regex 1.3.1 (registry+https://github.com/rust-lang/crates.io-index)" = "dc220bd33bdce8f093101afe22a037b8eb0e5af33592e6a9caafff0d4cb81cbd"
 "checksum regex-syntax 0.6.12 (registry+https://github.com/rust-lang/crates.io-index)" = "11a7e20d1cce64ef2fed88b66d347f88bd9babb82845b2b858f3edbf59a4f716"
 "checksum same-file 1.0.5 (registry+https://github.com/rust-lang/crates.io-index)" = "585e8ddcedc187886a30fa705c47985c3fa88d06624095856b36ca0b82ff4421"
 "checksum serde 1.0.99 (registry+https://github.com/rust-lang/crates.io-index)" = "fec2851eb56d010dc9a21b89ca53ee75e6528bab60c11e89d38390904982da9f"
