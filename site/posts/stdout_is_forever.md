@@ -11,9 +11,9 @@ tags:
 ---
 
 Debuggers are worth their weight in gold but stdout is the diamond in the rough.
-Many things such as REPLs can help pinpoint problems, such as automatic tracing,
-stacktraces, and so on. However, they all wind up being about two things: **poking**
-and **prodding**.
+All the tools we have to pinpoint problems such as REPLs, automatic tracing,
+stacktraces, and even printing to stdout wind up being about two things:
+**poking** and **prodding**.
 
 ## A useful macro or two
 
@@ -37,7 +37,8 @@ this expands at compile time and can be replicated in other languages that have
 macro support. This is a source transformation and we can't easily use a
 function because our line number will always be the line number of the function,
 not the calling site. As such, one option is to write it as some repeated action
-in your editor of choice. Consider the following go code,
+in your editor of choice. Imagine you have the following go code in front of
+you,
 
 ```
 func AddOne(x Int) Int {
@@ -64,8 +65,8 @@ throwaway code):
 
 ```
 func AddOne(x Int) Int {
-	_, file, line, _ := runtime.Caller(0)
-	fmt.Printf("[%v:%v] x + 1: %#v\n", file, line, x+1)
+  _, file, line, _ := runtime.Caller(0)
+  fmt.Printf("[%v:%v] x + 1: %#v\n", file, line, x+1)
   return x + 1
 }
 ```
@@ -76,15 +77,15 @@ around at will and we won't have to tweak the filename/lineno combo.
 ## Poking
 
 Sometimes the fastest way to get at a problem is by writing test cases that flex
-assertions about the functionality in question. Other times that's not so fast
+assertions about the functionality in question. Other times that's not as fast
 because the logic might rely on other systems, e.g. integration tests. In those
 cases, if you have stacktrace support you might find it useful to panic/throw if
-particular assertions aren't met. When that fails you are probably facing some
-code you interface with that is covering up exceptions or panics, say a piece of
-library code that takes your code as a callback. When this happens you could try
-stubbing in your own forked version of the code (scripting languages tend to
-make this easy) or you could turn to tracing. How it works is we iteratively
-apply print statements like this
+particular assertions aren't met. When that fails you are probably interfacing
+with code that is covering up exceptions or panics, say a piece of library code
+that takes your code as a callback. You could try stubbing in your own forked
+version of the code (scripting languages tend to make this easy) or you could
+turn to building your own stacktrace. You iteratively apply print statements in
+the following fashion,
 
 ```
 fn foo() {
@@ -104,24 +105,28 @@ done `printf(X)` where X = "A", "B", "C", and so on.
 With this format in place you can use binary search to figure out where you need
 to apply more printing statements on each subsequent run. If, however, your
 tests or program take a long while to run it can pay to do upfront work but
-perhaps limiting yourself to an arbitrary depth to prevent spending too long on
-tracing that won't help you.
+perhaps limiting yourself to an arbitrary depth to avoid spending too much time
+on tracing that won't pay off.
 
 ## Prodding
 
 You can load your [core
 dumps](https://jvns.ca/blog/2018/04/28/debugging-a-segfault-on-linux/) into
-`gdb` and explore the call stack after a segfault, sure, but hopefully this
-article has shown that stdout gives you equal debugging functionality since we
-already have access to executing the program and manipulating its source. We can
-print assertions to see if they hold up or mess around with alternative
-solutions that may work if the problem is clear. Stdout isn't always the fastest
-but it's _lightweight_ which makes it invaluable as it can circumvent a lot of
+`gdb` and explore the call stack after a segfault among all sorts of other cool
+things that debuggers allow you to do, or you can rig up systems to
+automatically provide tracing, such as in [erlang or
+elixir](http://erlang.org/doc/man/dbg.html) but hopefully this article has shown
+that stdout gives you powerful debugging functionality since we already have
+access to executing the program and manipulating its source. We can print
+assertions to see if they hold up or mess around with alternative solutions that
+may work if the problem is clear. Stdout isn't always the fastest but it's
+_lightweight_ which makes it invaluable as it can circumvent a lot of
 preparatory work. You can pair this approach into a feedback loop, too, to
 reduce duplicated work such as running the tests or program over and over again.
 In a future article I'll discuss ways to do this in a range of languages and
-environments but at least we've set the tone for some thinking about how to best
-spit out information while you hack.
+environments but at least we've set the tone for some thinking about how to
+improve what we spit out while you hack to give you a better understanding of
+what's going on under the hood.
 
 #### Acknowledgements
 
