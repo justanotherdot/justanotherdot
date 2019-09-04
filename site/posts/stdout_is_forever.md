@@ -65,8 +65,8 @@ throwaway code):
 
 ```
 func AddOne(x Int) Int {
-	_, file, line, _ := runtime.Caller(0)
-	fmt.Printf("[%v:%v] x + 1: %#v\n", file, line, x+1)
+  _, file, line, _ := runtime.Caller(0)
+  fmt.Printf("[%v:%v] x + 1: %#v\n", file, line, x+1)
   return x + 1
 }
 ```
