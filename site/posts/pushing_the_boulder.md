@@ -14,21 +14,23 @@ href="https://twitter.com/_justanotherdot/status/1170118831219474433?ref_src=tws
 6, 2019</a></blockquote> <script async
 src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-Imagine you have a giant boulder in front of you. You know that in order to get
-what you want you'll need to push it. You recognise that the inertia you'll need
-to overcome at first is substantial, but, unfortunately, you think that pushing
-the boulder will _always_ take the same amount of effort. The first step is
-always difficult to get started on some project or hobby. If you can get the
-boulder moving, keeping it in motion takes many small pushes. In other words, if
-you can make the process of _doing_ and, especially, _tinkering_ as fast as you
-can, you'll keep the boulder rolling, even if there is no destination.
+I have an analogy for motivation and progress on projects. Imagine you have a
+giant boulder in front of you. You know that in order to get what you want
+you'll need to push it. You recognise that the inertia you'll need to overcome
+at first is substantial, but, unfortunately, you think that pushing the boulder
+will _always_ take the same amount of effort. The first step is always difficult
+to get started on some project or hobby. If you can get the boulder moving,
+keeping it in motion takes many small pushes. In other words, if you can make
+the process of _doing_ and, especially, _tinkering_ as fast as you can, you'll
+keep the boulder rolling, even if there is no destination.
 
-The idea behind pushing the boulder is the same as [fast systems incurring
-usage](https://jsomers.net/blog/speed-matters) at its heart. **Action begets
-action**. Do you want to write more? Write. Do you want to read more? Read. The
-quirk to this is that when people try this they may eventually _do_ their
-respective action so infrequently that they wind up facing the back of a still
-boulder.
+The idea behind pushing a boulder is the same as [fast systems incurring
+usage](https://jsomers.net/blog/speed-matters). **Action begets action**; Care
+about improving your ability to do X? Dive into X. The quirk to this is that
+when people try this they may eventually _do_ their respective action so
+infrequently that they wind up facing the back of a still boulder.
+The goal isn't to do a lot of work, it's to remove impediments that will slow
+down your access to pushing the boulder.
 
 Take acquiring knowledge. One way to acquire knowledge is to read. When you try
 to acquire knowledge there is always a pool of unknown-unknowns whose size is,
