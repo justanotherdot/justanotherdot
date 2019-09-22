@@ -53,36 +53,39 @@ argue you can only pick one of these two optimisations</a>. Enterprises claim to
 avoid this complication because their golden goose is sitting pretty, but the
 reality is that any revenue generating organisation has to constantly push
 themselves into the future to compete. Technology is an enabler, it allows teams
-to move faster, collaborate more quickly, automations to alleviate toil, and
-user experiences to be more delightful.</p>
-<p>All of this shuffling around <em>does</em> provide advantages to companies but at the
-cost of churn and bloat. This is generally combated either by hiring more devs
-and/or performing lots of migrations. <a href="https://en.wikipedia.org/wiki/Software_rot">Software
-rots</a>, which can mean different
-things to different people, but I see it as the eventual ineffectiveness of a
-piece of software as improvements are found in competing solutions. That is to
-say, even though your software may not actually be getting slower, it will
-definitely feel slower in the context of all neighboring solutions getting
-faster. This is but one example but other things like security exploits, support
-for a particular version of a language or library, and so on.</p>
+to move faster by automating away toil, easing collaboration friction, and a
+productive team means they can, hopefully, deliver user experiences that delight
+or at a cost that is beats the competition.</p>
+<p>All of this shuffling around comes at the cost of churn and bloat. Companies try
+to sooth this issue by either by hiring more devs and/or performing lots of
+migrations. <a href="https://en.wikipedia.org/wiki/Software_rot">Software rots</a>, which
+can mean different things to different people, but I see it as the eventual
+ineffectiveness of a piece of software as improvements are found in competing
+solutions. That is to say, even though your software may not actually be getting
+slower, it will definitely feel slower in the context of all neighboring
+solutions getting faster. This is but one example yet other things like security
+exploits, support for a particular version of a language or library, and so on
+all work to disempower your application or system.</p>
 <p>The reality is that we cannot simply pick one camp to be part of as professional
-developers. We are paid to help organisations continue to live and be better
-than they were before we joined, all within the confines of ethics and the
-legalities we are bound to. We cannot sit still but we can't move too much! Some
-have suggested things like a <a href="https://www.shimweasel.com/2018/08/25/novelty-budgets">novelty
+developers. We are paid to help companies continue to live and be better than
+they were before we joined, all within the confines of the ethics and legalities
+we are bound to. <strong>We cannot sit still but we can't move too much!</strong> Some have
+suggested things like a <a href="https://www.shimweasel.com/2018/08/25/novelty-budgets">novelty
 budget</a> to support
-keeping the platform largely stable, or <a href="https://lethain.com/migrations/">having a whole process around
-migrations</a>.</p>
-<p>All of this ranting is not meant to attack particular companies or pieces of
-tech or practices. The intent is to encourage critical thinking and
-consideration of tradeoffs. Weigh your options! You cannot make decisions purely
-by reading, nor can you make a choice by trying everything as there simply isn't
-the time. Certain devs learn to do cheap experiments at work or at home but this
-can have the pitfall of comparing a toy project a success that may not handle
-the scale of an industrial grade application. This sort of scrutiny is part of
-the weighing process. If anyone tells you they're going to make you rich,
-they're getting rich off of you. Take marketing with a grain of salt and throw
-out the fool's gold!</p>
+keeping the platform largely stable while pursuing new ways of handling
+constantly arising issues.</p>
+<p>This article isn't meant to attack particular companies or pieces of tech or
+practices despite those practices that carelessly hold on to the past or
+endlessly throw it out for the new. The core intent is to encourage critical
+thinking and consideration of tradeoffs when problem solving. Weigh your
+options! You cannot make decisions purely by reading and watching, nor can you
+make a choice by trying everything as there simply isn't the time. Certain devs
+learn to do cheap experiments at work or at home but this can have the pitfall
+of comparing a toy project a success that may not handle the scale of an
+industrial grade application. This sort of scrutiny is part of the weighing
+process.</p>
+<p>If anyone tells you they're going to make you rich, they're getting rich off of
+you. <strong>Take marketing with a grain of salt and throw out the fool's gold!</strong></p>
 
         ]]></content:encoded>
     </item>
