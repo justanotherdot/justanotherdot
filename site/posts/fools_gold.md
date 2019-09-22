@@ -1,7 +1,7 @@
 ---
 title: Fool's Gold, An Introduction
 author: Ryan James Spencer
-date: 2019-09-19T10:15:00Z
+date: 2019-09-22T05:37:09Z
 tags: [software architecture, code, fools gold]
 ---
 
