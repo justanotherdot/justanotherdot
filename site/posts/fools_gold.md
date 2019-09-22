@@ -38,7 +38,7 @@ solutions for your problems, you have three particular cases to consider
 
 Then there is the camp of constant agitation. A company goes under if it's not
 constantly pushing to optimise for end users and reducing costs. [Some even
-argue you can only pick one of these two optimisations]
+argue you can only pick one of these two optimisations](
 https://www.goodreads.com/book/show/28592994-simplify). Enterprises claim to
 avoid this complication because their golden goose is sitting pretty, but the
 reality is that any revenue generating organisation has to constantly push
