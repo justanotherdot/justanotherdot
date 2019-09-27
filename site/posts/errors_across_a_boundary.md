@@ -1,7 +1,7 @@
 ---
 title: Errors Across a Boundary
 author: Ryan James Spencer
-date: 2019-09-08T10:03:00Z
+date: 2019-09-27T11:10:01.917084567+00:00
 tags: [error handling, code]
 ---
 
