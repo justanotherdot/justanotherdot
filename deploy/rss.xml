@@ -10,6 +10,67 @@
     <language>en-us</language>
     
     <item>
+      <title>Actually Using Git Worktrees</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/actually_using_worktrees.html</link>
+      <guid>https://justanotherdot.com/posts/actually_using_worktrees.html</guid>
+      <pubDate>Sat, 05 Oct 2019 13:48:54 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Let's say you are expected to do code review and you are also expected to code.
+When you do either a certain set of changes is in place. Switching because you
+are blocking someone means you <em>have</em> to do a dance with stashing changes,
+checking out a branch, perhaps cleaning temporary files, restarting tooling,
+etc. Bar changing your codebase, workflow, and job requirements, here's an
+approach that uses <code>git</code> <a href="https://git-scm.com/docs/git-worktree"><code>worktrees</code></a> to
+ease the cost of these context-switches.</p>
+<p><code>git</code> uses <code>worktree</code>s to track changes in a repository. <code>git</code> gives us the
+ability to make more than one <code>worktree</code> at a time that are checked out to
+potentially different sets of changes. This means we can effectively split up
+our codebase into review and development environments:</p>
+<pre><code>$ git worktree add ../foo-review --checkout master # where `foo` is the name of your project
+$ cd ../foo-review
+$ git clean -fddx
+$ git checkout branch-name
+</code></pre>
+<p>You can tuck the change-directory code into a script if there's a slew of other
+steps needed to get into a good-known state. If you are using GitHub, here's an
+added bonus for checking out pull requests by number rather than by branch name:</p>
+<pre><code>[alias]
+  &lt;snip&gt;
+  copr = &quot;!f() { git fetch origin pull/$1/head &amp;&amp; git checkout pr/$1; }; f&quot;
+  &lt;snip&gt;
+</code></pre>
+<p><em>N.B. There are alternative ways of <a href="https://gist.github.com/piscisaureus/3342247">fetching all remote pull requests from
+GitHub</a> which might be preferable
+to the above alias.</em></p>
+<p>GitHub assigns this special remote tracking branch to your PR, but it's
+read-only so if you want to contribute changes you will need to know the name of
+the original branch.</p>
+<p>With this setup the context-switch dance is reduced. The workflow could be like
+this:</p>
+<ol>
+<li>Someone asks for a review or perhaps you're done want to get back to work</li>
+<li>Calling <code>work</code> might get you back into your development environment where you
+left off</li>
+<li><code>review branch-name</code> will go the other direction preparing the pull-request
+for inspection</li>
+</ol>
+<p>Git aliases are a neat way to remap the surface area of <code>git</code>. I actually think
+this is a utility for configuration I don't see more CLI tooling using that
+probably could to great effect. In the context of <code>git</code> it allows me to get
+around some particular ergonomic warts. Also, I don't do this particular
+workflow anymore as I leverage pull-requests largely for communicating changes
+more than gate-keeping these days, but I understand not all circumstances are
+the same. Worktrees could be used to keep a reference implementation around for
+quickly inspecting without having to switch branches, for example. Little things
+like this that help reduce toil are worth their weight in platinum so it pays to
+keep your eye open to automation opportunities!</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Fool's Gold: Code Coverage</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/fools_gold_code_coverage.html</link>
@@ -258,6 +319,46 @@ you in an uncomfortable state. Make tons of little changes and skim content
 frantically going back for more when you need it instead of sitting around
 dreaming or scheming. Be a giant machine. Tinker like a maniac. Push the
 boulder.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>The Lowly Assert</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/the_lowly_assert.html</link>
+      <guid>https://justanotherdot.com/posts/the_lowly_assert.html</guid>
+      <pubDate>Thu, 19 Sep 2019 20:15:00 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>There is one thing that ties all forms of testing together, <strong>assertions</strong>. The
+lowly assert humbly serves whether it's as types, panics, automated tests, or
+any other glorious form. Regardless of how it manifests itself, it allows us to
+declare things about our systems or program and mechanically check them.</p>
+<p>Types of assertions: invariants, preconditions, postconditions. Imagining a
+system as a black box. The inputs-outputs model of computation.</p>
+<p>A journey through the many forms of the assert</p>
+<ul>
+<li>Replacing tedium/toil with automated testing, rather than manual testing</li>
+<li>assertions library a la assert.h, assert/debug_assert in rust, panics in go
+<ul>
+<li>recovery vs. unrecoverable bugs.</li>
+</ul>
+</li>
+<li>assertions with types</li>
+<li>assertions with axiomatic semantics (invariants, pre- and post-conditions)</li>
+<li>the model of a function; inputs and outputs</li>
+<li>the model of a state machine; transitions and nodes</li>
+</ul>
+<p>Let's build a testing framework. This isn't going to be your common type of
+testing framework. It's going to be a mental framework we will buildup and tour
+through the various forms assertions can take.</p>
+<p>The first form of assertions is tedious, manually reproductions. You build the
+program, run it over and over again observing the output. This approach works
+(and some people slavishly adhere to it!) but it's slow, tedious, and incredibly
+error prone. The solution here is to make the machine do it!</p>
+<p>Systems are guided by principles. Systems come in all sizes. One-line scripts,
+programs of all sizes, libraries, ecoystems of disparate parts.</p>
 
         ]]></content:encoded>
     </item>
