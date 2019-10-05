@@ -47,7 +47,7 @@ the original branch.
 With this setup the context-switch dance is reduced. The workflow could be like
 this:
 
-1. Someone asks for a review or perhaps you're done want to get back to work
+1. Someone asks for a review or perhaps you're done and want to get back to work
 2. Calling `work` might get you back into your development environment where you
    left off
 3. `review branch-name` will go the other direction preparing the pull-request
@@ -56,10 +56,10 @@ this:
 Git aliases are a neat way to remap the surface area of `git`. I actually think
 this is a utility for configuration I don't see more CLI tooling using that
 probably could to great effect. In the context of `git` it allows me to get
-around some particular ergonomic warts. Also, I don't do this particular
-workflow anymore as I leverage pull-requests largely for communicating changes
-more than gate-keeping these days, but I understand not all circumstances are
-the same. Worktrees could be used to keep a reference implementation around for
-quickly inspecting without having to switch branches, for example. Little things
-like this that help reduce toil are worth their weight in platinum so it pays to
-keep your eye open to automation opportunities!
+around some particular ergonomic warts. Also, I don't do this workflow anymore
+as I leverage pull-requests largely for communicating changes more than
+gate-keeping these days, but I understand not all circumstances are the same.
+Worktrees could be used to keep a reference implementation around for quickly
+inspecting without having to switch branches, for example. Little things like
+this that help reduce toil are worth their weight in platinum so it pays to keep
+your eye open to automation opportunities!
