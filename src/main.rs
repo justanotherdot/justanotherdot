@@ -22,6 +22,7 @@ const JUSTANOTHERDOT_TEMPLATE_ROOT: &'static str = "site";
 
 lazy_static! {
     static ref WHITESPACE_RE: Regex = Regex::new(r"\s+").unwrap();
+    static ref UNDERSCORE_RE: Regex = Regex::new(r"_+").unwrap();
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -43,6 +44,7 @@ struct Post {
     #[md]
     content: String,
     url: String,
+    snake_url: String,
     domain: String,
     tags: Vec<Tag>,
 }
@@ -137,6 +139,7 @@ where
         .unwrap()
         .replace(".md", ".html")
         .to_lowercase();
+    let snake_url = format!("/posts/{}", UNDERSCORE_RE.replace_all(&url, r"-"));
     let url = format!("/posts/{}", url);
 
     Post {
@@ -147,6 +150,7 @@ where
         date_iso8601,
         date_month_day_year,
         url,
+        snake_url,
         domain: JUSTANOTHERDOT_DOMAIN.to_string(),
         content: markdown.to_string(),
         tags: tags.clone(),
