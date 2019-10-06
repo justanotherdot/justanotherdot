@@ -40,6 +40,7 @@ struct Post {
     date: String,
     date_rfc822: String,
     date_iso8601: String,
+    date_rfc3339: String,
     date_month_day_year: String,
     #[md]
     content: String,
@@ -61,6 +62,11 @@ struct Tag {
 struct Rss {
     url: String,
     domain: String,
+    posts: Vec<Post>,
+}
+
+#[derive(Content, Clone, Debug)]
+struct Sitemap {
     posts: Vec<Post>,
 }
 
@@ -97,6 +103,7 @@ struct Subscribe;
 struct PostTemplate<'a>(Template<'a>);
 struct IndexTemplate<'a>(Template<'a>);
 struct RssTemplate<'a>(Template<'a>);
+struct SitemapTemplate<'a>(Template<'a>);
 struct TagsTemplate<'a>(Template<'a>);
 struct SubscribeTemplate<'a>(Template<'a>);
 
@@ -132,6 +139,8 @@ where
     let date = date_shifted.format("%B %e %Y, %_I:%M%p").to_string();
     let date_month_day_year = date_shifted.format("%D").to_string();
     let date_rfc822 = date_shifted.format("%a, %d %b %Y %T %z").to_string();
+    let date_rfc3339 = &date_iso8601.to_rfc3339();
+    let date_rfc3339 = date_rfc3339.to_string();
     let date_iso8601 = date_iso8601.to_string();
 
     let url = path
@@ -150,6 +159,7 @@ where
         date,
         date_rfc822,
         date_iso8601,
+        date_rfc3339,
         date_month_day_year,
         url,
         snake_url,
@@ -168,6 +178,10 @@ fn render_tag(tags: &Tag, tpl: &TagsTemplate) -> String {
 }
 
 fn render_rss(rss: &Rss, tpl: &RssTemplate) -> String {
+    tpl.0.render(rss)
+}
+
+fn render_sitemap(rss: &Sitemap, tpl: &SitemapTemplate) -> String {
     tpl.0.render(rss)
 }
 
@@ -304,6 +318,18 @@ fn main() {
     let rendered = render_rss(&rss, &tpl);
     std::fs::write(
         &format!("{}/rss.xml", JUSTANOTHERDOT_DEPLOY_PREFIX),
+        rendered,
+    )
+    .expect("failed to write post to deploy");
+
+    let tpl = format!("{}/templates/sitemap.xml", JUSTANOTHERDOT_TEMPLATE_ROOT);
+    let tpl = SitemapTemplate(template(&tpl));
+    let sitemap = Sitemap {
+        posts: posts.clone(),
+    };
+    let rendered = render_sitemap(&sitemap, &tpl);
+    std::fs::write(
+        &format!("{}/sitemap.xml", JUSTANOTHERDOT_DEPLOY_PREFIX),
         rendered,
     )
     .expect("failed to write post to deploy");

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset>
+  <loc>https://www.justanotherdot.com/</loc>
+  <lastmod>2019-10-06T11:11:24+00:00</lastmod>
+  <priority>1.00</priority>
+  {{#posts}}
+  <url>
+    <loc>{{domain}}{{url}}</loc>
+    <lastmod>{{date_rfc3339}}</lastmod>
+    <priority>0.95</priority>
+  </url>
+  {{/posts}}
+</urlset>
