@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; Trampling Trampolines</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h1 class="title">
+                justanotherdot &#8226;
+              </h1>
+            </a>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">Trampling Trampolines</h1>
+            <h2 class="subtitle is-5">on May 24 2018,  7:40PM</h2>
+            <div class="content is-medium">
+              <h2>Continuation Passing Style</h2>
+<p>or CPS for short, is a way to ‘continue’ a function call by calling into another function. The simplest example would be:</p>
+<pre><code>function cps(x, return) {
+  return(x);
+}
+</code></pre>
+<p>The important thing is the callback is passed and it is called at the ‘completion’ of the function, passing things along.</p>
+<p>CPS is not a problem in languages where Last Call Optimisation is commonplace. What these languages do (normally of eager evaluation) is collapse the stack frame and call the function call so long as there is nothing else beyond the function. <a href="http://erlang.org/pipermail/erlang-questions/2016-October/090663.html">Here’s a fun rant by Joe Armstrong regarding the implementation and implication of Tail/Last Call Optimisation</a>. Of note is how he is careful not to say this is the same as Tail Call Optimisation, or TCO, as that typically implies a recursive call.</p>
+<h2>DIY</h2>
+<p>Languages that don’t collapse the stack or represent functions in a form that is conducive to fusion are subject to ‘blowing the stack’ (exceeding it’s maximum size) when writing a recursive function. The function may be correct, but for particular values it may grow too large and too many stack frames will be pushed onto the program’s stack.</p>
+<p>There are some <a href="http://chrispenner.ca/posts/python-tail-recursion">interesting ways to mimic TCO</a> in languages that don’t have native support for it. JavaScript does, technically, but implementation seems spotty across engines.  A clever way to mimic TCO in JavaScript is to rewrite your function to return a continuation, of sorts, and then wrapping it in another, generic, function (the trampoline) that knows about this arrangement in order to collapse the stack itself, for example:</p>
+<pre><code>let ackermannGo = (n, m) =&gt; {
+  if (m === 0) {
+    return n+1;
+  } else if (m &gt; 0 &amp;&amp; n === 0) {
+    return ackermannGo(m-1, 1);
+  } else if (m &gt; 0 &amp;&amp; n &gt; 0) {
+    return ackermannGo(m-1, ackermannGo(m, n-1));
+  } else {
+    throw new Error(`ERROR: unhandled case m: ${m} and n: ${n}`);
+  }
+};
+</code></pre>
+<p>I’ve chosen the <a href="https://en.wikipedia.org/wiki/Ackermann_function">Ackermann function</a> here as it’s a golden standard for testing recursive functionality in programming languages since its value grows rapidly even for small digits. I’m also using the convention of naming things as <code>go</code> to specify recursive helper functions with arguments we don’t care about. A common counterpart to <code>go</code> you might see (particularly popular in LISPs) is <code>do</code> .</p>
+<p>If you play around with this function you should quickly find it exceeding the allotted call stack size. Let’s fix this with a trampoline:</p>
+<pre><code>let trampoline = fn =&gt; (...args) =&gt; {
+  let rv = fn(...args);
+  while (typeof rv === 'function') {
+    rv = rv();
+  }
+  return rv;
+};
+
+ackermannGo = (n, m) =&gt; {
+  if (m === 0) {
+    return n+1;
+  } else if (m &gt; 0 &amp;&amp; n === 0) {
+    return () =&gt; ackermannGo(m-1, 1);
+  } else if (m &gt; 0 &amp;&amp; n &gt; 0) {
+    return () =&gt; ackermannGo(m-1, ackermannGo(m, n-1));
+  } else {
+    throw new Error(`urk: unhandled case m: ${m} and n: ${n}`);
+  }
+};
+</code></pre>
+<p>Note the zero-arity functions we are returning in order to signal that the return value can be applied (specifically lines 13 and 15). What kind of functions will <code>trampoline</code> fail on given it’s current implementation? When you’ve given it some thought, consider this case:</p>
+<pre><code>let higherOrderFunc = (n, acc, offset) =&gt; {
+  if (n &lt; 1) {
+    return offset =&gt; acc+offset;
+  }
+  return () =&gt; higherOrderFunc(n-1, acc+n, offset);
+}
+
+let hof = trampoline(higherOrderFunc);
+</code></pre>
+<p>Although this will terminate, it won’t give us the correct result. We want a closure in the end, but here we will wind up with <code>NaN</code> since that is the result of adding any number in JavaScript to <code>undefined</code>, and since we are calling the result value, <code>rv</code>, with no arguments, we are technically passing <code>undefined</code> to this final value.</p>
+<p>A <em>structural</em> type system is one which cares only about the form of given values, whereas a <em>nominal</em> type system cares about the <em>names</em> that values have in the system. In a language like Haskell, we’d use what’s known as a “data constructor” to declare a type. Consider:</p>
+<pre><code>data Cont a = Stop a | Cont (() -&gt; Cont a)
+</code></pre>
+<p>This says “for any given value of <code>a</code>, I can either be a <code>Stop</code> value wrapping some given value of <code>a</code>, or I can be a <code>Cont</code> wrapping a function which takes <code>unit</code> (the <code>()</code>, or, in other words, no arguments that matters) to another <code>Cont</code> value”</p>
+<p>We can, again, mimic something similar using a <code>tag</code> field on an object, a la:</p>
+<pre><code>higherOrderFunc = (n, acc, offset) =&gt; {
+  if (n &lt; 1) {
+    return {
+      tag: 'stop',
+      val: offset =&gt; acc+offset
+    };
+  }
+  return {
+    tag: 'cont',
+    val: () =&gt; higherOrderFunc(n-1, acc+n, offset)
+  };
+};
+</code></pre>
+<p>Which we can leverage in a new definition of <code>trampoline</code>:</p>
+<pre><code>trampoline = fn =&gt; (...args) =&gt; {
+  let rv = fn(...args);
+  while (rv.tag === 'cont') {
+    rv = rv.val();
+  }
+  return rv.val; // Of tag 'stop'.
+};
+</code></pre>
+<p>We only have two cases for our ‘type’, so when we no longer have a <code>cont</code> tag, we must have a <code>stop</code>, and with this we get the correct result: a function!</p>
+<h2>Conclusion</h2>
+<p>In mathematics it is just as important to reason about the types of objects we are dealing with as it is to reason about their values. The same is no different in programming. Even though you may say “I hack in a dynamically typed language, I don’t need to think about types”, the inverse is actually the truth! Hacking in a dynamically typed environment means juggling these notions around in your head rather than allowing the type checker make sense of the form of things for you.</p>
+<p><em>food for thought:</em> What we’ve done by tagging these values is upgrade a <code>union</code> type into a <code>discriminated union</code>. A <code>discriminated unions</code> is also sometimes known as a <code>sum</code> type. The power of passing around sum types is that we can reason about the cases in our code: recursion itself is similar to mathematical induction, and both are forms of breaking down data whereas their duals, co-recursion and co-induction, build up data. This is an important notion because it means that when we write things recursively in this form with inductive-like types (e.g. sums) we can ‘pattern match’ on their values and know something about each case. In the above examples we knew that <code>cont</code> always contained a function that took no arguments and returned another <code>cont</code> or <code>stop</code> tagged object. When we finally got a <code>stop</code> we knew we had our final result we could return, and since there were only two values we could be sure that those were the only two cases worth exploring (show exhaustivity checking as well as case analysis). As is common with FP, some languages give you the power of actually statically checking this; ensuring that you’ve considered all cases, whereas in others you’ll be left to discipline or libraries to replicate this, just like trampolines.</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

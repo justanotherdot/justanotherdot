@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; Move Fast and Tuck Code Into the Shadows</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h1 class="title">
+                justanotherdot &#8226;
+              </h1>
+            </a>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">Move Fast and Tuck Code Into the Shadows</h1>
+            <h2 class="subtitle is-5">on August 23 2019,  9:51PM</h2>
+            <div class="content is-medium">
+              <p>Migrations are a part of life as a dev. They help <a href="https://lethain.com/migrations/">cut down tech
+debt</a> but they can be risky. It's always less
+risky merging in <em>new</em> and <em>different</em> sets of changes rather than changing code
+in-place. This buys you time. <em>You</em> gain the control over the switch granted
+switching doesn't adversely affect some shared, mutable store of data.</p>
+<p>The <a href="http://sevangelatos.com/john-carmack-on-parallel-implementations/">parallel implementation
+approach</a> is
+brilliance incarnate; you keep a functional reference implementation and you
+copy it as your 'experimental' version whose sole aim is to eventually replace
+(and hence become) the new reference. However, Carmack hits a good point,</p>
+<blockquote>
+<p>It is often tempting to shortcut this by passing in some kind of option flag
+to existing code, rather than enabling a full parallel implementation. It is
+a grey area, but I have been tending to find the extra path complexity with
+the flag approach often leads to messing up both versions as you work, and
+you usually compromise both implementations to some degree.</p>
+</blockquote>
+<p>I am keen to start experimenting more with the Carmack approach, though. Some
+things I've already thought about:</p>
+<ul>
+<li>Having a duplicated directories messes up navigation for a lot of editors and
+is unnecessary bloat</li>
+<li><code>git flow</code> styled approaches and any vcs-based approach will never work
+because it lends into the 'change in place' idea by merging the reference with
+the experiment</li>
+</ul>
+<p>Otherwise, there are many ways to define clear boundaries between the reference
+and experimental implementation. The most popular solution out of many is
+feature flag services but I recommend switching between whole modules rather
+than having a lot of logic caked into modules to check flags. Keeping flags
+macro and mutually exclusive is important because it means changes are kept
+cohesive and conflict free. One thing people tend to forget about is the
+original feature-flag: versioning. In the end it doesn't matter which technique
+you employ so long as you can 1. <strong>toggle between changes</strong> and 2. <strong>keep
+differences clear</strong>.</p>
+<p>You can start something similar to this approach by focusing on leaving written
+code in a disconnected state but being aggressive about it finding its way to
+master. This is healthy because it will change the incumbent attitude of
+&quot;production means done&quot; to &quot;production means refinement&quot;. I like this approach
+and do it as often as I can remember to because it means PRs are kept small
+(great for code review) and when I finally do want to rig everything up I can
+focus squarely on the plumbing, rather than juggling the correctness of the core
+implementation <em>and</em> the coupling to the rest of the system.</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

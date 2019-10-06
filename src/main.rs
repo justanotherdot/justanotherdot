@@ -52,6 +52,7 @@ struct Post {
 #[derive(Content, Clone, Debug)]
 struct Tag {
     url: String,
+    snake_url: String,
     tag: String,
     posts: Vec<Post>,
 }
@@ -118,7 +119,8 @@ where
         Some(tags) => tags
             .into_iter()
             .map(|tag| Tag {
-                url: format!("/tags/{}.html", WHITESPACE_RE.replace_all(&tag, r"_")),
+                url: format!("/tags/{}.html", WHITESPACE_RE.replace_all(&tag, r"-")),
+                snake_url: format!("/tags/{}.html", WHITESPACE_RE.replace_all(&tag, r"_")),
                 tag: tag,
                 posts: vec![],
             })
@@ -221,7 +223,12 @@ fn main() {
         let rendered = render_post(&post, &tpl);
         std::fs::write(
             format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, &post.url),
-            rendered,
+            &rendered,
+        )
+        .expect("failed to write post to deploy");
+        std::fs::write(
+            format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, &post.snake_url),
+            &rendered,
         )
         .expect("failed to write post to deploy");
     });
@@ -277,7 +284,12 @@ fn main() {
         let rendered = render_tag(&tag, &tpl);
         std::fs::write(
             format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, tag.url),
-            rendered,
+            &rendered,
+        )
+        .expect("failed to write post to deploy");
+        std::fs::write(
+            format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, tag.snake_url),
+            &rendered,
         )
         .expect("failed to write post to deploy");
     }

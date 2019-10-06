@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; Errors Across a Boundary</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h1 class="title">
+                justanotherdot &#8226;
+              </h1>
+            </a>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">Errors Across a Boundary</h1>
+            <h2 class="subtitle is-5">on September 27 2019,  9:10PM</h2>
+            <div class="content is-medium">
+              <p>There is a line across our systems we shall call the boundary. On one end of the
+boundary are the consumers and on the other side are the providers. This
+boundary is what we are accustomed to calling an interface. Interfaces are the
+embodiment of the dance needed to cross the boundary. The interface may have
+adapters on either side whose purpose is to munge details of the internals into
+this known language of communication. This way internals can continue working
+without the fuss of the protocol driving their decisions.</p>
+<p>Things go wrong. But when they do developers tend to clump everything up as a
+single form of error. Errors are about reporting mistakes or complications. A
+better name compiler writers have been using for years is 'diagnostics'; they
+should help diagnose a particular problem by being part of the symptoms an
+ill-behaving service might demonstrate. <strong>As such, when an infraction occurs you
+want to know who is the offending party. <em>Are we holding it wrong or are you?</em></strong></p>
+<p>Borders on your errors make clarify what the fix is by knowing who should be
+performing the correction. This might mean the speech of diagnostics changes. A
+person hacking on some code is much more accustomed to cryptic messages from a
+compiler than an average person using a web interface to access their bank who
+doesn't understand how any of this is rigged up.</p>
+<p>Clearly delineate your errors and you'll know better if something is a mistake
+or a matter of environment, if it is something a maintainer needs to worry about
+or a blunder from usage. There are many styles to error handling but this
+approach does not impact which style you end up using. You can use this whether
+it is error codes, exceptions, or values. This is a matter of organisation.</p>
+<p>Systems architecture itself can largely be seen as a form of organisation.
+Conceptual partitions, domain concerns, and our pursuit for pieces that compose
+drive this organisation. Independent the layer of granularity the focus on
+organisatoin is always the same. <strong>When things go wrong, tell everyone which
+side of the fence the mistake or complication came from.</strong></p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; Fool's Gold: Code Coverage</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h1 class="title">
+                justanotherdot &#8226;
+              </h1>
+            </a>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">Fool's Gold: Code Coverage</h1>
+            <h2 class="subtitle is-5">on October  2 2019,  6:41AM</h2>
+            <div class="content is-medium">
+              <p>If you are unfamiliar with code coverage, the idea is simple: you write
+accompanying tests to code and a code coverage tool produces reports of lines
+covered by tests and the percentage of that coverage to all lines of code. The
+hope is that a higher coverage with tests means you'll have a 'correct' system.
+I have even heard of some establishments initiating quotas on required coverage
+per lines of new code being introduced. &quot;If it doesn't have tests it doesn't
+exist&quot; is the usual argument for this requirement; code without tests is
+potentially problematic code, but tests are also <em>untested chunks of code</em> in
+our codebase. For example, consider this bit of React code:</p>
+<pre><code>test('Breadcrumb renders', () =&gt; {
+  expect(() =&gt; {
+    &lt;Breadcrumb/&gt;
+  }).not.toThrow();
+});
+</code></pre>
+<p>What is this testing exactly? Literally any other test, even one without the
+<code>toThrow</code> expectation, would mark this as a failure on an exception being
+thrown. This will light up code coverage though. People learn to cheat the
+system, or please the percentage going up, and focus less on the guarantees that
+tests are providing them. <strong>This does not help us deliver better products to end
+users.</strong></p>
+<p><a href="https://twitter.com/KentBeck/status/812703192437981184">Code coverage percentage is a useless
+metric</a>. There is no way
+to know what percentage of code written is code your end users actually care
+about when that percentage is derived from synthetic traffic. You may write a
+continent of code, but only a thousandth of that code may actually be hit by
+users. If you are using code coverage to tell you that you have greater than
+zero percent code coverage than you have a code organization issue or there is
+the possibility that many or all of your tests are false positives.</p>
+<p>Here's a different approach: instrument your application to track invocations of
+code paths. You can do with this tracing, structured logging, profiling replayed
+traffic, etc. The technique employed doesn't matter but what does is determining
+what is valuable and what is dead. Regardless of collecting metrics, you will
+always need to consider this <a href="https://kentcdodds.com/blog/how-to-know-what-to-test">from a human
+perspective</a>.</p>
+<p>Detractors may argue that code that doesn't immediately show usage should not be
+hastily deleted. They are partly right. If things are early on at your company,
+doing eyeball statistics may be fair but eyeball statistics is not real
+statistics. Practicing some basic statistical understanding is always in order
+for any kind of analysis. It may take time to reach a statistically significant
+result and whether one is reached should, more often than not, drive your
+decisions. As noted we need to exercise judgement despite what the numbers may
+tell us. Perhaps the piece of code in question is a critical piece of error
+handling that is rarely executed, for example, or maybe the code is serving a
+particularly infrequent, but high-paying, user base.</p>
+<p>I'd like to stress that I am <strong>not</strong> saying that testing is a pointless errand.
+What I am saying is that <strong>code coverage is fool's gold</strong>. Tests take more
+effort to create because developers must check that a test is actually testing
+what you think it's testing. <a href="https://stackoverflow.com/questions/153234/how-deep-are-your-unit-tests/153565#153565">Testing is a part of one's confidence
+level</a>
+in what they ship, and when we assert important properties of a system are
+upheld you boost that confidence level. <strong>Don't buy into the idea that coverage
+is going to lead to a correct system by default.</strong> Be vigilant with you tests
+and instrument your application.</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
