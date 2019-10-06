@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; How I Git</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h1 class="title">
+                justanotherdot &#8226;
+              </h1>
+            </a>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">How I Git</h1>
+            <h2 class="subtitle is-5">on October  7 2019,  8:02PM</h2>
+            <div class="content is-medium">
+              <p>I thought it might be worth having a look at two things <code>git</code> allows I've abused
+to remove some warts and toil from my day-to-day flow.</p>
+<p>One thing <code>git</code> does is alias support. Anything under the <code>[alias]</code> key in ones
+<code>$HOME/.gitconfig</code> is treated as a valid subcommand. This is fine for quick
+things, like <code>r</code> as <code>rebase</code> or <code>a</code> for <code>add</code>, but you can also alias one-line
+scripts, for example, here's a snippet from my <code>.gitconfig</code>.</p>
+<pre><code>  it = &quot;!f() { git fp &amp;&amp; git r origin/master; }; f&quot;
+</code></pre>
+<p>This demonstrates defining an ad hoc shell function named <code>f</code> and calling it
+immediately. What's notable about this is that it is <em>also</em> calling a <code>git</code>
+alias. <code>git fp</code> in this case is an alias for <code>git fetch --prune</code> and <code>r</code> we've
+already mentioned is <code>rebase</code>, so this, verbosely, is,</p>
+<pre><code>$ git fetch --prune &amp;&amp; git rebase origin/master
+</code></pre>
+<p>Another thing <code>git</code> let's you do is invoke arbitrary scripts that are named in
+the format <code>git-name</code>. If the script is on the path, you can call <code>git name</code> and
+the script, <code>git-name</code>, will run. My old process for pushing to a branch I had
+authored was a bit verbose,</p>
+<pre><code># on first push
+$ git push -u origin/master current-branch
+
+# afterwards ...
+$ git fetch --prune
+
+# and, after hacking, changes both behind + ahead on branch (rewritten history)
+$ git push --force-with-lease
+
+# or, if simply, without any `--force*` flag
+$ git push
+</code></pre>
+<p>I wrote a script that does all of this, automatically, called
+<a href="https://github.com/justanotherdot/gits/blob/master/scripts/git-p"><code>git-p</code></a>,
+which lets me call <code>git p</code>. It's doesn't work for all corner cases, and could be
+extended to, but this fits ninety-nine percent of my use case. This worked well
+for awhile, but I needed to build on it. I eventually wrote an alias called <code>git up</code>,</p>
+<pre><code>  up = &quot;!f() { git it &amp;&amp; git p; }; f&quot;
+</code></pre>
+<p>The point of <code>up</code> is to ensure my changes are always rebased on master before I
+push. This is pretty handy but I've recently added yet another alias called
+<code>raise</code> (also aliased as <code>pr</code>),</p>
+<pre><code>  raise = &quot;!f() { git up 2&gt;&amp;1 | awk '/http/ { print $2 }' | xargs open; }; f&quot;
+</code></pre>
+<p>This scrapes out the remote output with the PR creation link that GitHub
+provides after a branch is first pushed to the remote repository and funnels it
+into <code>open</code>. MacOS X has <code>open</code> as the default way to open mime-type related
+files to respective 'default' applications. On linux, where I use the gnome
+windows manager, I have the shell alias,</p>
+<pre><code>$ which open
+open: aliased to xdg-open
+</code></pre>
+<p>to try to bridge the gap, which just goes to show aliases and scripts that use
+this same format can be really handy for hiding away toil! I don't know if it's
+ideal for all CLI tooling but I think this approach is certainly an interesting
+approach to let people slip in their own functionality and 'rewire' an interface
+to better suit their needs.</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
