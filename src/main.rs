@@ -22,6 +22,7 @@ const JUSTANOTHERDOT_TEMPLATE_ROOT: &'static str = "site";
 
 lazy_static! {
     static ref WHITESPACE_RE: Regex = Regex::new(r"\s+").unwrap();
+    static ref UNDERSCORE_RE: Regex = Regex::new(r"_+").unwrap();
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -39,10 +40,12 @@ struct Post {
     date: String,
     date_rfc822: String,
     date_iso8601: String,
+    date_rfc3339: String,
     date_month_day_year: String,
     #[md]
     content: String,
     url: String,
+    snake_url: String,
     domain: String,
     tags: Vec<Tag>,
 }
@@ -50,6 +53,7 @@ struct Post {
 #[derive(Content, Clone, Debug)]
 struct Tag {
     url: String,
+    snake_url: String,
     tag: String,
     posts: Vec<Post>,
 }
@@ -58,6 +62,11 @@ struct Tag {
 struct Rss {
     url: String,
     domain: String,
+    posts: Vec<Post>,
+}
+
+#[derive(Content, Clone, Debug)]
+struct Sitemap {
     posts: Vec<Post>,
 }
 
@@ -94,6 +103,7 @@ struct Subscribe;
 struct PostTemplate<'a>(Template<'a>);
 struct IndexTemplate<'a>(Template<'a>);
 struct RssTemplate<'a>(Template<'a>);
+struct SitemapTemplate<'a>(Template<'a>);
 struct TagsTemplate<'a>(Template<'a>);
 struct SubscribeTemplate<'a>(Template<'a>);
 
@@ -116,7 +126,8 @@ where
         Some(tags) => tags
             .into_iter()
             .map(|tag| Tag {
-                url: format!("/tags/{}.html", WHITESPACE_RE.replace_all(&tag, r"_")),
+                url: format!("/tags/{}.html", WHITESPACE_RE.replace_all(&tag, r"-")),
+                snake_url: format!("/tags/{}.html", WHITESPACE_RE.replace_all(&tag, r"_")),
                 tag: tag,
                 posts: vec![],
             })
@@ -128,6 +139,8 @@ where
     let date = date_shifted.format("%B %e %Y, %_I:%M%p").to_string();
     let date_month_day_year = date_shifted.format("%D").to_string();
     let date_rfc822 = date_shifted.format("%a, %d %b %Y %T %z").to_string();
+    let date_rfc3339 = &date_iso8601.to_rfc3339();
+    let date_rfc3339 = date_rfc3339.to_string();
     let date_iso8601 = date_iso8601.to_string();
 
     let url = path
@@ -137,6 +150,7 @@ where
         .unwrap()
         .replace(".md", ".html")
         .to_lowercase();
+    let snake_url = format!("/posts/{}", UNDERSCORE_RE.replace_all(&url, r"-"));
     let url = format!("/posts/{}", url);
 
     Post {
@@ -145,8 +159,10 @@ where
         date,
         date_rfc822,
         date_iso8601,
+        date_rfc3339,
         date_month_day_year,
         url,
+        snake_url,
         domain: JUSTANOTHERDOT_DOMAIN.to_string(),
         content: markdown.to_string(),
         tags: tags.clone(),
@@ -162,6 +178,10 @@ fn render_tag(tags: &Tag, tpl: &TagsTemplate) -> String {
 }
 
 fn render_rss(rss: &Rss, tpl: &RssTemplate) -> String {
+    tpl.0.render(rss)
+}
+
+fn render_sitemap(rss: &Sitemap, tpl: &SitemapTemplate) -> String {
     tpl.0.render(rss)
 }
 
@@ -217,7 +237,12 @@ fn main() {
         let rendered = render_post(&post, &tpl);
         std::fs::write(
             format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, &post.url),
-            rendered,
+            &rendered,
+        )
+        .expect("failed to write post to deploy");
+        std::fs::write(
+            format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, &post.snake_url),
+            &rendered,
         )
         .expect("failed to write post to deploy");
     });
@@ -273,7 +298,12 @@ fn main() {
         let rendered = render_tag(&tag, &tpl);
         std::fs::write(
             format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, tag.url),
-            rendered,
+            &rendered,
+        )
+        .expect("failed to write post to deploy");
+        std::fs::write(
+            format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, tag.snake_url),
+            &rendered,
         )
         .expect("failed to write post to deploy");
     }
@@ -288,6 +318,18 @@ fn main() {
     let rendered = render_rss(&rss, &tpl);
     std::fs::write(
         &format!("{}/rss.xml", JUSTANOTHERDOT_DEPLOY_PREFIX),
+        rendered,
+    )
+    .expect("failed to write post to deploy");
+
+    let tpl = format!("{}/templates/sitemap.xml", JUSTANOTHERDOT_TEMPLATE_ROOT);
+    let tpl = SitemapTemplate(template(&tpl));
+    let sitemap = Sitemap {
+        posts: posts.clone(),
+    };
+    let rendered = render_sitemap(&sitemap, &tpl);
+    std::fs::write(
+        &format!("{}/sitemap.xml", JUSTANOTHERDOT_DEPLOY_PREFIX),
         rendered,
     )
     .expect("failed to write post to deploy");

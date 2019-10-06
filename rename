@@ -1,0 +1,6 @@
+#!/bin/sh -eu
+
+for post in site/posts/*; do
+  renamed_post=$(echo "$post" | tr '_' '-')
+  mv "$post" "$renamed_post" || true
+done
