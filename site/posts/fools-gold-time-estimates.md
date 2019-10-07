@@ -1,7 +1,7 @@
 ---
 title: "Fool's Gold: Time Estimates"
 author: Ryan James Spencer
-date: 2019-10-13T08:43:05.440970890+00:00
+date: 2019-10-15T09:02:35.229078718+00:00
 tags: [fools gold, back of the envelope]
 ---
 
