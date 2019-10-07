@@ -5,10 +5,10 @@ date: 2019-10-15T09:02:35.229078718+00:00
 tags: [fools gold, back of the envelope]
 ---
 
-It would be fantastic if we could know the future. With that knowledge we could
-plan with the utmost precision. But we are not clairvoyant. We actively exercise
-a process of guesses we dress up in the fancier name of "estimates". Enrico
-Fermi would feel these guesses are fine so long as you are [within an order of
+It would be fantastic if we knew the future. With that knowledge we could plan
+with the utmost precision. But we are not clairvoyant. We actively exercise a
+process of guesses we dress up in the fancier name of "estimates". Enrico Fermi
+would feel these guesses are fine so long as you are [within an order of
 magnitude](https://en.wikipedia.org/wiki/Back-of-the-envelope_calculation). This
 form of educated guess is also known as a "back of the envelope" calculation and
 most random guesses are not doing anything near this [level of
