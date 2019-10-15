@@ -70,12 +70,17 @@ absolute certainty. A range of probabilities discusses the full spectrum of what
 might be feasible. It is better to know you think a project might take only a
 months work of time all the way up to six months than it is to merely work under
 the assumption that the single month would do.</p>
-<p><strong>Try breaking down your work into chunks and estimate those parts.</strong> The sum of
-those parts still won't be eagle-eye accurate but it will be closer than if you
-tried to take a guess without the decomposition at play. Back of the envelope
-calculations work a lot like this; the more accurate each constituent part is
-the more accurate the overall estimate becomes. We've discussed high-level
-concerns but this works equally well for
+<p><strong>Make back of the envelope calculations by decomposing problems into
+constituent parts.</strong>. The refinement of the accuracy of these parts refines the
+overall estimation. This isn't to say breaking down a random guess into several
+random guesses will improve accuracy. In fact, with the random-guessing approach
+you will probably be reluctant to go below a certain lower-bound, which means
+that a decomposed guess might far exceed the original guess. Back of the
+envelope calculations try to tie you to real facts, although possibly
+simplified, without believing the hype that you can estimate down to the minute
+based on prior similar scenarios (see above). Machine learning won't save you.
+The great thing about back of the envelope calculations is that they work
+equally well for both high- and
 <a href="http://highscalability.com/blog/2011/1/26/google-pro-tip-use-back-of-the-envelope-calculations-to-choo.html">low-level</a>
 concerns.</p>
 <p><strong>Pretending estimates given on work are guarantees is fool's gold.</strong> Push back
