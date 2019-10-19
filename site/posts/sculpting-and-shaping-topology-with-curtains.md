@@ -1,7 +1,7 @@
 ---
 title: Sculpting and Shaping Topology With Curtains
 author: Ryan James Spencer
-date:
+date: 2019-10-19T11:29:55.346897423+00:00
 tags: [principle, pattern]
 ---
 

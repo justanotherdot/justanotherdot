@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; Sculpting and Shaping Topology With Curtains</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h1 class="title">
+                justanotherdot &#8226;
+              </h1>
+            </a>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">Sculpting and Shaping Topology With Curtains</h1>
+            <h2 class="subtitle is-5">on October 19 2019,  9:29PM</h2>
+            <div class="content is-medium">
+              <p>Once upon a time I studied photography. It was there that the importance of
+separation between tones in an image, of shade or color, was hammered into me.
+If the separation in my image wasn't right I'd have to redo all my work in order
+to get a grade. <a href="https://en.wikipedia.org/wiki/Gestalt_psychology">Separation is how we define our mental map of the
+world.</a> I'll call anything
+that is distinct from other things an 'entity'.</p>
+<p>Entities have edges. They may have flows of communication out and into these
+edges. Edges may be incidental, e.g. defined by others or from natural
+consequences, and they may be intentional, i.e. the result of deliberate
+planning and execution. Entities have non-zero surface area, otherwise they
+wouldn't exist. Notice how I use the idea of surface area rather than visiblity:
+glass has a surface area despite not being able to see it directly (bar
+reflections).</p>
+<p>Incidental edges can become intentional edges if we have control or influence
+over the topology of the ecosystem in question. Part of planning how edges are
+defined, transforming incidental to intentional or from nothing, is
+organization; the big strokes. I will call this process 'clarification'.</p>
+<p>Clarifying (edges) means simpler mental maps. Simpler mental maps means easier
+to reason about systems and programs. Simpler systems and programs means
+increased velocity for progress and experimentation.</p>
+<p>Examples of clarifications:</p>
+<ol>
+<li>
+<p>Serialization to the wire (network) goes in its own module. The rule is that
+it is only used in the interface layer of your service.</p>
+</li>
+<li>
+<p>Serialization to disk goes in <em>its</em> own module and is used only for writing
+out to disk, not for the wire!</p>
+</li>
+<li>
+<p>The interface layer is distinct from the core of the application. A CLI tool
+has a <code>main</code> module that is its entrypoint, but the core of the program lives
+in a <code>core</code> module outside of that space.</p>
+</li>
+<li>
+<p>Per (3) above, we may worry that interface layers may be too intertwined with
+core internals, so we have a munging layer (some call this an adapter) that
+transforms data to the shape you so desire. This is bidirectional; it's
+equally fair to have the adapting layer work on outbound and inbound
+interfaces.</p>
+</li>
+</ol>
+<p>It is fine to accept some mess early on in a project. In fact, some projects are
+like <a href="https://en.wikipedia.org/wiki/Simulated_annealing">simulated annealing</a>:
+early on we take many risks but with time we slow down, the risks decrease, the
+stability intensifies. We are (hopefully) more likely to be in an ideal place.</p>
+<p>There is the general thought that programming in a professional context, or even
+in a personal context if one is so inclined, <em>has</em> to be related to this
+balancing act of progress (by accepting breakage) to stability (by leaving
+things alone). <a href="https://www.justanotherdot.com/posts/may-you-be-the-author-of-two-to-the-n-programs.html">I've talked a bit before about how vital constant
+experimentation
+is</a>,
+but this balancing act is not the only way to go about things.</p>
+<p>It is entirely possible to make progress but retain stability.</p>
+<p>Although it may seem strange for me to use the term <em>artificial</em> when all the
+boundaries discussed here so far seem planned by ourselves or by others, I use
+the term to denote delineations we establish to avoid working in <em>slices</em>. A
+sliced approach to development means we attempt to get all working
+functionality, from front to back, one slice at a time. In the following
+diagram, the red boxes are slices of features whereas non-sliced functionality
+is stable:</p>
+<p><img src="assets/images/sliced-development-example.png" alt="a diagram depicting 'sliced' development" title="An example of
+'sliced' development" /></p>
+<p>Alternatively, one can setup an artificial curtain to retain stability in all
+edges exterior to it. Setting up a curtain can be done with <a href="https://www.justanotherdot.com/posts/move-fast-and-tuck-code-into-the-shadows.html">feature-flags,
+parallel
+implementations</a>
+or even creating new surfaces where interaction will be performed and doing a
+migration to retain stability. Per the example above it might look like this:</p>
+<p><img src="assets/images/curtained-development-example.png" alt="a diagram depicting 'curtained' development" title="An example of
+'curtained' development" /></p>
+<p>There is always an implicit countdown when you keep things stable but don't make
+progress. &quot;Where is the business value they are adding?&quot; squawks the manager. If
+you are making a lot of progress but breaking things the countdown timer is time
+to completion but in the face of churn, top-down pressure, peer-pressure, and so
+on.</p>
+<p>If you code in this manner it buys you a lot of breathing room. <strong>Breathing room
+gives you space to think. Space to think means you can buy yourself breathing
+room. This helps build healthy systems with reduced complexity, without having
+to sacrifice progress.</strong></p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
