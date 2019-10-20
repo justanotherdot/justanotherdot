@@ -58,13 +58,11 @@ working functionality, from front to back, one slice at a time. In the following
 diagram the red boxes are slices of features whereas non-sliced functionality is
 stable:
 
-<figure class="image is-1by2">
+<figure>
   <img
     src="/assets/images/sliced-development-example.png"
     alt="a diagram depicting 'sliced' development"
     title="An example of 'sliced' development">
-    width="242"
-    height="530"
   </img>
 </figure>
 
@@ -78,9 +76,13 @@ after the fact when everything seems settled. As long as the "exterior" to the
 curtain go on its life as if nothing is wrong, a curtain serves its purpose. Per
 the example above it might look like this:
 
-![a diagram depicting 'curtained'
-development](/assets/images/curtained-development-example.png "An example of
-'curtained' development")
+<figure>
+  <img
+    src="/assets/images/curtained-development-example.png"
+    alt="a diagram depicting 'curtained' development"
+    title="An example of 'curtained' development"
+  </img>
+</figure>
 
 In this diagram, you could be setting up the curtain to keep the core of the
 application stable or the client and interfaces the client talks to stable. A
