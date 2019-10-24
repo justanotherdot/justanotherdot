@@ -10,6 +10,52 @@
     <language>en-us</language>
     
     <item>
+      <title>Making Plants Thrive</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/making-plants-thrive.html</link>
+      <guid>https://justanotherdot.com/posts/making-plants-thrive.html</guid>
+      <pubDate>Wed, 23 Oct 2019 19:38:18 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>It's often lamented that software projects become dead plants in an unloved
+garden: we excitedly keep buying new plants but we don't put in the time to see
+them thrive.</p>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Anyone else&#39;s GitHub account literally just a graveyard of good intentions? 🙎‍♀️🙋‍♀️</p>&mdash; CaroOooOoOolyn 👻 (@carolstran) <a href="https://twitter.com/carolstran/status/1184938790533681152?ref_src=twsrc%5Etfw">October 17, 2019</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>The appeal of building something new, playing with some fancy dependency or
+tool, trying out some new process; if only we could resist the temptation. But
+we shouldn't resist the temptation because this is the sign of healthy
+experimentation! <strong>It's far better to experiment in your spare time than to use
+your career as an excuse to try out the next shiny thing.</strong></p>
+<p>I'm a huge fan of &quot;laboratories&quot; where questions you have regarding code are
+answered by creating code and committing them to a central repository. Making
+them multi-language helps by reducing friction for testing things out. A
+graveyard of good intentions becomes a collection of prior discoveries.</p>
+<p>This doesn't change the fact that we feel guilty that we can't keep the plant
+alive. It takes a little discipline, and maybe for some, a bit of prior
+knowledge, but it's not too hard to get things into place. In the same way we
+reduced friction by making a project multi-language, introducing automation to
+reduce toil is the best way for us to combat bitrot; if we can come back to
+projects knowing full-well they build, we are much more willing to continue to
+&quot;water the plants&quot;. Making a project thrive comes in a few major parts:</p>
+<ol>
+<li>Testing and building the code before it reaches trunk/master</li>
+<li>Artifacts (library/binary) are created and published</li>
+<li>Said artifacts may be deployed to a server to run</li>
+</ol>
+<p>Many other automations can be done too: linting, dependency updates, scheduled
+builds, et. al. Scheduled builds are cool (and underrated) because they
+continuously show projects are building and tests are passing. You now have
+extra capacity from all the built artifacts to handle services going down or
+security updates having been released. <strong>If you automate away the toil, you can
+treat a project less as a chore (by focusing less on the accidental complexity)
+and more as a labor of love (by focusing on the inherent complexity of the
+problem you are trying to solve).</strong></p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Dumping Grounds for Good and Bad</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/dumping-grounds-for-good-and-bad.html</link>
