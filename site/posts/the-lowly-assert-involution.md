@@ -13,7 +13,7 @@ should continue, to behave.
 
 Occasionally you'll write functions that flip-flop: when you call the function
 multiple times in a row, chunks seem to cancel out. Mathematics calls these
-functions ["involutive"](https://en.wikipedia.org/wiki/Involution_(mathematics).
+functions ["involutive"]("https://en.wikipedia.org/wiki/Involution_(mathematics)").
 Negating a number or a boolean twice gets you back to the original value.
 Involution is handy to recognize because it's a simple assertion:
 
