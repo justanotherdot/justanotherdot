@@ -10,6 +10,49 @@
     <language>en-us</language>
     
     <item>
+      <title>The Lowly Assert: Involution</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/the-lowly-assert-involution.html</link>
+      <guid>https://justanotherdot.com/posts/the-lowly-assert-involution.html</guid>
+      <pubDate>Tue, 29 Oct 2019 05:43:10 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>As part of <a href="https://www.justanotherdot.com/posts/the-lowly-assert.html">The Lowly
+Assert</a> series I
+wanted to go over some mathematical patterns. Filling your arsenal of known
+properties helps with recognizing common ways functions, systems, etc. are, and
+should continue, to behave.</p>
+<p>Occasionally you'll write functions that flip-flop: when you call the function
+multiple times in a row, chunks seem to cancel out. Mathematics calls these
+functions [&quot;involutive&quot;](https://en.wikipedia.org/wiki/Involution_(mathematics).
+Negating a number or a boolean twice gets you back to the original value.
+Involution is handy to recognize because it's a simple assertion:</p>
+<pre><code>x == f(f(x))
+</code></pre>
+<p>The classic property based testing example of this is the
+<code>reverse(reverse(some_list))</code> you'll see in endless tutorials and getting
+started guides on the subject. When you reverse a list you expect to simply flip
+the contents one end to the other, but this may not be immediately applicable to
+day-to-day affairs. Here's one: a function that opens a dialogue box has two
+states, open and closed, and is commonly tested for involutivity; if you didn't
+have the toggling action you'd see no feedback after clicking!</p>
+<p>But involution doesn't have to be about functions applied exactly twice.
+Rotating around a point back to an original direction can be done with various
+divisions: two rotations of pi, four rotations of pi/2, and so on. Precisely,
+involution requires that the application be a single function, but we can
+sometimes be a bit less rigorous and claim that two or more actions that
+eventually cancel out are involutive: removing and adding an item in a
+collection or returning someone's money in an exchange.</p>
+<p>With this we can hopefully see the application isn't on any end of the scale:
+from small to big, XORing bits to whole product flows that might 'restart' the
+user in a funnel. Properties like these are worth their weight in gold because
+they are useful in almost any type of testing and are definitely a shining
+example of The Lowly Assert.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Making Plants Thrive</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/making-plants-thrive.html</link>
@@ -40,7 +83,7 @@ projects knowing full-well they build, we are much more willing to continue to
 &quot;water the plants&quot;. Making a project thrive comes in a few major parts:</p>
 <ol>
 <li>Testing and building the code before it reaches trunk/master</li>
-<li>Artifacts (library/binary) are created and published</li>
+<li>Artifacts (library, binary, etc.) are created and published</li>
 <li>Said artifacts may be deployed to a server to run</li>
 </ol>
 <p>Many other automations can be done too: linting, dependency updates, scheduled
