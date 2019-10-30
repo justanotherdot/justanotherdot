@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; The Lowly Assert: Idempotence</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h1 class="title">
+                justanotherdot &#8226;
+              </h1>
+            </a>
+            <h1 class="subtitle">
+              Ryan James Spencer
+            </h1>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">The Lowly Assert: Idempotence</h1>
+            <h2 class="subtitle is-5">on October 30 2019,  8:28PM</h2>
+            <div class="content is-medium">
+              <p>Charging someone twice is bad for business; it burns trust with customers and it
+involves a lot of unnecessary churn. Payment providers go to <a href="https://stripe.com/au/blog/idempotency">great
+efforts</a> to support <em>idempotent</em>
+endpoints. When you do something more than a given number of times, and every
+time after that, things don't change. In the case of a payment it would be once
+and only once, no matter how many times the request was submitted after that.</p>
+<p>An
+<a href="https://www.justanotherdot.com/posts/the-lowly-assert-involution.html">involutive</a>
+function is idempotent modulo a <em>certain</em> number of applications. Involutive:
+Driving a car around a square block means after four turns you're back on the
+same corner you began on. Idempotent: A volume knob that reaches maximum volume
+but still keeps turning. The assertion of idempotence looks suspiciously like
+involution, but the concepts aren't quite the same:</p>
+<pre><code>-- Involutive
+
+f(x)       != x
+f(f(x))    == x
+f(f(f(x))) != x
+
+-- Idempotent
+
+g(x)       == x
+g(g(x))    == x
+g(g(g(x))) == x
+</code></pre>
+<p>If the function <code>f</code> was a one-hundred and eighty degree turn around a point then
+the next part of the series would be another equality and would alternate back
+and forth for every other function application. In the case of <code>g</code>, we do
+something once, twice, or n-many times and nothing seems to change. Per the
+volume example, there might be <em>some</em> changes initially, but <code>g</code> becomes
+idempotent at or after a particular value.</p>
+<p><a href="https://en.wikipedia.org/wiki/Idempotence">Idempotence</a> can relate to values,
+but it can also relate to side effects, such as the payment example we've given
+above. A &quot;thunk&quot; is a function that performs a calculation once and then stores
+(&quot;memoizes&quot;) that result to return on all future calls: in this case a thunk is
+idempotent in its computation: it's lazy <em>and</em> cached.</p>
+<p>Things don't always <em>need</em> to be idempotent but can be chosen to be idempotent
+for stylistic reasons. One API may force users to use explicit <code>insert</code> and
+<code>update</code> calls, managing the housekeeping of keys itself, whereas a different,
+but equally effective, API could allow a single endpoint that &quot;saves&quot; the
+provided data, inserting at first, overwriting when the data is different, and
+idempotent when the data is the same, forcing the tracking of keys on the
+client. Both of these are valid options but have different trade offs for
+particular applications!</p>
+<p>When you think of idempotence, think about the mental model of things &quot;clamping&quot;
+into place for a particular subset, or all, of our domain (inputs). And while
+you're at it, make sure no one ever gets charged again for smashing the refresh
+button for a slowly loading payment submission page!</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
