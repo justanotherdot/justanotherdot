@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="HandheldFriendly" content="True" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="author" content="Ryan James Spencer" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; The Lowly Assert: Roundtrips</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h2 class="title">
+                justanotherdot &#8226;
+              </h2>
+            </a>
+            <h2 class="subtitle">
+              Ryan James Spencer
+            </h2>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">The Lowly Assert: Roundtrips</h1>
+            <h2 class="subtitle is-5">on November  2 2019,  8:37PM</h2>
+            <div class="content is-medium">
+              <p>Data &quot;roundtrips&quot; when it goes from one value, to another, and back to the same
+value without any data loss, gain, or corruption. If you write code, you have
+probably roundtripped JSON, YAML, TOML, or some other serialization format in
+your time. You have also probably written versions of functions that do a
+similar 'cycle' of some data. Any time you care about data being the same after
+it's gone through the ringer, you want to write a roundtrip test.</p>
+<p>Pretend we have a system where data comes in as JSON. We slurp up that JSON into
+a type using <code>serde</code> (rust's idiomatic, type-driven serialization +
+deserialization library). That data might later go onto being a type unrelated
+to JSON, so we might write some <code>From</code> instances. This will be our adaptive
+layer so we can keep the shape of the JSON and our core types distinct. I
+mention this approach briefly in my post <a href="https://www.justanotherdot.com/posts/safely-shape-code-with-curtains.html">&quot;Safely Shape Code with
+Curtains&quot;</a>.
+The <code>From</code> instance would normally be trivial, but we don't want the JSON layer
+and the core types to look the same, do we? That would make the point of the
+JSON types moot:</p>
+<pre><code>struct JsonType {
+  names: Option&lt;Vec&lt;String&gt;&gt;,
+  ids: Vec&lt;i64&gt;,
+}
+
+struct CoreType {
+  names: Vec&lt;String&gt;,
+  ids: Vec&lt;i64&gt;,
+}
+
+impl From&lt;JsonType&gt; for CoreType {
+  fn from(x: JsonType) -&gt; Self {
+    Self {
+      names: x.names.unwrap_or(vec![]),
+      ids: x.ids,
+    }
+  }
+}
+
+impl From&lt;CoreType&gt; for JsonType {
+  fn from(x: CoreType) -&gt; Self {
+    Self {
+      names: Some(x.unwrap())
+      ids: x.ids,
+    }
+  }
+}
+</code></pre>
+<p>We could test each direction in isolation, but that would mask the actual
+mistake here. Can you spot it? The roundtrip test in a property based testing
+context would find the failure quite quickly. I'll do it by hand here to
+demonstrate the mistake:</p>
+<pre><code>let beg = JsonType {
+  names: None,
+  ids: vec![1,2,3],
+};
+let roundtrip_fwd: CoreType = expected.into();
+let end: JsonType = roundtrip_fwd.into();
+assert_eq!(beg, end);
+</code></pre>
+<p>When the data comes back to the JSON layer, unless we tell <code>serde</code> that empty
+vectors are always <code>None</code>s for this field, we've now lost information. Clients
+might care a lot that their POST of some JSON for creating an entity in this
+make-believe system is non-symmetric. Developers might be going between the core
+and the JSON types regularly, and they may even be using the JSON types to write
+to disk, too, which would mean what was passed up from the client is now not the
+same as what is stored.</p>
+<p>We can extrapolate this sort of information loss or corruption to other
+conversions. If you author an automatic code formatter, say <code>prettier</code>, <code>gofmt</code>,
+<code>mix fmt</code>, <code>rustfmt</code>, and so on, you'd want to make sure that any time you save
+a file and the formatter runs that your code is still the same code,
+semantically, as it was before saving the file. Although things might possibly
+look the same by eye, it could be another program entirely when run.</p>
+<h3>Food for thought</h3>
+<p>A quick refresher on functions.</p>
+<ul>
+<li>Functions can be seen as <strong>mappings</strong> from one type of value to another</li>
+<li>All possible values that can go into our mapping are known as the <strong>domain</strong> of
+a function</li>
+<li>The set of all possible values our mapping can produce is called the <strong>codomain</strong></li>
+<li>The set of all values the mapping realistically produces is called the
+<strong>range</strong> or <strong>image</strong></li>
+</ul>
+<p>Ok, onto the concepts with fancy names:</p>
+<ul>
+<li>
+<p>An <strong>injective</strong> mapping is when a mapping goes from values in the domain to
+<em>unique</em> values in the codomain.</p>
+</li>
+<li>
+<p>A <strong>surjective</strong> mapping is when a mapping goes from values in the domain to
+<em>every</em> value in the codomain, even if some mappings overlap.</p>
+</li>
+<li>
+<p>A <strong>bijective</strong> mapping is <strong>simultaneously injective and surjective</strong> which
+means every value in the domain maps to every value in the codomain exactly
+once.</p>
+</li>
+</ul>
+<p>Why does this matter?</p>
+<p>Bijective mappings give you an inverse function for free. If you are a value in
+the codomain and you know the mapping is bijective, then you can be sure that
+there must be one, and only one, value where you came from in the domain.
+One could <a href="https://math.stackexchange.com/a/165440/156419">prove bijections</a>
+using classical means but we don't need to for production usage. Instead, it
+suffices to simply show the action going forwards and backwards.</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
