@@ -6,7 +6,7 @@ tags: [planning, software, fools gold]
 ---
 
 **Drop your backlog. Burn all of your tickets. Eject your issues into the sun.
-_Nothing of value will be lost._** Teams and maintainers alike cling to reminders
+Nothing of value will be lost.** Teams and maintainers alike cling to reminders
 of work as if they are the same as the result of the work itself. Backlog
 grooming sessions pass and only thin slabs of the gelatinous mass disappear into
 the abyss all the while delaying developers from focusing on actual work.
