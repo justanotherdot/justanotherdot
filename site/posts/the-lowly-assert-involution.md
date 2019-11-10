@@ -13,9 +13,9 @@ should continue, to behave.
 
 Occasionally you'll write functions that flip-flop: when you call the function
 multiple times in a row, chunks seem to cancel out. Mathematics calls these
-functions ["involutive"]("https://en.wikipedia.org/wiki/Involution_(mathematics)").
-Negating a number or a boolean twice gets you back to the original value.
-Involution is handy to recognize because it's a simple assertion:
+functions ["involutive"][1]. Negating a number or a boolean twice gets you back
+to the original value. Involution is handy to recognize because it's a simple
+assertion:
 
 ```
 x == f(f(x))
@@ -42,3 +42,5 @@ from small to big, XORing bits to whole product flows that might 'restart' the
 user in a funnel. Properties like these are worth their weight in gold because
 they are useful in almost any type of testing and are definitely a shining
 example of The Lowly Assert.
+
+[1]: https://en.wikipedia.org/wiki/Involution_(mathematics)
