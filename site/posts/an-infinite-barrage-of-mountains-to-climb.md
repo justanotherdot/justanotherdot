@@ -93,6 +93,10 @@ Here's some things I've picked up in my time wandering around:
    works! But _why_?!" and whiled away another stream of hours on the problem,
    and resulting problems, at hand.
 
+7. **Flexibility is a key to happiness.** Rigidity towards expectations on
+   ourselves and others can lead to a lot of misery. Accepting that things don't
+   always go to plan and that life is messy goes a long way.
+
 There's always another mountain and it *is* daunting but hopefully something
 I've said here will at least help make part of overcoming the next mountain
 easier.
