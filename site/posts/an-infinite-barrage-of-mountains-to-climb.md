@@ -52,7 +52,7 @@ form, by all means you should try to attend. Getting personalised support is
 best. With that said, How do I learn and stay healthy these days? Here's some
 things I've picked up in my time wandering around:
 
-1. **You are not your work.** Your work is it’s own thing. If you are your work you
+1. **You are not your work.** Your work is its own thing. If you are your work you
    can not have a critical, and therefore healthy, stance towards it.
 
 2. **If you don't feel dumb you aren't learning and everyone who is learning
