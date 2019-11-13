@@ -98,5 +98,5 @@ Here's some things I've picked up in my time wandering around:
    always go to plan and that life is messy goes a long way.
 
 There's always another mountain and it *is* daunting but hopefully something
-I've said here will at least help make part of overcoming the next mountain
-easier.
+I've said here will help make overcoming it, and the chatter of self doubt that
+tends to comes with it, easier.
