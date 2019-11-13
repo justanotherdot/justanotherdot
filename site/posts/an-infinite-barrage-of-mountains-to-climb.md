@@ -68,12 +68,12 @@ Here's some things I've picked up in my time wandering around:
    your improvements not by comparing yourself to others but by comparing
    yourself to your past.
 
-4. **Life is not work.** Some people might argue that it's OK to dump all your
-   time into studying or hacking on side projects or whatever but the reality is
-   we need different entertainment for our brains and we need to give it rest.
-   Simply "taking a holiday" from your studying or work where you do literally
-   nothing is a fantastic way to replenish your excitement for the things you
-   are passionate about.
+4. **Life itself is not work.** Some people might argue that it's OK to dump all
+   your time into studying or hacking on side projects or whatever but the
+   reality is we need different entertainment for our brains and we need to give
+   it rest. Simply "taking a holiday" from your studying or work where you do
+   literally nothing is a fantastic way to replenish your excitement for the
+   things you are passionate about.
 
 5. **Excitement is healthy and an absence of it is a warning flag.** It helps
    clarify what you want to concentrate your efforts on. Yes, sometimes things
