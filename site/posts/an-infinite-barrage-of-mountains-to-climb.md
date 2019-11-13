@@ -44,14 +44,13 @@ improve. Rest is a crucial part of the process. Get uncomfortable for a bit,
 take a breather, repeat.
 
 Full disclaimer: I am not a medical professional of any kind. All I can do is
-try to share some things I've learned that were prescribed and work for me. The
-articles out there in the tech space for imposter syndrome and the like have not
-cut it before and writing is article is more for reminder as it is for sharing.
-I give no warranty as to the use of anything I say here in the entirety of this
-article. If you are able to attend therapy and think it might benefit you in any
-way, shape, or form, by all means you should try to attend. Getting personalised
-support is best. With that said, How do I learn and stay healthy these days?
-Here's some things I've picked up in my time wandering around:
+try to share some things I've learned that were prescribed and work for me.
+Writing this article is more for reminder than it is for sharing. I give no
+warranty as to the use of anything said in the entirety of this article. If you
+are able to attend therapy and think it might benefit you in any way, shape, or
+form, by all means you should try to attend. Getting personalised support is
+best. With that said, How do I learn and stay healthy these days? Here's some
+things I've picked up in my time wandering around:
 
 1. **You are not your work.** Your work is it’s own thing. If you are your work you
    can not have a critical, and therefore healthy, stance towards it.
