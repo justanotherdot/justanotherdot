@@ -1,7 +1,7 @@
 ---
 title: An Infinite Barrage of Mountains to Climb
 author: Ryan James Spencer
-date:
+date: 2019-11-13T09:14:36.242597959+00:00
 tags: [health, mental health, imposter syndrome]
 ---
 
