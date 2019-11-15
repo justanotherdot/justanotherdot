@@ -1,24 +1,31 @@
 ---
 title: Teleporting At The Speed Of Thought
 author: Ryan James Spencer
-date:
-tags: [editor, code, vim, nvim, principle, vscode]
+date: 2019-11-15T09:25:52.666511749+00:00
+tags:
+  - editor
+  - code
+  - principle
+  - vim
+  - nvim
+  - vscode
+  - emacs
 ---
 
-Adept text editor users fly around and manipulate text as if by
-**teleportation**. For me, this is a principle I hold dear when considering my
-editing experience. Teleportation is chiefly driven by thought and is effortless
-by construction. This is actually not something inherent to teleportaiton.
+Adept text editor users fly around and manipulate text as if by _teleportation_.
+For me, this is a principle I hold dear when considering my editing experience.
+**Teleportation is chiefly driven by thought and is effortless by
+construction**. This is actually not something inherent to teleportaiton.
 Instead of hopping in a car and driving around the neighbourhood to find where
 you want to go, you tend to make a decision about your destination ahead of
-time. Driving expects a certain amount of effort to reach a destination whereas
-teleportation requires little effort if at all.
+time. However, driving expects a certain amount of effort to reach a destination
+whereas teleportation requires little effort if at all.
 
 Some call this "code golf" but using that term implies falling into the trap of
 constantly optimizing when the aim is to [carve up the text in front of
 you](https://www.justanotherdot.com/posts/how-fast-can-you-take-your-time-kid.html).
-As such, optimization comes from finding ways to facilitate your thinking,
-rather than endless reduction for the sake of reduction.
+As such, optimizing for teleportation comes from finding ways to facilitate your
+thinking, rather than endless reduction for the sake of reduction.
 
 As teleportation is driven by thought, occasionally there is a
 ["precognition"](https://twitter.com/gregmcintyre/status/1194811646234873856)
@@ -48,7 +55,7 @@ popularized the idea of the fuzzy-find palette for discovering files, text
 results in a buffer, git commits, and so on. Things like `fzf` and plugins for
 it now make this accessible to editors that don't have built-in support for it.
 I particularly love fuzzy-find because it favours an aspect of teleportation I
-call **course correction**, so long as the "palette" in question provides a
+call _course correction_, so long as the "palette" in question provides a
 collection of results. From the results we can change our mind about the
 direction we want to head. We can even simply go to some other option without
 having to delete and type different results so long as the option  is shown in
