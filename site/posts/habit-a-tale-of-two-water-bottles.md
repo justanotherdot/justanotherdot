@@ -1,7 +1,7 @@
 ---
-title: Habit: A Tale of Two Water Bottles
+title: "Habit: A Tale of Two Water Bottles"
 author: Ryan James Spencer
-date:
+date: 2019-11-18T09:48:12.772914102+00:00
 tags: [habit, code, books, reading, pit of success, principle, automation]
 ---
 
