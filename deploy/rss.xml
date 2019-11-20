@@ -10,6 +10,65 @@
     <language>en-us</language>
     
     <item>
+      <title>The Simplest Programming Language I Know</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/the-simplest-programming-language-i-know.html</link>
+      <guid>https://justanotherdot.com/posts/the-simplest-programming-language-i-know.html</guid>
+      <pubDate>Wed, 20 Nov 2019 20:35:16 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>I'm going to teach you the simplest programming language I know.</p>
+<p>Everything starts with functions:</p>
+<pre><code>(\x -&gt; x)
+</code></pre>
+<p><code>x</code> is the input argument. There may be more than one by adding comma separated
+values, e.g. <code>x, y, z</code>, and so on. The body comes after the arrow (<code>-&gt;</code>).</p>
+<p><code>x</code> is a variable. We can call functions like this:</p>
+<pre><code>(\x -&gt; x) 3
+</code></pre>
+<p>This says &quot;substitute the value of <code>3</code> everywhere you see <code>x</code> in the body of the
+function&quot;, like this:</p>
+<pre><code>1. (\x -&gt; x) 3
+2. (\x = 3 -&gt; x)
+3. (3)
+4. 3
+</code></pre>
+<p>Here's another example with more than one argument:</p>
+<pre><code>1. (\x, y -&gt; x + y) 3 4
+2. (\x = 3, y = 4 -&gt; x + y)
+3. (3 + 4)
+4. 7
+</code></pre>
+<p>Calling a function is called &quot;function application&quot; and when all arguments are
+substituted with actual value we are left with the result. When we assign values
+to variable names we call it &quot;binding&quot;:</p>
+<pre><code>1. f = (\x -&gt; x)
+2. f 3
+3. 3
+</code></pre>
+<p>Sometimes when we talk about function application. It can be bit-by-bit:</p>
+<pre><code>1. (\x, y -&gt; x + y) 3 4
+2. (\x = 3, y -&gt; x + y) 4
+3. (\y -&gt; 3 + y) 4
+4. (\y = 4 -&gt; 3 + y) 4
+5. (3 + 4)
+6. 7
+</code></pre>
+<p>Functions are values. We call the above &quot;partial application&quot; because we get
+functions back when we apply one argument at a time. This format for function
+application is called &quot;currying&quot; where a function takes one argument at a time.</p>
+<p>This programming language has many types but has no way to check this before
+running the program. Hence we can wind up with weird expressions such as adding
+the number <code>3</code> and <code>true</code> together. This programming language is called the
+<a href="https://en.wikipedia.org/wiki/Lambda_calculus">&quot;lambda calculus&quot;</a> and when you
+add a basic form of types you get the <a href="https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus">&quot;simply typed lambda
+calculus&quot;</a>.</p>
+<p>And now you know one basis of functional programming and a model of computation.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Habit: A Tale of Two Water Bottles</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/habit-a-tale-of-two-water-bottles.html</link>
