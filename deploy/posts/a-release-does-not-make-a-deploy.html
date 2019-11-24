@@ -8,7 +8,7 @@
     <meta http-equiv="content-language" content="en">
     <meta name="author" content="Ryan James Spencer" />
     <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
-    <title>justanotherdot &#8226;</title>
+    <title>&#8226; A Release Does Not Make a Deploy</title>
     <style>
       .social-icon {
         stroke: currentColor;
@@ -25,12 +25,11 @@
     <section class="section">
       <div class="container">
         <div class="columns">
-
           <div class="column is-one-quarter">
             <a href="https://justanotherdot.com">
-              <h1 class="title">
+              <h2 class="title">
                 justanotherdot &#8226;
-              </h1>
+              </h2>
             </a>
             <h2 class="subtitle">
               Ryan James Spencer
@@ -81,20 +80,66 @@
               </div>
             </div>
           </div>
-          <div class="column">
-            <h2 class="subtitle is-5">Tagged with <strong>continuous integration</strong></h2>
-            <div class="content">
-              <ul>
-                
-                <li>
-                  <span class="content is-small">11/24/19</span> <a href="/posts/a-release-does-not-make-a-deploy.html">A Release Does Not Make a Deploy</a>
-                </li>
-                
-                <li>
-                  <span class="content is-small">10/23/19</span> <a href="/posts/making-plants-thrive.html">Making Plants Thrive</a>
-                </li>
-                
-              </ul>
+          <div class="column is-half">
+            <h1 class="title is-2">A Release Does Not Make a Deploy</h1>
+            <h2 class="subtitle is-5">on November 24 2019,  7:21PM</h2>
+            <div class="content is-medium">
+              <p>Is the vision in your head of your pipelines that of lean, graceful atheletes?
+Do branch builds simply test your changes swiftly and anything that hits master
+builds artifacts finished with the flourish of a ephemeral &quot;deployment&quot;?</p>
+<p>Your pipelines are overweight slobs, unwilling to truly do real work.</p>
+<p>Conventional wisdom dictates that deployments occur at the ends of pipelines by
+running a simple task, say <code>kubectl apply</code> or similar, with the produced
+artifact mentioned. This act is transient and for many pipelines means rolling
+back is an act of rerunning the whole pipeline, an individual step in the
+pipeline, or even reverse-engineering the action in the deployment step and
+performing it manually, given the level of desperation.</p>
+<p><strong>Build artifacts aren't deployments.</strong> By turning deployments from &quot;transient
+action&quot; into their own artifact you can scrobble across deployments with little
+fuss. A deployment artifact can be anything that describes the act of deploying.
+This might be a script, a set of versions packaged together, or even a
+specification like a kubernetes manifest. <strong>Once you have release artifacts <em>and</em>
+deployment artifacts start the exercise regime for your pipelines by building
+and publishing all the things</strong>.</p>
+<p>Won't all this extra work cost more money and time? The reality is that
+amortizing the cost of storing your artifacts and building whenever you get a
+chance helps provide options so you don't have to do extra work when it is the
+most untimely to do so. What costs more? Having a terrible
+mean-time-to-resolution (MTRR) and frequent outages or paying for more build
+bots and storage space? If you haven't learned the cost of burning the trust of
+your end users, then you have an important lesson to learn.</p>
+<p>Scrobbling deployments not only helps reduce the blast radius of botched code
+hitting the pool of production by increasing your MTRR but it also gives you the
+opportunity for functionality such as preview deployments. Some approaches may
+provide previews in different deployment environments entirely whereas others
+allow service or resource &quot;naming&quot; (e.g. unique URLs or distinct IP addresses)
+to route traffic accordingly. Some blend the two together. This last approach is
+often how services such as <a href="https://zeit.co/">zeit</a> and
+<a href="https://linc.sh/">linc.sh</a> do their previews for branch builds. It depends on
+how much reproducibility you care about to get a sanity check before deploying
+to production.</p>
+<p>The one wrench in all of this is the matter of shared state; sometimes the
+complication of going backwards or forwards from a certain deployment involves
+running or reversing migrations, reinstating or removing coupled infrastructural
+changes, or even having third party services paid and available. There are
+islands of deployments that may become totally inaccessible due to the above and
+the best advice I can provide in the briefest period of time is that all of
+these can be (somewhat) circumvented by ensuring nothing exists that isn't code.
+To address the noted issues (which is incomplete, mind you):</p>
+<ul>
+<li>Having a process that ensures all migratory actions on a database are verified
+to revert properly and that snapshots are regularly taken at frequent
+intervals</li>
+<li>All infrastructure is code so rolling back infrastructural changes isn't a
+matter of someone GUI-poking or frantically performing manual changes</li>
+<li>Providing configuration and testing that ensures a system behaves as it needs
+to behave without the reliance on third-party software and services</li>
+</ul>
+<p><strong><a href="https://charity.wtf/2019/10/28/deploys-its-not-actually-about-fridays/">Fear not the Friday
+deploy</a>
+when you have options at hand; fear the duct-tape and popsicle-stick
+infrastructure that makes Friday deploys a nightmare.</strong></p>
+
             </div>
           </div>
         </div>
