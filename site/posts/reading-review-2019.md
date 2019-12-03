@@ -1,7 +1,7 @@
 ---
 title: Reading Review 2019
 author: Ryan James Spencer
-date:
+date: 2019-12-03T09:53:17.174715975+00:00
 tags: [software, reading, soft skills, coding]
 ---
 
