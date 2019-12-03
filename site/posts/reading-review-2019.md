@@ -45,60 +45,11 @@ Things of note:
 * I found it useful to read contrarian takes on subjects so that I'm not stuck
   in my own bubble of thought.
 
-# TODO
-- [x] People's History
-- [x] Unix a History and Memoire
-- [x] The Rational Optimist
-- [x] Influence
-- [x] God's Debris
-- [x] Platform
-- [x] Beyond Religion
-- [x] The Courage To Be Disliked
-- [x] The Purple Cow
-- [x] To Sell Is Human
-- [x] No Drama Discipline
-- [x] The Autobiography of Gucci Mane
-- [x] Born Standing Up
-- [x] Hacking Growth
-- [x] The Mom Test
-- [x] This is Marketing
-- [x] Extreme Ownership
-- [x] Never Split The Difference
-- [x] Essentialism
-- [x] Anything You Want
-- [x] Principles
-- [x] Black Swan
-- [x] The Culture Code
-- [x] Rework
-- [x] Alibaba
-- [x] Surely You're Joking Mr. Feynman
-- [x] No Hard Feelings
-- [x] When Things Fall Apart
-- [x] Turn The Ship Around!
-    Ultralearning
-Inner Engineering
-Atomic Habits
-Nonviolent Communication
-Art and Fear
-Why we Sleep
-Range
-Daring Greatly
-How to Fail at almost everything and still win big
-Infinite powers
-101 things I learned from (urban planning|architecture|advertising|engineering) school
-Game Engine Blackbook (Wolf 3D|DOOM)
-How To Lie With Statistics
-Danish Way of Parenting
-The Architecture of Happiness
-Hello World
-A Mind at Play
-Database Internals
-
 Onto some short blurbs on what I've read. These are no replacements for properly
 reading the texts, but they may give you an idea of some core concepts and
-provide some interest for diving into some.
+provide some interest for diving into some (or avoiding others).
 
-People's History of Computing In The United States
+####[People's History of Computing In The United States](https://www.goodreads.com/book/show/38502098-a-people-s-history-of-computing-in-the-united-states)
 
   A fabulous recount about the history of time sharing computing systems in the
   united states. I found the exploration of the social and economic contexts of
