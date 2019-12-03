@@ -5,9 +5,10 @@ date:
 tags: [software, reading, soft skills, coding]
 ---
 
-This year came up at roughly sixty books "consumed". I say "consumed" because I
-decided to give audio books a go. So while I would normally read about thirty
-books, I've managed to double that amount by listening to things while I work.
+This year came up at roughly sixty books "consumed". I've pared the list here
+down to about forty.. I say "consumed" because I decided to give audio books a
+go. So while I would normally read about thirty books, I've managed to double
+that amount by listening to things while I work.
 
 Things of note:
 
@@ -58,6 +59,40 @@ Things of note:
 - [x] No Drama Discipline
 - [x] The Autobiography of Gucci Mane
 - [x] Born Standing Up
+- [x] Hacking Growth
+- [x] The Mom Test
+- [x] This is Marketing
+- [x] Extreme Ownership
+- [x] Never Split The Difference
+- [x] Essentialism
+- [x] Anything You Want
+- [x] Principles
+- [x] Black Swan
+- [x] The Culture Code
+- [x] Rework
+- [x] Alibaba
+- [x] Surely You're Joking Mr. Feynman
+- [x] No Hard Feelings
+- [x] When Things Fall Apart
+- [x] Turn The Ship Around!
+    Ultralearning
+Inner Engineering
+Atomic Habits
+Nonviolent Communication
+Art and Fear
+Why we Sleep
+Range
+Daring Greatly
+How to Fail at almost everything and still win big
+Infinite powers
+101 things I learned from (urban planning|architecture|advertising|engineering) school
+Game Engine Blackbook (Wolf 3D|DOOM)
+How To Lie With Statistics
+Danish Way of Parenting
+The Architecture of Happiness
+Hello World
+A Mind at Play
+Database Internals
 
 Onto some short blurbs on what I've read. These are no replacements for properly
 reading the texts, but they may give you an idea of some core concepts and
@@ -100,7 +135,7 @@ Influence
   how to combat the effects of influence but it seems like it has become a
   reference as a means of understanding a subset of persuasion on others.
 
-God's Debris - Scott Adams
+God's Debris
 
   Thought experiment where a parcel carrier has a series of discussions with
   God. Deep (and quick) enough for a read.
@@ -138,14 +173,6 @@ To Sell Is Human
   resources to part with them, usually in exchange for something else. This
   thesis is not dissimilar from The Rational Optimist.
 
-No-Drama Discipline
-
-  Each time when things get heated between parent and child is actually an
-  opportunity to explain and teach. I sometimes find parenting books to be
-  helpful for peer-to-peer social interactions but this is a bit more intimate
-  and top-down so I wouldn't recommend using the same approach outside a
-  parent-child circumstances.
-
 The Autobiography of Gucci Mane
 
   This was highly ranked in recommendations for marketing but I'm not sure why.
@@ -166,229 +193,203 @@ Born Standing Up
 Hacking Growth
 
   A cut-and-dry prescription approach to "growth hacking" and the book that
-  claims to have been written by those who have started the movement although
-  business intelligence is definitely far older than slapping a label on
-  analysing metrics for everything you can get your hands on. This book was too
-  prescriptive for me and I wound up finding it a chore to get through. Growth
-  hacking books often have a tendency of sounding like all the same argument:
-  "measure everything you can get your hands on", although I would argue having
-  a couple of key metrics is a far better use of time.
+  claims to have been authored by its inventors. Business intelligence is
+  definitely far older. and I wound up finding the book a chore to get through.
 
 The Mom Test
 
-  People will lie to you to feel good about themselves. Don't let this sort of
-  'mom'-styled sentiments impede on the true stuff you want: how people have
-  actually had problems in the past and how your new things can help those
-  problems. Don't focus on stuff in the future, prospective ideas are always
-  fanciful but pain points people have suffered through are rooted in fact and
-  will definitely lead people to your product as a (potential) panacea of their
-  woes.
+  People will lie to you to feel good about themselves when asked questions
+  about your product. Your Mom does the same when you ask her, too. Your goal is
+  to get past the fanciful future uses that people love to labour on about and
+  focus on the actual pain they've experienced when dealing with a particular
+  problem or competitors product. You want to know how you can help ail these
+  pain points.
 
 This is Marketing
 
-  Marketing is actually good for us. Marketing directs us to products that
-  change our lives for the (arguably) better position and helps normalize this
-  behaviour.
+  Godin argues that marketing is actually good for us; marketing directs us to
+  products that change our lives for the (arguably) better position and helps
+  normalize this behaviour.
 
 Extreme Ownership
 
-  A long books with many belabored combat stories effectively stating that if
-  you have direct reports and they fail, it's always back on you to teach them
-  (unless they truly are inept).
+  If you have direct reports and they fail, it's always back on you to teach
+  them (unless they truly are inept). It's a long book with many drawn-out
+  combat stories filling in the bulk.
 
 Never Split the Difference
 
   Many fantastic tidbits of negotiation techniques. Some of these are drawn from
-  other sources but it's how Voss correlates the concepts to practical usage I
-  found particularly helpful. There is a section of salary negotiation I think
-  ought to be valuable to a broad range of people in the job market.
+  other sources but it's how Voss connects the concepts to practical usage I
+  found particularly helpful.
 
 Essentialism
 
-  Lots of great little points on the "less is more" rhetoric. I keep being
-  reminded of the reality that "small wins" are energy-inducing and help create
-  true progress on a project.
+  Lots of great little points on the "less is more" rhetoric.
 
 Anything You Want
 
-  This has got tons of great bits from the guy who built CDBaby
-  (unintentionally) and eventually sold the company at $12m. However, his
-  success was forged by by attempting to fail early on, he claims.
-
-The Personal MBA
-
-  A chronicle of different ways to run businesses or investments as well as a
-  (surprisingly) thorough analysis of how systems work so that the viewpoint of
-  business development is taken as system development, instead of the
-  traditionally goal-oriented approach. Brownie points for me as it covers
-  Gall's Law in one section.
+  Tells the story of Darek Sivers, the fella who unintentionally built CDBaby
+  and eventually sold the company at $12m. This was quick and had lots of great
+  point, like the higher leverage obtained by keeping teams small.
 
 Principles
 
-  Divided into two sections, principles discusses life and work principles (the
-  latter being far larger but imo the former being the most applicable for the
-  general public). You can watch and read most of his material without buying
-  his book online as his emphasis isn't making money off the book but sharing
-  his knowledge (or so he claims). I've found it to be a fantastic trove of
-  knowledge that seems to come up in several other books I've read.
+  Divided into two sections, principles discusses life and work principles, the
+  latter being far larger but the former being the most applicable for the
+  general public in my opinion. You can watch and read most of his material
+  without buying his book online as his emphasis isn't making money off the book
+  but sharing his knowledge (or so he claims). I've found it to be a fantastic
+  trove of knowledge that seems to come up in several other books I've read
+  without being Yet Another Business or Self-Help book and without being Get
+  Rich Quick themed.
 
 Black Swan
 
   I did not know about Nassim Taleb until this year when a mentor of mine
-  brought him up. I was skeptical at first but Ray Dalio's idea of "Radical
-  Open Mindedness" made me push through and it's been fantastic. Taleb, a former
-  quant, digs deep into why any sort of predictive analysis we think is
-  rock-solid is usually a scam and that things people think are impossible
-  becuase they are extremely improbably are actually "black swans" that have a
-  high likelihood of causing ruin if we don't put things into place to safeguard
-  ourselves against them.
+  mentioned he was also reading him. Taleb, a former quantitative analyst,
+  explores the concept of the Black Swan, a highly improbable, but not
+  impossible, event, under the auspices that any attempt to claim that
+  predictions are rock-solid is a farce. The classic example he gives early in
+  the book is about a turkey who seems to be living the grand life, only to be
+  later killed (the black swan event). One connected idea I found particularly
+  intriguing is that of randomness being really about the observer of the random
+  variable: the turkey may not know about the black swan event but the farmer
+  who owns the turkey knows about this date for month.
 
 The Culture Code
 
-  People are productive when they feel safe. They are more creative and
-  innovative. This is fundamentally maslows hierarchy of needs but it's a great
-  read after having been in a few organisations where culture was a, well,
-  lacking. Vulnerability is key to forming trust, and trust builds the most
-  productive teams.
+  People are productive when they feel safe and, therefore, can be vulnerable.
+  They are also more creative and innovative. This is fundamentally Maslow's
+  hierarchy of needs but he also discusses the emphasis of sharing goals in
+  tandem with sharing vulnerability. One of the better books outlining why you
+  want to structure a business culture with these characteristics.
 
 Rework
 
-  Your work doesn't control you. You ought to be experiencing JOMO (joy of
-  missing out) vs FOMO (fear of missing out). A well-rested and clear-headed
-  employee stays longer at a company and is wildly more productive than the
-  run-down equivalent.
+  Your work isn't everything and ought not to control you. A well-rested and
+  clear-headed employee stays longer at a company and is wildly more productive
+  than the run-down equivalent. I liked the idea of "JOMO" (Joy of Missing Out)
+  being pushed in comparison to the usual sense of "FOMO" people experience. I
+  usually like Jason Fried and DHH books because they are full of lots
+  "common-sense" knowledge that are still helpful to be reminded of.
 
 Alibaba
 
-  A rather bland telling of Jack Ma's history. The parts of how Jack's interest
-  in translation work and willingness to do pretty much anything as a business
-  until Alibaba came to fruition (due to Jack's early interest in the internet
-  and being at the right place at the right time, his first business being a
-  translation company) is met with some bittersweetness upon hearing that the
-  government now owns the very thing he fought so hard to build up and hold
-  onto.
+  A rather bland telling of Jack Ma's growing of his various business interests
+  and, later, Alibaba. His translation work and early interest in the internet
+  helped eventually leading to his starting of Alibaba. There were many
+  "everything store" styled shops and Jack's early translation company did far
+  more than translation services, selling whatever they could.
 
 Surely You're Joking Mr. Feynman
 
-  Feynman is a mixed bag. He is quick witted and definitely smart but is also a
-  creep. His autobiography paints a picture of a happy-go-lucky, curious-minded,
-  exploration-driven individual who loves to prank and be a smart alec and isn't
-  shy to discuss his visitations to strip clubs where he would draw the
-  strippers and work on physics problems. That said, it is interesting to look
-  at how Feynman is always deducing from other facts or principles which you can
-  see in the way the text is written.
+  Feynman is a mixed bag. He is quick witted and smart but is also a creep. His
+  autobiography paints a picture of a happy-go-lucky, curious-minded,
+  exploration-driven individual who loves to prank, be a smart alec, and isn't
+  shy to discuss his interest in women as well as visitations to strip clubs
+  where he would draw the strippers and work on physics problems. That said, it
+  is interesting to look at how Feynman is always deducing from other facts or
+  principles which you can see in the way the text is written (also notable in
+  his lectures).
 
 No Hard Feelings
 
-  An interesting exploration into how to accept that emotions are always apart
-  of our lives, including at work, and how to use that knowledge to best effect.
-  Also a good reminder that our work is not everything.
+  An exploration into how to accept that emotions are always apart of our lives
+  and decisions, including at work, and how to use that knowledge to best
+  effect. Also a good reminder that our work is not everything.
 
 When Things Fall Apart
 
-  A discussion from a buddhist monk about how chaos is inevitable and how we
+  A discussion from a Buddhist monk about how chaos is inevitable and how we
   must, no matter how stable we think life is, continually invite "chaos in with
   a cup of tea" if we are truly to handle what life has to throw at us.
 
-Turn the Ship Around
+Turn The Ship Around!
 
-  A naval captain (and now admiral?) tells how he managed to change from a
-  top-down organisational structure into something with a bit more autonomy
-  amongst all the ranks and clearly exposits each technique used througought the
-  book. Feelings of ownership make us more productive around things and in
-  top-down organisations there's usually a fear that if ownership is allowed, it
-  will cause all sorts of mayhem.
-
-The Subtle Art of Not Giving a Fuck
-
-  What a terrible book. Espousings of general philosophical and psychological
-  ideas from an author who sounds like he took first-year courses on the subject
-  and is just _dying_ to tell you about all the details he's learned.
+  A naval captain tells how he managed to change from a top-down organisational
+  structure into something with more autonomy amongst the ranks, helping turn
+  one of the worst ranked teams into one of the best. The "I intend to" language
+  is gold, alone, but there are other techniques explained throughout the book
+  as it covers the discovery of these in relation to particular organisational
+  problems they were facing. For example, to deal with better handling
+  operational concerns on the submarine, they begin practicing deliberate action
+  where they vocalise what they are about to do, gesture at the subject that
+  will be acted upon, and, after a short pause, perform the task.
 
 Ultralearning
 
-  An interesting exploration into a form of learning where progress and speed
-  (and hence repetition) are the focus. Compressing learning into short bursts
-  at a time to accelerated levels. I have mixed feelings about this book after
-  having come out of therapy this last year because while I am very much into
-  this processes in this book I felt not enough emphasis was placed on
-  counterpointing the pushing process with something relaxing. In the end
-  learning a lot is worthwhile but I think being a human is far more valuable.
+  Discusses a form of learning where progress and speed are the focus;
+  compressing learning into short bursts at a time to positive effect. I have
+  mixed feelings about this book after having come out of therapy this last year
+  because I am into this processes but I felt the emphasis of an always-on
+  approach isn't healthy for long-term learning as well as general psychological
+  health.
 
 Inner Engineering
 
-  I didn't know about Sadghuru until I saw a video series on YouTube with some
-  of his clips. Inner engineering has some intriguing nuggets of knowledge, such
-  as reminding ourselves of our mortality that feeds into how we prioritise our
-  actions. His thoughts on responsibility are great, too: it's not about
-  "taking" or being "given" responsibility, but responsibility itself is an act
-  of mindfulness or consciousness. In this case responsibility is our ability to
-  respond (a common thread across several books is how its in our capacity to
-  respond to the world rather than reacting in off-the-cuff manners. Meditation
-  has helped me with this a lot).
+  Particularly memorable parts of the book include reminding oneself of their
+  mortality to help prioritise what truly matters and that taking responsibility
+  is about taking charge of our ability to respond to life and events around us.
 
 Atomic Habits
 
-  Although nothing _new_ is prescribed here, I applaud James Clear with
-  compiling a simple compendium of core concepts that fuel habit formation. All
-  the worksheets and similar activities I easily ignored but the four points are
-  well worth an extra bit of reading to cement the ideas.
+  Although nothing _new_ is prescribed here, I applaud Clear with compiling a
+  simple compendium of core concepts that fuel habit formation. All the
+  worksheets and activities I ignore but the four points are well worth the
+  extra bit of reading to cement the ideas.
 
 Nonviolent Communication
 
-  This one is "a classic" in that it is commonly referenced as being a big part
-  of negotiation and interpersonal relationships. Rosenfield's foundations are
-  that failure to recognise needs is the crux of interpersonal conflict failure.
+  This one is considered a classic in that it is commonly referenced as being a
+  big part of negotiation and interpersonal relationships discourse.
+  Rosenfield's foundations are that failure to recognise needs, of our own and
+  of others, is the crux of interpersonal conflict.
 
 Art and Fear
 
-  This one is great as it applies to areas way outside of simply creating
-  artworks. I found this incredibly useful in terms of recognising that quantity
-  is much more valuable for the effort of learning (experimentation) than is
-  focusing on quality upfront.
+  This one is great as it applies to areas of work outside of creating artwork.
+  I found this incredibly useful in terms of recognising that quantity is much
+  more valuable for the effort of learning (experimentation) than is focusing on
+  quality upfront. Other people's magic is not your own so don't go attempting
+  to copy in hopes that you'll achieve the same results. In the same train of
+  thought, only compare your development to your own history.
 
 Why we Sleep
 
   Most of us know sleep deprivation is problematic but this book goes deeper in
   how debilitating it can truly be, as well as how little sleep deprivation is
-  required before achieving these effects.
+  required before achieving ill effects.
 
 Range
 
   Being an expert usually is less effective than being a jack of all trades.
   Why? Because experts go down deep holes that start to lose innovation as they
-  have less cross-disciplinary skills or knowledge to create the connections
-  necessary.
+  make less and less cross-disciplinary connections.
 
 Daring Greatly
 
   Being courageous means sharing. We tend to think its the other way; that
-  sharing _takes_ courage, but in reality if you share. This little fact has
-  been incredibly useful this year as a knowledge point: just go for it and
-  share facts (as longas you aren't sharing for the sake of manipulating others,
-  what Brown cals "oversharing").
+  sharing _takes_ courage, but in reality if you share, you are being
+  courageous. Brown calls sharing so much information that your intent is to
+  manipulate others "oversharing".
 
-How to Fail at almost everything and still win big
+How to Fail at Almost Everything and Still Win Big
 
-  Systems over goals. Energy instead of passion. A varied collection of ideas
-  and memoirs of how Scott Adams built various aspects of his career.
-
-It's a numberful world
-
-  Fun exploration in various mathematical concepts from Eddie Woo.
-
-Euler's gem
-
-  An exploration of Euler's formula in great detail and history.
+  Systems over goals. Energy drives success which drives passion, not the other
+  way around. A varied collection of ideas and memoirs of how Scott Adams built
+  various aspects of his career and had lots of little failures testing out
+  ideas and going through a life as a cubicle jockey.
 
 Infinite powers
 
   Absolutely wonderful exploration of the history and internals of calculus.
   Strogatz is the author of Sync, Non-linear Dynamics and Chaos, The Joy of X,
-  and others. His ability to talk about systems
+  and others. He has a knack for breathing life into mathematical subjects. I
+  found his historical bits just as exciting as exciting as the clarity of his
+  explanations for the inner workings of calculus.
 
-101 things I learned from (urban planning | architecture | advertising |
-engineering | law ) school
+101 things I learned from (urban planning|architecture|advertising|engineering) school
 
   I have several of these '101 things' books. They are a breeze to get through
   (some of the points are just quotes, or usually short blurbs, less than two,
@@ -399,85 +400,56 @@ engineering | law ) school
   broad reach (say, toilet paper) while a specific niche demographic is best hit
   with higher frequency.
 
-ogilvy on advertising
+Game Engine Blackbook (Wolf 3D|DOOM)
 
-  Dated and sort of part biography and random ranting. I'm not sure how relevant
-  this book is to today's market. It may have made sense back in the day as
-  insight into the view of how one of the largest tyrants of the advertising
-  industry lead the competition, but today it doesn't provide much insight.
-
-realm of racket
-
-  If you've ever read "Land of Lisp" this is mostly a reboot of that series
-  except set in a different environment (you're trapped in a evil genius' lair)
-  and everything is in racket instead of common lisp.
-
-functoinally-light javascript
-
-  With an intro from Brian Lonsdorf of ["Professor Frisby's Mostly Adequate
-  Guide to Functional Programming
-  Guide"](https://mostly-adequate.gitbooks.io/mostly-adequate-guide/) fame, the
-  book is a relative guide through several libraries and their related concepts.
-  Teaching something like functional programming in a language outside of lisp
-  or haskell/ocaml/etc. is a tad hard.
-
-game engine blackbook wolf 3d and doom
-
-  These are fabulous books and if you have any nostalgia for them whatsoever and
-  you program, you should pick them up. They cover a portion of history of
-  product development, hardware, and a good analysis of the internal tech of the
+  These are fabulous books and if you have any nostalgia for the games they
+  cover whatsoever, and you program, you should pick them up without a moments
+  hesitation. They cover a portion of history regarding product development,
+  hardware, and follow naturally into solid analysis of the internal tech of the
   rendering and game engines.
 
-how to lie with statistics
+How To Lie With Statistics
 
   This is a truly dated book that has an odd style of speech that rambles at
   great length so it can require some serious concentration to get at the core
   of what he is driving at for most chapters. It is also exceptionally light so
   not much is lost attempting to get through it, I suppose. The main theme of
   the book is where people, organisations, teams, researchers, surveyors, and so
-  on, manipulate how and which statistical data is presented in order to best
-  showcase certain purported "facts".
+  on, manipulate and confuse statistical data.
 
-danish way of parenting
+Danish Way of Parenting
 
   Nothing exceptional here that a quick glance through the headlines and a few
   paragraphs wouldn't suffice with.
 
-the architecture of happiness
+The Architecture of Happiness
 
   This was one I read a bit more slowly than the rest. Alain De Boton is an
   intriguing author in how he explores a myriad of different topics in truly
   unique ways. I had previously read his book on Proust and how someone so bed
   ridden could write so well about human pyschology. In this text he explores
   how we tend to look at buildings aesthetically and jabs at modernist notions
-  of functionality and science being at the core of building a building. It
-  inspired me so much to write Making a Home which is still one of my favourite
-  articles.
+  of functionality and science being at the core of architecture. It inspired me
+  so much to write [Make a
+  Home](https://www.justanotherdot.com/posts/make-a-home.html) which is still
+  one of my favourite articles.
 
-hello world
+Hello World
 
-  Hannah Fry explores how machine learning is biased and fraught with
-  complications that still require human intervention. She rightfully demands a
-  truly educated demographic of people who learn to use machine learning as a
-  tool rather than a drop-in replacement for human decision making. Machine
-  learning, as it is naively applied today, tends to reify particular biases and
-  sentiments encoded in prior statistical judgements made by man. Instead, we
-  can use machine learning to expose our biases and better tweak our models to
-  reflect the kind of world we want to live in (one that doesn't put people in
-  an odd place at an odd time).
+  Fry explores how machine learning amplifies our biases. She argues that we can
+  actively expose and rectify these biases and use machine learning to
+  supplement human judgement rather than replacing it entirely.
 
-a mind at play
+A Mind at Play
 
-  I liked learning about Claude Shannon but this was tricky to get through.
-  Claude is the founding fathers of information theory (the notion that forms of
-  data can be expressed with a single language, binary data, rather than by
-  distinct formats for each type of information transfer, e.g. a different
-  methodology and format for pictures than as for audio). Shannon worked at Bell
-  Labs for a good portion of his life, liked to juggle and do mathematical
-  puzzles, and had an overall incredible ability to handle statistical nad
-  probabliity related mathematics, helping in with world war efforts. However,
-  the book, whether the way it was written or simply the dryness of his overall
-  accomplishments, was not that exciting to get through.
+  I liked learning about Claude Shannon but this was tricky to get through as
+  the writing was a bit bland. Claude is the founding father of information
+  theory (the notion that different forms of data can be expressed with binary
+  data). Shannon worked at Bell Labs for a good portion of his life, liked to
+  juggle, ride a unicycle, and do mathematical puzzles. Apparently he had a
+  knack for statistics and probability, too, to the point which he obsessively
+  analysed gambling odds for roulette and had a knack for markets and building
+  precursory computing machines.
 
 Database Internals
 
@@ -486,9 +458,9 @@ Database Internals
   you'll be rifling through often and without any clear ordering, and other
   times you may be looking for exactly a tutorial that starts and ends with a
   clear path (like a university course). "Database Internals" has a _lot_ of
-  knowledge and it also does some of the best concise explanation of particular
-  database concepts I've seen in books/videos/etc. so it straddles the line
-  between reference book and tutorial, but in a way I think is appealing to more
-  voracious students on the subject. If you're looking for a simpler explanation
-  of internals of databases with less meat or details there is the [CMU Database
+  knowledge _and_ concise explanations of database concepts so it straddles the
+  line between reference book and tutorial, but in a way I think is appealing to
+  more voracious students on the subject. If you're looking for a simpler
+  explanation of internals of databases with less meat or details there is the
+  [CMU Database
   course](https://www.youtube.com/channel/UCHnBsf2rH-K7pn09rb3qvkA/playlists)
