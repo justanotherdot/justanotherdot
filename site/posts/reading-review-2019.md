@@ -6,8 +6,8 @@ tags: [software, reading, soft skills, coding]
 ---
 
 This year came up at roughly sixty books "consumed". I've pared the list here
-down to about forty.. I say "consumed" because I decided to give audio books a
-go. So while I would normally read about thirty books, I've managed to double
+down to about forty. I say "consumed" because I decided to give audio books a
+go so while I would normally read about thirty books I've managed to double
 that amount by listening to things while I work.
 
 Things of note:
@@ -291,8 +291,7 @@ Particularly memorable parts of the book include reminding oneself of their
 mortality to help prioritise what truly matters and that taking responsibility
 is about taking charge of our ability to respond to life and events around us.
 
-##### [Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad
-Ones](https://www.goodreads.com/book/show/40121378-atomic-habits?ac=1&from_search=true&qid=579XxYAfHC&rank=1)
+##### [Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones](https://www.goodreads.com/book/show/40121378-atomic-habits?ac=1&from_search=true&qid=579XxYAfHC&rank=1)
 
 Although nothing _new_ is prescribed here, I applaud Clear with compiling a
 simple compendium of core concepts that fuel habit formation. All the
