@@ -13,14 +13,14 @@ that amount by listening to things while I work.
 Things of note:
 
 * It may seem obvious (or not?) that there is a tremendous amount of noise out
-there but I'd like to reiterate that there is ridiculous of fluff out there in
-what we choose and are asked to read.
+there but I'd like to reiterate that there is ridiculous amount of fluff out
+there in what we choose and are asked to read.
 
 * The best books were too complex and deep to truly grok in a single pass,
   but still lucid enough to catch on core points in that first pass. I call
   this quality "replayability".
 
-* Because of the number of titles to put toughts against here I've opted to
+* Because of the number of titles to put thoughts against here I've opted to
   describe from what I remember as quickly as possible and either be direct
   about truly loving the book or not.
 
