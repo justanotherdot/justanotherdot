@@ -3,10 +3,14 @@ services:
     rust_stable_ci:
       image: "rust:latest"
       working_dir: /build
+      environment:
+        CARGO_HOME: /build/.cargo
       volumes:
         - "$PWD:/build"
     rust_nightly_ci:
       image: "rustlang/rust:nightly"
       working_dir: /build
+      environment:
+        CARGO_HOME: /build/.cargo
       volumes:
         - "$PWD:/build"
