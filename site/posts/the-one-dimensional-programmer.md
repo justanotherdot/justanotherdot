@@ -53,12 +53,12 @@ what we do as programmers, but we need to be honest that we are still employees
 that have to write emails, send messages on chat platforms, prop up
 documentation, and so forth, all in a language not fit for a computer. Learning
 how to write well drastically improves your ability to communicate effectively
-with an time tested asynchronous format. Probably one of the best "practical"
-books of concise tips for immediately improving your writing is [100 Ways to
+with a time tested asynchronous format. Probably one of the best "practical"
+books with concise tips is [100 Ways to
 Improve Your Writing](https://www.goodreads.com/book/show/41769546-100-ways-to-improve-your-writing-updated?from_search=true&qid=0bszRxf7vW&rank=3).
 
 If tasked with giving a talk could you whip up slides and enthrall an audience
-in the allotted time without fuss? Public speaking is practiced each time we
+in the allotted time without fuss? We practice public speaking each time we
 open our mouths to another human being yet many of us don't consider that
 "public speaking". Enhancing your ability to communicate with spoken word and
 body language drastically improves your capacity to convince others of a course
@@ -70,7 +70,7 @@ Could you, left to your own devices, dream up a number of non-computer related
 topics you'd want to explore? If the things you are reading only fit into the
 categories noted above, it might be worth purposefully pursuing ideas that are
 external to your field. Everything you explore need not be non-fiction, either!
-Here's a sample from my own current explorations:
+Here's a sample of topics from my own current explorations:
 
 * [A new form of matter](https://www.goodreads.com/book/show/35297608-the-second-kind-of-impossible?from_search=true&qid=nXScUtfJXZ&rank=1)
 * [A biography on the bassist Flea](https://www.goodreads.com/book/show/39667068-acid-for-the-children?ac=1&from_search=true&qid=iYB5JCa0eO&rank=1)
@@ -82,7 +82,7 @@ you are in "box-mode" all the time with your chosen field, the light on your
 candle from within the cave will eventually grow darker and darker as it starves
 of oxygen, but use the same candle to look in different places for light
 switches and you'll start forming pools of light to help you better see the
-overall scene. **Exploring different things is how we connect disparate ideas,
-and connecting disparate ideas in unique and useful ways is is how we
-innovate.** Stop being a one-dimensional programmer by sometimes looking past
-the tech.
+world around you. **Exploring different topics is how we discover disparate
+ideas and connecting disparate ideas in unique and useful ways is is how we
+innovate.** Stop being a one-dimensional programmer and get out of your box from
+time to time.
