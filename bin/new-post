@@ -1,10 +1,11 @@
 #!/bin/sh -eu
 
-TITLE="$1"
-git b -m "topic/${TITLE}"
-git c --allow-empty "${TITLE}"
+TITLE="$*"
+SLUG="$(echo $TITLE | tr A-Z a-z | tr -s ' ' '-')"
+git co -b "topic/${SLUG}"
+git c --allow-empty -m "${TITLE}"
 
-HEADER=<<EOF > "site/posts/$(echo $TITLE | tr A-Z a-z | tr -s ' ' '-').md"
+HEADER=<<EOF > "site/posts/${SLUG}.md"
 ---
 title: $TITLE
 author: Ryan James Spencer
