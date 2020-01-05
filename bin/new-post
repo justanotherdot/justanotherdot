@@ -1,0 +1,15 @@
+#!/bin/sh -eu
+
+TITLE="$*"
+SLUG="$(echo $TITLE | tr A-Z a-z | tr -s ' ' '-')"
+git co -b "topic/${SLUG}"
+git c --allow-empty -m "${TITLE}"
+
+HEADER=<<EOF > "site/posts/${SLUG}.md"
+---
+title: $TITLE
+author: Ryan James Spencer
+date:
+tags: []
+---
+EOF
