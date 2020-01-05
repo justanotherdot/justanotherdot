@@ -1,0 +1,14 @@
+#!/bin/sh -eu
+
+TITLE="$1"
+git b -m "topic/${TITLE}"
+git c --allow-empty "${TITLE}"
+
+HEADER=<<EOF > "site/posts/$(echo $TITLE | tr A-Z a-z | tr -s ' ' '-').md"
+---
+title: $TITLE
+author: Ryan James Spencer
+date:
+tags: []
+---
+EOF
