@@ -1,7 +1,7 @@
 ---
 title: The Production Environment's New Clothes
 author: Ryan James Spencer
-date:
+date: 2020-01-10T09:08:56.112090507+00:00
 tags:
   - software teams
   - feature flagging
