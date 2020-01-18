@@ -15,10 +15,8 @@ don't exist at all. Here's a short, incomplete primer.
 
 There are two common formats for storage; as strings or as integers. Although
 integers have a history of heavy optimization on modern CPUs and compilers,
-strings can have reasonable performance with the right memory structure. _In
-fact_, you might want to encode unix epoch as a string to avoid complications
-with serialisation (JSON numbers have a limit of 2^53 in value). This integer
-format is typically known as [Unix Epoch
+strings can have reasonable performance with the right memory structure. This
+integer format is typically known as [Unix Epoch
 Time](https://en.wikipedia.org/wiki/Unix_time) and the start of the world for
 this format is January 1st, 1970; the birth of Unix. A 32-bit integer,
 expressing seconds since January 1st, 1970, ends at 19 January 2038. 64-bit Unix
@@ -63,8 +61,8 @@ ascending order. I love this feature about them because it means I don't need to
 rely on a library to order a bunch of well-formed ISO8601s. Opposed to our
 fixed-precision Unix Epoch integers, ISO8601 allows for variable granularity.
 You _can_ get finer granularity for time on Unix systems but I won't go too far
-into that here. Run `man 2 gettimeofay` and have a read.
-
+into that here. You can run `man 2 gettimeofday` and `man 2 clock_gettime` for a
+slightly deeper understanding of some options on Linux.
 
 Back to our lawn chairs someplace in Sunny England, time zones are expressed
 officially as strings describing two parts separated by a forward slash, e.g.
@@ -123,7 +121,6 @@ As a recap here's the basics:
 2. **Always store your timestamps in a single, canonical time zone**
 3. **Store time zone preferences for clients as a string rather than the
    offset**
-
 
 And that's a short primer. Time can get a lot more nuanced, such as focusing on
 monotonically increasing time for servers and thinking through concerns like
