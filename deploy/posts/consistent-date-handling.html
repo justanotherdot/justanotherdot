@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="HandheldFriendly" content="True" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="author" content="Ryan James Spencer" />
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>&#8226; Consistent Date Handling</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter">
+            <a href="https://justanotherdot.com">
+              <h2 class="title">
+                justanotherdot &#8226;
+              </h2>
+            </a>
+            <h2 class="subtitle">
+              Ryan James Spencer
+            </h2>
+            <div class="columns is-mobile">
+              <div class="column">
+                <a href="mailto:ryan@justanotherdot.com" target="_blank" rel="noopener">
+                  <!--<span class="screen-reader">Contact via Email</span>-->
+                  <svg class="social-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true">
+
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+
+                  </svg>
+                </a>
+              </div>
+              <div class="column">
+                <a href="https://github.com/justanotherdot" target="_blank" rel="noopener">
+                  <!--<span class="screen-reader">Open Github account in new tab</span>-->
+                  <svg class="social-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                  </svg>
+                </a>
+              </div>
+              <div class="column">
+                <a href="https://twitter.com/_justanotherdot" target="_blank" rel="noopener">
+                  <!--<span class="screen-reader">Open Twitter account in new tab</span>-->
+                  <svg class="social-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true">
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                  </svg>
+                </a>
+              </div>
+              <div class="column">
+                <a href="https://www.youtube.com/channel/UCJuYbXXSnUleBPFhDGkKsFg" target="_blank" rel="noopener">
+                  <!--<span class="screen-reader">Open Youtube account in new tab</span>-->
+                  <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="00 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-youtube">
+                    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 03.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                  </svg>
+                </a>
+              </div>
+
+              <div class="column is-two-thirds"></div>
+            </div>
+            <div class="columns">
+              <div class="column is-10">
+
+                <!-- newsletter form begin -->
+                <h2 class="has-text-weight-semibold is-size-5 is-5">Newsletter</h2>
+                <div>
+                  <!-- Begin Mailchimp Signup Form -->
+                  <div id="control mc_embed_signup">
+                    <form
+                      action="https://justanotherdot.us7.list-manage.com/subscribe/post?u=6ce022d11d5d0780e8105dee6&amp;id=9d65e4c97c"
+                      method="post"
+                      id="mc-embedded-subscribe-form"
+                      name="mc-embedded-subscribe-form"
+                      class="validate"
+                      target="_blank"
+                      novalidate
+                      >
+                      <div id="mc_embed_signup_scroll">
+                        <div class="mc-field-group field">
+                          <div class="control">
+                            <input class="input required email" placeholder="email address" type="email" value="" name="EMAIL" id="mce-EMAIL">
+                          </div>
+                        </div>
+                        <div id="mce-responses" class="clear">
+                          <div class="response" id="mce-error-response" style="display:none"></div>
+                          <div class="response" id="mce-success-response" style="display:none"></div>
+                        </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+                        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_6ce022d11d5d0780e8105dee6_9d65e4c97c" tabindex="-1" value=""></div>
+                        <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+                      </div>
+                    </form>
+                  </div>
+                  <!--End mc_embed_signup-->
+                </div>
+                <!-- newsletter form end -->
+
+              </div>
+            </div>
+          </div>
+          <div class="column is-half">
+            <h1 class="title is-2">Consistent Date Handling</h1>
+            <h2 class="subtitle is-5">on January 18 2020,  7:27PM</h2>
+            <div class="content is-medium">
+              <p>Date handling is the kind of funny where you sob from of the ways it can
+horribly cut you when you least expect it. Developers either pretend that <em>all</em>
+date handling concerns can be shoved onto third-party libraries or that they
+don't exist at all. Here's a short, incomplete primer.</p>
+<p>There are two common formats for storage; as strings or as integers. Although
+integers have a history of heavy optimization on modern CPUs and compilers,
+strings can have reasonable performance with the right memory structure. <em>In
+fact</em>, you might want to encode unix epoch as a string to avoid complications
+with serialisation (JSON numbers have a limit of 2^53 in value). This integer
+format is typically known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Epoch
+Time</a> and the start of the world for
+this format is January 1st, 1970; the birth of Unix. A 32-bit integer,
+expressing seconds since January 1st, 1970, ends at 19 January 2038. 64-bit Unix
+Epoch's will end <a href="https://en.wikipedia.org/wiki/Year_2038_problem#Possible_solutions">292 billion years from now, at 15:30:08 UTC on Sunday, 4
+December 292,277,026,59</a>.
+This is far after the estimated death of the universe and if your system is
+still running after that I think that deserves a nice pat on the back.</p>
+<p>Where you are is your <em>time zone</em> based on wobbly, vertical slices of the world.
+UTC is the &quot;base&quot; time zone and is such because it's on the prime meridian (zero
+degrees longitude). Think &quot;base time zone&quot; where the offset is <code>00:00</code>. Let's
+pretend we are sitting in a lawn chair in this time zone, which is the same as
+GMT or &quot;Greenwich Mean Time&quot;, so, not a sunny day.</p>
+<p>As you recline in the lawn chair time passes by but the earth's rotations and
+the solar orbits are complicated things. Time doesn't <em>just</em> pass bit-by-bit. It
+does in a mathematical sense, sure, but time is a construct with ideas such as
+days, weeks, and years. To fit time into these relatively standard quantities,
+such as the number of days per given month or total days in year, we must make
+small adjustments to time, such as leap years, leap seconds, and daylight
+savings. Each of these 'correct' some kind of drift. However, the Unix Epoch
+format doesn't encode leap seconds, which is one type of correction.</p>
+<p>Enter <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO8601</a>. Among several nice
+properties but for starters, humans can read it! The timestamp,</p>
+<pre><code>&quot;2005-01-01T00:00:00&quot;
+</code></pre>
+<p>is equivalent to the Unix Epoch,</p>
+<pre><code>1104537600
+</code></pre>
+<p>It's far easier to quickly determine if an ISO8601 is suffering corruption than
+eyeballing integers. It's also much easier to tell what ballpark of dates an
+ISO8601 is in. If you have a bunch of ISO8601 timestamps, you can sort them with
+default strings comparison (lexicographic) and they will naturally be in
+ascending order. I love this feature about them because it means I don't need to
+rely on a library to order a bunch of well-formed ISO8601s. Opposed to our
+fixed-precision Unix Epoch integers, ISO8601 allows for variable granularity.
+You <em>can</em> get finer granularity for time on Unix systems but I won't go too far
+into that here. Run <code>man 2 gettimeofay</code> and have a read.</p>
+<p>Back to our lawn chairs someplace in Sunny England, time zones are expressed
+officially as strings describing two parts separated by a forward slash, e.g.
+<code>Australia/Sydney</code> or <code>America/Los_Angeles</code>. If you have any formatting you need
+to do for a client reading data, you need to encode time zones. However, it is
+OK to not deal with time zones if you are dealing with an &quot;absolute time&quot; for a
+given data set that is fixed to a place. You then have a direct link between a
+set of timestamps and time zone.</p>
+<p>ISO8601 has an optional time zone specifier. RFC3339 enforces that the timezone
+be specified but for the case of UTC you don't need to specify the specific
+offset as it is implicit. Time zones tend to be exposed to many odd political
+changes. Offsets assume a timezone will <em>always</em> be a particular amount, but
+this isn't quite true. As recent as 2011, Samoa changed their time zone for
+trade reasons. Originally, <code>Pacific/Apia</code> had an offset of UTC-11 (note the
+minus) but it changed for trade reasons and went to UTC+13 (note the plus).
+That's a big jump! Thus, the timestamp:</p>
+<pre><code>2013-01-02T12:00:00Z-11:00
+</code></pre>
+<p>is invalid for Somoa. However, if you didn't specify the offset as part of the
+stored data, you could get away with looking up the time zone for <code>Pacific/Apia</code>
+indexed by some granularity, say, year. This way you can record both offsets
+before and after 2011. We could encode the timestamp simply as</p>
+<pre><code>2013-01-01T01:00:00Z // UTC
+</code></pre>
+<p>and the lookup for the year 2013 would reveal that <code>Pacific/Apia</code> is <code>+13:00</code>
+meaning we can now shift this date over properly for Samoans. In fact, you don't
+even need to store the specific index as most time zone databases that third
+party libraries provide already extensively document this information.</p>
+<p>Its important to keep your timestamps in a canonical timezone. In the case of
+Unix Epoch, by definition the seconds from midnight January 1st 1970 needs to be
+in UTC, similar to the default timezone for ISO8601. Picking a canonical time
+zone, specifically UTC, will save you a lot of time from painful sleuthing as
+two dates without timezone information <em>could</em> be from different timezones.</p>
+<p>Chat applications have to pay particular care to this. If someone is sending
+messages from San Francisco but another person is replying from Beijing, the
+time difference is an important part of the UI. How many hours are we off? When
+did they really read my message? Did they send it before or after me? Causality
+is its own can of worms for distributed systems, hence this is a bit of a
+hand-wavey argument that is ignoring some really critical (and nasty) aspects of
+time, but having most things stored as a single time zone and stashing client
+time zone preferences or figuring out what their device location is and using
+the time zone from that can save a <em>lot</em> of grief.</p>
+<p>As a recap here's the basics:</p>
+<ol>
+<li><strong>Pick one format and stick to it</strong></li>
+<li><strong>Always store your timestamps in a single, canonical time zone</strong></li>
+<li><strong>Store time zone preferences for clients as a string rather than the
+offset</strong></li>
+</ol>
+<p>And that's a short primer. Time can get a lot more nuanced, such as focusing on
+monotonically increasing time for servers and thinking through concerns like
+storage space, but most applications won't need to care too much about these
+things. A little upfront focus on consistency will save you a lot of shed tears.</p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

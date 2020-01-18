@@ -200,7 +200,7 @@ fn template(path: &str) -> Template {
 
 fn create_deploy_dirs() -> Result<Vec<()>, std::io::Error> {
     ["posts", "tags", "assets"]
-        .into_iter()
+        .iter()
         .map(|p| {
             let path = format!("{}/{}", JUSTANOTHERDOT_DEPLOY_PREFIX, p);
             let path = Path::new(&path);
