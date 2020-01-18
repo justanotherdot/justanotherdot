@@ -123,10 +123,8 @@ date handling concerns can be shoved onto third-party libraries or that they
 don't exist at all. Here's a short, incomplete primer.</p>
 <p>There are two common formats for storage; as strings or as integers. Although
 integers have a history of heavy optimization on modern CPUs and compilers,
-strings can have reasonable performance with the right memory structure. <em>In
-fact</em>, you might want to encode unix epoch as a string to avoid complications
-with serialisation (JSON numbers have a limit of 2^53 in value). This integer
-format is typically known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Epoch
+strings can have reasonable performance with the right memory structure. This
+integer format is typically known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Epoch
 Time</a> and the start of the world for
 this format is January 1st, 1970; the birth of Unix. A 32-bit integer,
 expressing seconds since January 1st, 1970, ends at 19 January 2038. 64-bit Unix
@@ -162,7 +160,8 @@ ascending order. I love this feature about them because it means I don't need to
 rely on a library to order a bunch of well-formed ISO8601s. Opposed to our
 fixed-precision Unix Epoch integers, ISO8601 allows for variable granularity.
 You <em>can</em> get finer granularity for time on Unix systems but I won't go too far
-into that here. Run <code>man 2 gettimeofay</code> and have a read.</p>
+into that here. You can run <code>man 2 gettimeofday</code> and <code>man 2 clock_gettime</code> for a
+slightly deeper understanding of some options on Linux.</p>
 <p>Back to our lawn chairs someplace in Sunny England, time zones are expressed
 officially as strings describing two parts separated by a forward slash, e.g.
 <code>Australia/Sydney</code> or <code>America/Los_Angeles</code>. If you have any formatting you need
