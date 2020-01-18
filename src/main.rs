@@ -97,15 +97,11 @@ struct Blog<'a> {
     tags: Vec<Tag>,
 }
 
-#[derive(Content, Clone, Debug)]
-struct Subscribe;
-
 struct PostTemplate<'a>(Template<'a>);
 struct IndexTemplate<'a>(Template<'a>);
 struct RssTemplate<'a>(Template<'a>);
 struct SitemapTemplate<'a>(Template<'a>);
 struct TagsTemplate<'a>(Template<'a>);
-struct SubscribeTemplate<'a>(Template<'a>);
 
 fn parse_post<A>(path: A) -> Post
 where
@@ -187,10 +183,6 @@ fn render_sitemap(rss: &Sitemap, tpl: &SitemapTemplate) -> String {
 
 fn render_index(blog: &Blog, tpl: &IndexTemplate) -> String {
     tpl.0.render(blog)
-}
-
-fn render_subscribe(subscribe: &Subscribe, tpl: &SubscribeTemplate) -> String {
-    tpl.0.render(subscribe)
 }
 
 fn template(path: &str) -> Template {
@@ -278,16 +270,6 @@ fn main() {
     let rendered = render_index(&blog, &tpl);
     std::fs::write(
         &format!("{}/index.html", JUSTANOTHERDOT_DEPLOY_PREFIX),
-        rendered,
-    )
-    .expect("failed to write post to deploy");
-
-    let subscribe = Subscribe;
-    let tpl = format!("{}/templates/subscribe.html", JUSTANOTHERDOT_TEMPLATE_ROOT);
-    let tpl = SubscribeTemplate(template(&tpl));
-    let rendered = render_subscribe(&subscribe, &tpl);
-    std::fs::write(
-        &format!("{}/subscribe.html", JUSTANOTHERDOT_DEPLOY_PREFIX),
         rendered,
     )
     .expect("failed to write post to deploy");
