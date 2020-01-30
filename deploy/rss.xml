@@ -35,7 +35,7 @@ scripts:</p>
 <pre><code>#!/bin/sh -eux
 </code></pre>
 <p>You may want to drop the <code>x</code> if you don't need logging or it might leak details.
-By writing every script as a raw <code>sh</code> script you opt in to writing <code>POSIX</code>
+By writing every script as a raw <code>sh</code> script you opt in to writing POSIX
 compliant scripts. This might seem hard but with a lint tool (probably the only
 one I will recommend!) you can get a lot of guidance around the nuances of
 shell. <code>shellcheck</code><a href="https://github.com/koalaman/shellcheck">1</a> is a fantastic way to not only learn how to write better
@@ -44,21 +44,20 @@ shell scripts by having it yell at you all the time but also how to write
 <p>This might sound like a tick against using shell scripts. Afterall, hope is not
 a great strategy! But <em>every</em> language has foot guns. If something doesn't bite
 you in a shell script, something else will bite you in python. If something
-doesn't bite you in python, another thing might bite you in Haskell. There's
+doesn't bite you in python, another thing might bite you in haskell. There's
 just no winning is there! What I'm advocating is that <code>sh</code> is ubiquitous; it
-takes no dependencies besides opting into a <code>POSIX</code> compliant operating system
+takes no dependencies besides opting into a POSIX compliant operating system
 and means you can focus more on the guts of what tasks are being orchestrated
 rather than on the logic shelling out to them.</p>
 <p>Lastly, put shell scripts in the same place for every project. My personal
-preference is <code>bin</code> at the top level directory (root) but others may choose
-something like <code>scripts</code>. Whatever is chosen it helps to have it the same across
-every project to allow the convention that people go looking in one place rather
-than guessing across a number of options.</p>
+preference is <code>bin</code> at the top level directory (root). Whatever is chosen it
+helps to have it the same across every project to allow the convention that
+people go looking in one place rather than guessing across a number of options.</p>
 <p>And that's it, no need to learn a new task runner or shoe-horn your chores into
 a build tool. It doesn't matter if you use <code>npm</code>, <code>yarn</code>, <code>cargo</code>, <code>shake</code>,
 <code>make</code>, <code>cargo</code>, <code>python</code>, or any other equivalent.</p>
 <ol>
-<li>Use shell scripts and push to have them be <code>POSIX</code> compliant so the whole
+<li>Use shell scripts and push to have them be POSIX compliant so the whole
 team can use them granted they are on some <code>*nix</code></li>
 <li>Keep shell scripts in a common place to enhance discoverability</li>
 <li>Always use scripts or programs in the context of other tools if you must</li>
