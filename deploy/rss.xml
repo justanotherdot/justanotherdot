@@ -10,57 +10,93 @@
     <language>en-us</language>
     
     <item>
-      <title>The Bin Directory Your Project Needs</title>
+      <title>Structuring Rust Projects With Multiple Binaries</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
-      <link>https://justanotherdot.com/posts/the-bin-directory-your-project-needs.html</link>
-      <guid>https://justanotherdot.com/posts/the-bin-directory-your-project-needs.html</guid>
+      <link>https://justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html</link>
+      <guid>https://justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html</guid>
       <pubDate>Thu, 30 Jan 2020 16:31:53 +1000</pubDate>
       <description></description>
       <content:encoded><![CDATA[
-        <p>A lot of people pick task runners to automate chores around a codebase. People
-tend to pick languages that are ergonomic for their needs as a scripting
-language, or they pick tools such as <code>make</code>. The problem is that a lot of these
-tools aren't <em>necessarily</em> designed to be task runners. They were instead
-designed to output binaries.</p>
-<p>I think it's worth pointing out that task runners and build tools are distinct
-creatures. If you need to do something that generates an artifact, that's the
-responsiblity of a build tool. If the task involved is glue for getting an
-artifact or for doing some activity such as running a local development
-workflow, stubbing local databases, or some other routine task, this is the
-responsibility of a task runner. Don't conflate the two!</p>
-<p>By using shell scripts you support two things; portability and sharing. When I
-say &quot;shell scripts&quot; a lot of people think <code>bash</code> but what I actually am
-suggesting is a lot more pedantic. This should be the prelude of all your shell
-scripts:</p>
+        <p>How do you organize Rust projects with multiple binaries so that the build
+output winds up in a common subdirectory? Should you be looking for a solution
+other than cargo? Regardless of whether you are using nested crates within a
+workspace or simply a mixture of <code>.rs</code> files under <code>src/bin/</code>, <strong>you absolutely
+should be looking for something other than cargo.</strong> What you need is a proper
+task runner and the most portable task runner ships with every unix
+flavored operating system; <code>sh</code>.</p>
+<p>People seem to conflate task runners with build tools. Build tools generate
+artifacts such as binaries or libraries whereas task runners act as the glue for
+teams to share ways to achieve particular chores. Some people use tools like
+<code>make</code> to do both jobs and the crossed responsibility brings a lot of pain and
+maintenance burden. People need to be aware of the many nuances of <code>make</code> such
+as the fact that tabs for indenting are semantic, rules for tasks need to be
+marked as <code>.PHONY</code> if there is a target they relate to, and so on. Others end up
+using scripting languages such as python or javascript or they may use some
+hybrid domain specific language that mixes a bit of programming and
+configuration to specify how tasks are run.</p>
+<p>You don't need any of these options. <code>sh</code> is POSIX compliant, which means it's
+portable, so long as you are careful you do things that are portable. Hope isn't
+really an option so how is this a reasonable suggestion? To fix this you can use
+<code>shellcheck</code><a href="https://github.com/koalaman/shellcheck">1</a> which is probably the only linter I recommend. Every shell
+script you write should have the following</p>
 <pre><code>#!/bin/sh -eux
 </code></pre>
-<p>You may want to drop the <code>x</code> if you don't need logging or it might leak details.
-By writing every script as a raw <code>sh</code> script you opt in to writing POSIX
-compliant scripts. This might seem hard but with a lint tool (probably the only
-one I will recommend!) you can get a lot of guidance around the nuances of
-shell. <code>shellcheck</code><a href="https://github.com/koalaman/shellcheck">1</a> is a fantastic way to not only learn how to write better
-shell scripts by having it yell at you all the time but also how to write
-<em>portable</em> shell scripts.</p>
-<p>This might sound like a tick against using shell scripts. Afterall, hope is not
-a great strategy! But <em>every</em> language has foot guns. If something doesn't bite
-you in a shell script, something else will bite you in python. If something
-doesn't bite you in python, another thing might bite you in haskell. There's
-just no winning is there! What I'm advocating is that <code>sh</code> is ubiquitous; it
-takes no dependencies besides opting into a POSIX compliant operating system
-and means you can focus more on the guts of what tasks are being orchestrated
-rather than on the logic shelling out to them.</p>
-<p>Lastly, put shell scripts in the same place for every project. My personal
-preference is <code>bin</code> at the top level directory (root). Whatever is chosen it
-helps to have it the same across every project to allow the convention that
-people go looking in one place rather than guessing across a number of options.</p>
-<p>And that's it, no need to learn a new task runner or shoe-horn your chores into
-a build tool. It doesn't matter if you use <code>npm</code>, <code>yarn</code>, <code>cargo</code>, <code>shake</code>,
-<code>make</code>, <code>cargo</code>, <code>python</code>, or any other equivalent.</p>
+<p>Which says to use <code>sh</code> instead of, say, <code>bash</code>. <code>shellcheck</code> will actually
+recommend things intelligently based on which shell you specify. <code>bash</code> is not
+ideal here because support for particular features differs between versions and
+we are aiming to have something pretty much anyone on a team can use at a
+moment's notice so long as they are using linux, bsd, darwin, or any other *nix
+flavor. This prelude also turns on some common flags.</p>
 <ol>
-<li>Use shell scripts and push to have them be POSIX compliant so the whole
-team can use them granted they are on some <code>*nix</code></li>
-<li>Keep shell scripts in a common place to enhance discoverability</li>
-<li>Always use scripts or programs in the context of other tools if you must</li>
+<li><strong>e</strong> for stop on the first error</li>
+<li><strong>u</strong> for stopping if any environment variable is unset</li>
+<li><strong>x</strong> for tracing output</li>
+</ol>
+<p>Some caveats are that (1) doesn't work for pipes, for that you can use <code>set -o pipefail</code>. If you want cleaner output or you don't wan to leak details you can
+drop (3). The last convention is to keep scripts in a common <code>bin</code> directory at
+the root of your project which enhances discoverability of scripts for others.
+If people go looking for scripts from project to project its far easier to look
+in a place like <code>bin</code> without guessing a few options. The reason for why its
+called <code>bin</code> is that they are executables!</p>
+<p>Now we've got all the pieces in place for writing our script. Let's go back to
+where we started at our prelude. Let's call this script <code>bin/build</code>. We will
+assume there are several crates in a workspace for this example and that we use
+<code>git</code> since cargo bootstraps projects with it by default.</p>
+<pre><code>#!/bin/sh -eux
+
+ROOT=$(git rev-parse --show-toplevel)
+cd &quot;$ROOT&quot;
+mkdir -p dist/bin
+for crate in crate1 crate2 crate3; do
+  cd &quot;$crate&quot;
+  cargo build --release
+  cp target/release/crate1-binary &quot;$ROOT/dist/bin/&quot;
+  cd &quot;$ROOT&quot;
+done
+</code></pre>
+<p>This script is dead-simple. It shoots to the root of the project, makes the
+directories <code>dist</code> and its subdirectory <code>bin</code>. We have a list of crates in a
+loop we iterate across but we could make this dynamic, as well. Then, in each
+crate we create a release build and copy the binary from the project up to the
+common subdirectory. Then, we shoot back to the root directory again and repeat.
+All we have to do now to do now is make the script executable and call it:</p>
+<pre><code>$ chmod +x bin/build
+$ bin/build
+</code></pre>
+<p>You don't need to let scripts grow out of control, either. What's awesome about
+keeping scripts, and, more generally, programs small means you can compose
+things like this:</p>
+<pre><code>
+bin/init
+bin/run
+</code></pre>
+<p>Where <code>init</code> might do some stubbing or setup work and <code>run</code> might launch a
+service, whatever those tasks may be.</p>
+<p>In summary, for shell script success all you need is:</p>
+<ol>
+<li>A common prelude that uses <code>sh</code> and some options set</li>
+<li>Using <code>shellcheck</code> to ensure you're writing sensible and POSIX compliant scripts</li>
+<li>A common directory for scripts that is the same for all projects</li>
 </ol>
 
         ]]></content:encoded>
