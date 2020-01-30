@@ -21,8 +21,7 @@ language, or they pick tools such as `make`. The problem is that a lot of these
 tools aren't _necessarily_ designed to be task runners. They were instead
 designed to output binaries.
 
-I will talk about `Rust` here but the technique is language agnostic. I think
-it's worth pointing out that task runners and build tools are distinct
+I think it's worth pointing out that task runners and build tools are distinct
 creatures. If you need to do something that generates an artifact, that's the
 responsiblity of a build tool. If the task involved is glue for getting an
 artifact or for doing some activity such as running a local development
