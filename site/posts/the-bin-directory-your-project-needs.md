@@ -42,7 +42,7 @@ You may want to drop the `x` if you don't need logging or it might leak details.
 By writing every script as a raw `sh` script you opt in to writing `POSIX`
 compliant scripts. This might seem hard but with a lint tool (probably the only
 one I will recommend!) you can get a lot of guidance around the nuances of
-shell. `shellcheck` is a fantastic way to not only learn how to write better
+shell. `shellcheck`[1] is a fantastic way to not only learn how to write better
 shell scripts by having it yell at you all the time but also how to write
 _portable_ shell scripts.
 
@@ -69,3 +69,5 @@ a build tool. It doesn't matter if you use `npm`, `yarn`, `cargo`, `shake`,
    team can use them granted they are on some `*nix`
 2. Keep shell scripts in a common place to enhance discoverability
 3. Always use scripts or programs in the context of other tools if you must
+
+[1]: https://github.com/koalaman/shellcheck
