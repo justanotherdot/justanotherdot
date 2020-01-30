@@ -1,7 +1,7 @@
 ---
 title: The Bin Directory Your Project Needs
 author: Ryan James Spencer
-date:
+date: 2020-01-30T06:31:53.002306383+00:00
 tags:
   - scripting
   - automation
