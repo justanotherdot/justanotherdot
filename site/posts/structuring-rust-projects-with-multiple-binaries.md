@@ -73,11 +73,10 @@ bin/run
 Where `init` might do some stubbing or setup work and `run` might launch a
 service, whatever those tasks may be.
 
-`sh` is POSIX compliant, which means it's portable, so long as you are careful
-you do things that are portable. Hope isn't really an option so how is this a
-reasonable suggestion? To fix this you can use `shellcheck`[1] which is probably
-the only linter I recommend. Every shell script you write should have the
-following
+`sh` is POSIX compliant, which means it allows us to write highly portable, and
+therefore shareable, scripts. Like anything there are ways things can go wrong
+but you can address this by using the linter `shellcheck`[1]. Every shell script
+you write should have the following
 
 ```
 #!/bin/sh -eux
@@ -91,16 +90,19 @@ moment's notice so long as they are using linux, bsd, darwin, or any other *nix
 flavor. This prelude also turns on some common flags.
 
 1. **e** to stop on the first **e**rror
-2. **u** to stop if an variable is **u**nset
+2. **u** to stop if a variable is **u**nset
 3. **x** to print tracing output of each e**x**ecuted statement
 
-Some caveats are that (1) doesn't work for pipes, for that you can use `set -o
-pipefail`. If you want cleaner output or you don't wan to leak details you can
-drop (3). The last convention is to keep scripts in a common `bin` directory at
-the root of your project which enhances discoverability of scripts for others.
-If people go looking for scripts from project to project its far easier to look
-in a place like `bin` without guessing a few options. The reason for why its
-called `bin` is that they are executables!
+(3) can be optionally dropped if you don't want to expose details or want
+cleaner output.
+
+The last convention is to keep scripts in a common `bin` directory at the root
+of your project which enhances discoverability of scripts for others. Allowing
+people to make less guesses about which directory is the single source of truth
+for automation scripts helps people move faster. If they want a chore done, they
+can see what's present under `bin`, or if they need to add a chore they know
+exactly where it's added for every project. The reason for why its called `bin`
+is that they are executables!
 
 In summary, for shell script success all you need is:
 

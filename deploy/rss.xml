@@ -33,35 +33,11 @@ as the fact that tabs for indenting are semantic, rules for tasks need to be
 marked as <code>.PHONY</code> if there is a target they relate to, and so on. Others end up
 using scripting languages such as python or javascript or they may use some
 hybrid domain specific language that mixes a bit of programming and
-configuration to specify how tasks are run.</p>
-<p>You don't need any of these options. <code>sh</code> is POSIX compliant, which means it's
-portable, so long as you are careful you do things that are portable. Hope isn't
-really an option so how is this a reasonable suggestion? To fix this you can use
-<code>shellcheck</code><a href="https://github.com/koalaman/shellcheck">1</a> which is probably the only linter I recommend. Every shell
-script you write should have the following</p>
-<pre><code>#!/bin/sh -eux
-</code></pre>
-<p>Which says to use <code>sh</code> instead of, say, <code>bash</code>. <code>shellcheck</code> will actually
-recommend things intelligently based on which shell you specify. <code>bash</code> is not
-ideal here because support for particular features differs between versions and
-we are aiming to have something pretty much anyone on a team can use at a
-moment's notice so long as they are using linux, bsd, darwin, or any other *nix
-flavor. This prelude also turns on some common flags.</p>
-<ol>
-<li><strong>e</strong> for stop on the first error</li>
-<li><strong>u</strong> for stopping if any environment variable is unset</li>
-<li><strong>x</strong> for tracing output</li>
-</ol>
-<p>Some caveats are that (1) doesn't work for pipes, for that you can use <code>set -o pipefail</code>. If you want cleaner output or you don't wan to leak details you can
-drop (3). The last convention is to keep scripts in a common <code>bin</code> directory at
-the root of your project which enhances discoverability of scripts for others.
-If people go looking for scripts from project to project its far easier to look
-in a place like <code>bin</code> without guessing a few options. The reason for why its
-called <code>bin</code> is that they are executables!</p>
-<p>Now we've got all the pieces in place for writing our script. Let's go back to
-where we started at our prelude. Let's call this script <code>bin/build</code>. We will
-assume there are several crates in a workspace for this example and that we use
-<code>git</code> since cargo bootstraps projects with it by default.</p>
+configuration to specify how tasks are run, e.g. <code>gulp</code>. You don't need any of
+these options.</p>
+<p>I'll call this script <code>bin/build</code>. We will assume there are several crates in a
+workspace for this example and that we use <code>git</code> since cargo bootstraps projects
+with it by default.</p>
 <pre><code>#!/bin/sh -eux
 
 ROOT=$(git rev-parse --show-toplevel)
@@ -92,6 +68,32 @@ bin/run
 </code></pre>
 <p>Where <code>init</code> might do some stubbing or setup work and <code>run</code> might launch a
 service, whatever those tasks may be.</p>
+<p><code>sh</code> is POSIX compliant, which means it allows us to write highly portable, and
+therefore shareable, scripts. Like anything there are ways things can go wrong
+but you can address this by using the linter <code>shellcheck</code><a href="https://github.com/koalaman/shellcheck" title="shellcheck">1</a>. Every shell script
+you write should have the following</p>
+<pre><code>#!/bin/sh -eux
+</code></pre>
+<p>Which says to use <code>sh</code> instead of, say, <code>bash</code>. <code>shellcheck</code> will actually
+recommend things intelligently based on which shell you specify. <code>bash</code> is not
+ideal here because support for particular features differs between versions and
+we are aiming to have something pretty much anyone on a team can use at a
+moment's notice so long as they are using linux, bsd, darwin, or any other *nix
+flavor. This prelude also turns on some common flags.</p>
+<ol>
+<li><strong>e</strong> to stop on the first <strong>e</strong>rror</li>
+<li><strong>u</strong> to stop if a variable is <strong>u</strong>nset</li>
+<li><strong>x</strong> to print tracing output of each e<strong>x</strong>ecuted statement</li>
+</ol>
+<p>(3) can be optionally dropped if you don't want to expose details or want
+cleaner output.</p>
+<p>The last convention is to keep scripts in a common <code>bin</code> directory at the root
+of your project which enhances discoverability of scripts for others. Allowing
+people to make less guesses about which directory is the single source of truth
+for automation scripts helps people move faster. If they want a chore done, they
+can see what's present under <code>bin</code>, or if they need to add a chore they know
+exactly where it's added for every project. The reason for why its called <code>bin</code>
+is that they are executables!</p>
 <p>In summary, for shell script success all you need is:</p>
 <ol>
 <li>A common prelude that uses <code>sh</code> and some options set</li>
