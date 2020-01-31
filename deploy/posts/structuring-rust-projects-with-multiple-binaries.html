@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
-    <title>tags &#8226; Ryan James Spencer</title>
+    <title>Structuring Rust Projects With Multiple Binaries &#8226; Ryan James Spencer</title>
     <style>
       .social-icon {
         stroke: currentColor;
@@ -27,12 +27,11 @@
     <section class="section">
       <div class="container">
         <div class="columns">
-
           <div class="column is-one-quarter">
             <a href="https://justanotherdot.com">
-              <h1 class="title">
+              <h2 class="title">
                 justanotherdot &#8226;
-              </h1>
+              </h2>
             </a>
             <h2 class="subtitle">
               Ryan James Spencer
@@ -110,22 +109,100 @@
                     </form>
                   </div>
                   <!--End mc_embed_signup-->
-
                 </div>
                 <!-- newsletter form end -->
+
               </div>
             </div>
           </div>
-          <div class="column">
-            <h2 class="subtitle is-5">Tagged with <strong>nvim</strong></h2>
-            <div class="content">
-              <ul>
-                
-                <li>
-                  <span class="content is-small">11/15/19</span> <a href="/posts/teleporting-at-the-speed-of-thought.html">Teleporting At The Speed Of Thought</a>
-                </li>
-                
-              </ul>
+          <div class="column is-half">
+            <h1 class="title is-2">Structuring Rust Projects With Multiple Binaries</h1>
+            <h2 class="subtitle is-5">on January 30 2020,  4:31PM</h2>
+            <div class="content is-medium">
+              <p>How do you organize Rust projects with multiple binaries so that the build
+output winds up in a common subdirectory? Should you be looking for a solution
+other than cargo? Regardless of whether you are using nested crates within a
+workspace or simply a mixture of <code>.rs</code> files under <code>src/bin/</code>, <strong>you absolutely
+should be looking for something other than cargo.</strong> What you need is a proper
+task runner and the most portable task runner ships with every unix
+flavored operating system; <code>sh</code>.</p>
+<p>People seem to conflate task runners with build tools. Build tools generate
+artifacts such as binaries or libraries whereas task runners act as the glue for
+teams to share ways to achieve particular chores. Some people use tools like
+<code>make</code> to do both jobs and the crossed responsibility brings a lot of pain and
+maintenance burden. People need to be aware of the many nuances of <code>make</code> such
+as the fact that tabs for indenting are semantic, rules for tasks need to be
+marked as <code>.PHONY</code> if there is a target they relate to, and so on. Others end up
+using scripting languages such as python or javascript or they may use some
+hybrid domain specific language that mixes a bit of programming and
+configuration to specify how tasks are run, e.g. <code>gulp</code>. You don't need any of
+these options.</p>
+<p>I'll call this script <code>bin/build</code>. We will assume there are several crates in a
+workspace for this example and that we use <code>git</code> since cargo bootstraps projects
+with it by default.</p>
+<pre><code>#!/bin/sh -eux
+
+ROOT=$(git rev-parse --show-toplevel)
+cd &quot;$ROOT&quot;
+mkdir -p dist/bin
+for crate in crate1 crate2 crate3; do
+  cd &quot;$crate&quot;
+  cargo build --release
+  cp target/release/crate1-binary &quot;$ROOT/dist/bin/&quot;
+  cd &quot;$ROOT&quot;
+done
+</code></pre>
+<p>This script is dead-simple. It shoots to the root of the project, makes the
+directories <code>dist</code> and its subdirectory <code>bin</code>. We have a list of crates in a
+loop we iterate across but we could make this dynamic, as well. Then, in each
+crate we create a release build and copy the binary from the project up to the
+common subdirectory. Then, we shoot back to the root directory again and repeat.
+All we have to do now to do now is make the script executable and call it:</p>
+<pre><code>$ chmod +x bin/build
+$ bin/build
+</code></pre>
+<p>You don't need to let scripts grow out of control, either. What's awesome about
+keeping scripts, and, more generally, programs small means you can compose
+things like this:</p>
+<pre><code>
+bin/init
+bin/run
+</code></pre>
+<p>Where <code>init</code> might do some stubbing or setup work and <code>run</code> might launch a
+service, whatever those tasks may be.</p>
+<p><code>sh</code> is POSIX compliant, which means it allows us to write highly portable, and
+therefore shareable, scripts. Like anything there are ways things can go wrong
+but you can address this by using the linter <code>shellcheck</code><a href="https://github.com/koalaman/shellcheck" title="shellcheck">1</a>. Every shell script
+you write should have the following</p>
+<pre><code>#!/bin/sh -eux
+</code></pre>
+<p>Which says to use <code>sh</code> instead of, say, <code>bash</code>. <code>shellcheck</code> will actually
+recommend things intelligently based on which shell you specify. <code>bash</code> is not
+ideal here because support for particular features differs between versions and
+we are aiming to have something pretty much anyone on a team can use at a
+moment's notice so long as they are using linux, bsd, darwin, or any other *nix
+flavor. This prelude also turns on some common flags.</p>
+<ol>
+<li><strong>e</strong> to stop on the first <strong>e</strong>rror</li>
+<li><strong>u</strong> to stop if a variable is <strong>u</strong>nset</li>
+<li><strong>x</strong> to print tracing output of each e<strong>x</strong>ecuted statement</li>
+</ol>
+<p>(3) can be optionally dropped if you don't want to expose details or want
+cleaner output.</p>
+<p>The last convention is to keep scripts in a common <code>bin</code> directory at the root
+of your project which enhances discoverability of scripts for others. Allowing
+people to make less guesses about which directory is the single source of truth
+for automation scripts helps people move faster. If they want a chore done, they
+can see what's present under <code>bin</code>, or if they need to add a chore they know
+exactly where it's added for every project. The reason for why its called <code>bin</code>
+is that they are executables!</p>
+<p>In summary, for shell script success all you need is:</p>
+<ol>
+<li>A common prelude that uses <code>sh</code> and some options set</li>
+<li>Using <code>shellcheck</code> to ensure you're writing sensible and POSIX compliant scripts</li>
+<li>A common directory for scripts that is the same for all projects</li>
+</ol>
+
             </div>
           </div>
         </div>
