@@ -1,12 +1,4 @@
 steps:
-#   - label: "Rust: stable"
-#     command:
-#       - "cargo build"
-#       - "cargo test"
-#     plugins:
-#       - docker-compose#v3.0.3:
-#           run: rust_stable_ci
-
   - label: "Rust: nightly"
     command:
       - "cargo +nightly build"
@@ -14,3 +6,7 @@ steps:
     plugins:
       - docker-compose#v3.0.3:
           run: rust_nightly_ci
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 3
