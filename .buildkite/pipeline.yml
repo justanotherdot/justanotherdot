@@ -1,6 +1,6 @@
 steps:
   - label: "Rust: nightly"
     command:
-      - "whoami"
+      - "rustup install nightly"
       - "cargo +nightly build"
       - "cargo +nightly test"
