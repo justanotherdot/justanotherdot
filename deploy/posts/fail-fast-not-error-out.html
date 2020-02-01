@@ -22,21 +22,34 @@
         height: 24px;
       }
     </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
   </head>
   <body>
     <section class="section">
       <div class="container">
         <div class="columns">
-          <div class="column is-one-quarter">
+          <div class="column is-one-quarter is-hidden"></div>
+          <div class="column is-one-quarter is-hidden-mobile">
             <a href="https://justanotherdot.com">
-              <h2 class="title">
-                justanotherdot &#8226;
+              <h2 class="title has-text-centered">
+                justanotherdot
               </h2>
             </a>
-            <h2 class="subtitle">
+            <h2 class="subtitle has-text-centered">
               Ryan James Spencer
             </h2>
             <div class="columns is-mobile">
+              <div class="column is-one-thirds"></div>
               <div class="column">
                 <a href="mailto:ryan@justanotherdot.com" target="_blank" rel="noopener">
                   <!--<span class="screen-reader">Contact via Email</span>-->
@@ -74,50 +87,24 @@
                 </a>
               </div>
 
-              <div class="column is-two-thirds"></div>
+              <div class="column is-one-thirds"></div>
             </div>
-            <div class="columns">
+            <!-- DESKTOP NEWSLETTER BEGIN -->
+            <div class="columns is-hidden-touch">
+              <div class="column is-one-thirds"></div>
               <div class="column is-10">
-
-                <!-- newsletter form begin -->
-                <h2 class="has-text-weight-semibold is-size-5 is-5">Newsletter</h2>
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter!</h2>
                 <div>
-                  <!-- Begin Mailchimp Signup Form -->
-                  <div id="control mc_embed_signup">
-                    <form
-                      action="https://justanotherdot.us7.list-manage.com/subscribe/post?u=6ce022d11d5d0780e8105dee6&amp;id=9d65e4c97c"
-                      method="post"
-                      id="mc-embedded-subscribe-form"
-                      name="mc-embedded-subscribe-form"
-                      class="validate"
-                      target="_blank"
-                      novalidate
-                      >
-                      <div id="mc_embed_signup_scroll">
-                        <div class="mc-field-group field">
-                          <div class="control">
-                            <input class="input required email" placeholder="email address" type="email" value="" name="EMAIL" id="mce-EMAIL">
-                          </div>
-                        </div>
-                        <div id="mce-responses" class="clear">
-                          <div class="response" id="mce-error-response" style="display:none"></div>
-                          <div class="response" id="mce-success-response" style="display:none"></div>
-                        </div>    <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-                        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_6ce022d11d5d0780e8105dee6_9d65e4c97c" tabindex="-1" value=""></div>
-                        <div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
-                      </div>
-                    </form>
-                  </div>
-                  <!--End mc_embed_signup-->
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
                 </div>
-                <!-- newsletter form end -->
-
               </div>
+              <div class="column is-one-thirds"></div>
             </div>
+            <!-- DESKTOP NEWSLETTER END -->
           </div>
           <div class="column is-half">
             <h1 class="title is-2">Fail Fast not Error Out</h1>
-            <h2 class="subtitle is-5">on October  7 2017, 12:50PM</h2>
+            <h2 class="subtitle is-6">October  7 2017, 12:50PM by Ryan James Spencer</h2>
             <div class="content is-medium">
               <p><strong>tl;dr</strong> Static analysis is a form of 'failing fast' that does not consist of
 leaving error based exit strategies (which should be reserved for situations
@@ -182,6 +169,18 @@ validating the correctness of our programs.</p>
 
             </div>
           </div>
+
+          <hr class="is-hidden-desktop">
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-hidden-desktop">
+              <div class="column is-10 is-centered">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter!</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
         </div>
       </div>
     </section>
