@@ -75,14 +75,15 @@ service, whatever those tasks may be.
 
 `sh` is POSIX compliant, which means it allows us to write highly portable, and
 therefore shareable, scripts. Like anything there are ways things can go wrong
-but you can address this by using the linter `shellcheck`[1]. Every shell script
-you write should have the following
+but you can address this by using the linter
+[shellcheck](https://github.com/koalaman/shellcheck ). Every shell script you
+write should have the following
 
 ```
 #!/bin/sh -eux
 ```
 
-Which says to use `sh` instead of, say, `bash`. `shellcheck` will actually
+Which says to use `sh` instead of, say, `bash`. shellcheck will actually
 recommend things intelligently based on which shell you specify. `bash` is not
 ideal here because support for particular features differs between versions and
 we are aiming to have something pretty much anyone on a team can use at a
@@ -107,7 +108,5 @@ is that they are executables!
 In summary, for shell script success all you need is:
 
 1. A common prelude that uses `sh` and some options set
-2. Using `shellcheck` to ensure you're writing sensible and POSIX compliant scripts
+2. Using shellcheck to ensure you're writing sensible and POSIX compliant scripts
 3. A common directory for scripts that is the same for all projects
-
-[1]: https://github.com/koalaman/shellcheck "shellcheck"

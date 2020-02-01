@@ -159,11 +159,12 @@ bin/run
 service, whatever those tasks may be.</p>
 <p><code>sh</code> is POSIX compliant, which means it allows us to write highly portable, and
 therefore shareable, scripts. Like anything there are ways things can go wrong
-but you can address this by using the linter <code>shellcheck</code><a href="https://github.com/koalaman/shellcheck" title="shellcheck">1</a>. Every shell script
-you write should have the following</p>
+but you can address this by using the linter
+<a href="https://github.com/koalaman/shellcheck">shellcheck</a>. Every shell script you
+write should have the following</p>
 <pre><code>#!/bin/sh -eux
 </code></pre>
-<p>Which says to use <code>sh</code> instead of, say, <code>bash</code>. <code>shellcheck</code> will actually
+<p>Which says to use <code>sh</code> instead of, say, <code>bash</code>. shellcheck will actually
 recommend things intelligently based on which shell you specify. <code>bash</code> is not
 ideal here because support for particular features differs between versions and
 we are aiming to have something pretty much anyone on a team can use at a
@@ -186,7 +187,7 @@ is that they are executables!</p>
 <p>In summary, for shell script success all you need is:</p>
 <ol>
 <li>A common prelude that uses <code>sh</code> and some options set</li>
-<li>Using <code>shellcheck</code> to ensure you're writing sensible and POSIX compliant scripts</li>
+<li>Using shellcheck to ensure you're writing sensible and POSIX compliant scripts</li>
 <li>A common directory for scripts that is the same for all projects</li>
 </ol>
 
