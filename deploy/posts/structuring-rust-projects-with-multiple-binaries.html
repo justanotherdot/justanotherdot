@@ -135,7 +135,7 @@ mkdir -p dist/bin
 for crate in crate1 crate2 crate3; do
   cd &quot;$crate&quot;
   cargo build --release
-  cp target/release/crate1-binary &quot;$ROOT/dist/bin/&quot;
+  cp target/release/$crate &quot;$ROOT/dist/bin/&quot;
   cd &quot;$ROOT&quot;
 done
 </code></pre>
