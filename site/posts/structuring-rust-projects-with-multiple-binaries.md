@@ -43,7 +43,7 @@ mkdir -p dist/bin
 for crate in crate1 crate2 crate3; do
   cd "$crate"
   cargo build --release
-  cp target/release/crate1-binary "$ROOT/dist/bin/"
+  cp target/release/$crate "$ROOT/dist/bin/"
   cd "$ROOT"
 done
 ```
