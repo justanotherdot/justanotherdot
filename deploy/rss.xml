@@ -10,6 +10,79 @@
     <language>en-us</language>
     
     <item>
+      <title>Error Handling With Closures</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/error-handling-with-closures.html</link>
+      <guid>https://justanotherdot.com/posts/error-handling-with-closures.html</guid>
+      <pubDate>Mon, 03 Feb 2020 19:38:54 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Iterators give us a wonderful array of functional-style combinators. Past
+readability, the rust compiler can occasionally optimize iterators better than
+it can for-loops, too. However, as iterators work by taking closures it can be
+confusing on how to best handle them compared to using classic for-loops. Here's
+a toy example:</p>
+<pre><code>fn parse_str_of_i32(input: &amp;str) -&gt; Vec&lt;i32&gt; {
+    input.split(&quot;,&quot;)
+        .map(|char| char.parse().unwrap()) // `unwrap`!
+        .collect()
+}
+
+let input = &quot;1,2,3,4,5,6,7,8,9,0&quot;;
+let numbers = parse_str_of_i32(input);
+assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
+</code></pre>
+<p>This works but it has an <code>unwrap</code> which means that if callers pass invalid
+strings, such as <code>&quot;oh boy, here we go again&quot;</code>, it will panic, which gives
+callers of this code little control when things go wrong. How can we convert
+this to use <code>Result</code> and be more ergonomic? Consider the for-loops variant,
+first:</p>
+<pre><code>use std::num::ParseIntError;
+
+fn parse_str_of_i32(input: &amp;str) -&gt; Result&lt;Vec&lt;i32&gt;, ParseIntError&gt; {
+    let mut numbers = vec![];
+    for char in input.split(&quot;,&quot;) {
+        numbers.push(char.parse()?)
+    }
+    Ok(numbers)
+}
+
+let input = &quot;1,2,3,4,5,6,7,8,9,0&quot;;
+let numbers = parse_str_of_i32(input).unwrap();
+assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
+</code></pre>
+<p>You might think this means if you want to use error handling while iterating you
+need to have a for-loop instead of using Iterator but you can still have an
+Iterator and have get the same type signature above for our parser!</p>
+<pre><code>use std::num::ParseIntError;
+
+fn parse_str_of_i32(input: &amp;str) -&gt; Result&lt;Vec&lt;i32&gt;, ParseIntError&gt; {
+    input.split(&quot;,&quot;)
+        .map(|char| char.parse())
+        .collect()
+}
+
+let input = &quot;1,2,3,4,5,6,7,8,9,0&quot;;
+let numbers = parse_str_of_i32(input).unwrap();
+assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
+</code></pre>
+<p>How does this work? <code>collect</code> knows how to take an Iterator of <code>Result</code>s and
+turn it into an <code>Result&lt;Vec&lt;A&gt;, B&gt;</code>. At the first sight of an <code>Err</code> the whole
+expression will become the <code>Err</code> case but if everything works out with <code>Ok</code> then
+the Iterator will take all the values into their own <code>Vec</code> and return <code>Ok</code> of
+the enclosing <code>Vec</code>. This is sometimes referred to as a &quot;transpose&quot; and you can
+see similar 'inside-out' behaviour elsewhere, including <code>Result</code>
+<a href="https://doc.rust-lang.org/std/option/enum.Option.html#method.transpose">itself</a>.</p>
+<p>You can also specify collections other than <code>Vec</code>. If <code>A</code> is something that can
+be <code>collect</code>ed into some container <code>V</code>, then an <code>Iterator&lt;Item=Result&lt;V, B&gt;&gt;</code> is
+possible. Have a poke around the <code>FromIterator</code> <a href="https://doc.rust-lang.org/std/iter/trait.FromIterator.html">trait
+docs</a> to get a
+better sense of what <code>collect</code> can roll up!</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Structuring Rust Projects With Multiple Binaries</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html</link>
