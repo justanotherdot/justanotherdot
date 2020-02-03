@@ -1,5 +1,5 @@
 ---
-title: Error Handling With Closures
+title: Error Handling With Closures In Iterators
 author: Ryan James Spencer
 date: 2020-02-03T09:38:54.087319182+00:00
 tags:
