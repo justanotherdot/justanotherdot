@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
-    <title>tags &#8226; Ryan James Spencer</title>
+    <title>Error Handling With Closures &#8226; Ryan James Spencer</title>
     <style>
       .social-icon {
         stroke: currentColor;
@@ -38,12 +38,12 @@
     <section class="section">
       <div class="container">
         <div class="columns">
-
-          <div class="column is-one-quarter">
+          <div class="column is-one-quarter is-hidden"></div>
+          <div class="column is-one-quarter is-hidden-mobile">
             <a href="https://justanotherdot.com">
-              <h1 class="title has-text-centered">
+              <h2 class="title has-text-centered">
                 justanotherdot
-              </h1>
+              </h2>
             </a>
             <h2 class="subtitle has-text-centered">
               Ryan James Spencer
@@ -86,6 +86,7 @@
                   </svg>
                 </a>
               </div>
+
               <div class="column is-one-thirds"></div>
             </div>
             <!-- DESKTOP NEWSLETTER BEGIN -->
@@ -101,22 +102,73 @@
             </div>
             <!-- DESKTOP NEWSLETTER END -->
           </div>
-          <div class="column">
-            <h2 class="subtitle is-5">Tagged with <strong>error handling</strong></h2>
-            <div class="content">
-              <ul>
-                
-                <li>
-                  <span class="content is-small">02/03/20</span> <a href="/posts/error-handling-with-closures.html">Error Handling With Closures</a>
-                </li>
-                
-                <li>
-                  <span class="content is-small">09/27/19</span> <a href="/posts/errors-across-a-boundary.html">Errors Across a Boundary</a>
-                </li>
-                
-              </ul>
+          <div class="column is-half">
+            <h1 class="title is-2">Error Handling With Closures</h1>
+            <h2 class="subtitle is-6">February  3 2020,  7:38PM by Ryan James Spencer</h2>
+            <div class="content is-medium">
+              <p>Iterators give us a wonderful array of functional-style combinators. Past
+readability, the rust compiler can occasionally optimize iterators better than
+it can for-loops, too. However, as iterators work by taking closures it can be
+confusing on how to best handle them compared to using classic for-loops. Here's
+a toy example:</p>
+<pre><code>fn parse_str_of_i32(input: &amp;str) -&gt; Vec&lt;i32&gt; {
+    input.split(&quot;,&quot;)
+        .map(|char| char.parse().unwrap()) // `unwrap`!
+        .collect()
+}
+
+let input = &quot;1,2,3,4,5,6,7,8,9,0&quot;;
+let numbers = parse_str_of_i32(input);
+assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
+</code></pre>
+<p>This works but it has an <code>unwrap</code> which means that if callers pass invalid
+strings, such as <code>&quot;oh boy, here we go again&quot;</code>, it will panic, which gives
+callers of this code little control when things go wrong. How can we convert
+this to use <code>Result</code> and be more ergonomic? Consider the for-loops variant,
+first:</p>
+<pre><code>use std::num::ParseIntError;
+
+fn parse_str_of_i32(input: &amp;str) -&gt; Result&lt;Vec&lt;i32&gt;, ParseIntError&gt; {
+    let mut numbers = vec![];
+    for char in input.split(&quot;,&quot;) {
+        numbers.push(char.parse()?)
+    }
+    Ok(numbers)
+}
+
+let input = &quot;1,2,3,4,5,6,7,8,9,0&quot;;
+let numbers = parse_str_of_i32(input).unwrap();
+assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
+</code></pre>
+<p>You might think this means if you want to use error handling while iterating you
+need to have a for-loop instead of using Iterator but you can still have an
+Iterator and have get the same type signature above for our parser!</p>
+<pre><code>use std::num::ParseIntError;
+
+fn parse_str_of_i32(input: &amp;str) -&gt; Result&lt;Vec&lt;i32&gt;, ParseIntError&gt; {
+    input.split(&quot;,&quot;)
+        .map(|char| char.parse())
+        .collect()
+}
+
+let input = &quot;1,2,3,4,5,6,7,8,9,0&quot;;
+let numbers = parse_str_of_i32(input).unwrap();
+assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
+</code></pre>
+<p>How does this work? <code>collect</code> knows how to take an Iterator of <code>Result</code>s
+and turn it into an <code>Result&lt;Vec&lt;A&gt;, B&gt;</code>. At the first
+sight of an <code>Err</code> the whole expression will become the <code>Err</code> case
+but if everything works out with <code>Ok</code> then the Iterator will be take all
+the values out into their own <code>Vec</code> and return <code>Ok</code>.</p>
+<p>You can also specify collections other than <code>Vec</code>. If <code>A</code> is something that can
+be <code>collect</code>ed into some container <code>V</code>, then an <code>Iterator&lt;Item=Result&lt;V, B&gt;&gt;</code> is
+possible. You can take a moment poking around the <code>FromIterator</code>
+<a href="https://doc.rust-lang.org/std/iter/trait.FromIterator.html">docs</a> to get a
+better sense of what <code>collect</code> can roll up!</p>
+
             </div>
           </div>
+
           <hr class="is-hidden-desktop">
             <!-- MOBILE NEWSLETTER BEGIN -->
             <div class="columns is-hidden-desktop">

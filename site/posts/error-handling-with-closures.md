@@ -1,7 +1,7 @@
 ---
 title: Error Handling With Closures
 author: Ryan James Spencer
-date:
+date: 2020-02-03T09:38:54.087319182+00:00
 tags:
   - rust
   - error handling
