@@ -66,14 +66,16 @@ let numbers = parse_str_of_i32(input).unwrap();
 assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
 ```
 
-How does this work? `collect` knows how to take an Iterator of `Result`s
-and turn it into an `Result<Vec<A>, B>`. At the first
-sight of an `Err` the whole expression will become the `Err` case
- but if everything works out with `Ok` then the Iterator will be take all
-the values out into their own `Vec` and return `Ok`.
+How does this work? `collect` knows how to take an Iterator of `Result`s and
+turn it into an `Result<Vec<A>, B>`. At the first sight of an `Err` the whole
+expression will become the `Err` case but if everything works out with `Ok` then
+the Iterator will take all the values into their own `Vec` and return `Ok` of
+the enclosing `Vec`. This is sometimes referred to as a "transpose" and you can
+see similar 'inside-out' behaviour elsewhere, including `Result`
+[itself](https://doc.rust-lang.org/std/option/enum.Option.html#method.transpose).
 
 You can also specify collections other than `Vec`. If `A` is something that can
 be `collect`ed into some container `V`, then an `Iterator<Item=Result<V, B>>` is
-possible. You can take a moment poking around the `FromIterator`
-[docs](https://doc.rust-lang.org/std/iter/trait.FromIterator.html) to get a
+possible. Have a poke around the `FromIterator` [trait
+docs](https://doc.rust-lang.org/std/iter/trait.FromIterator.html) to get a
 better sense of what `collect` can roll up!

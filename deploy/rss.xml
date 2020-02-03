@@ -66,15 +66,17 @@ let input = &quot;1,2,3,4,5,6,7,8,9,0&quot;;
 let numbers = parse_str_of_i32(input).unwrap();
 assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
 </code></pre>
-<p>How does this work? <code>collect</code> knows how to take an Iterator of <code>Result</code>s
-and turn it into an <code>Result&lt;Vec&lt;A&gt;, B&gt;</code>. At the first
-sight of an <code>Err</code> the whole expression will become the <code>Err</code> case
-but if everything works out with <code>Ok</code> then the Iterator will be take all
-the values out into their own <code>Vec</code> and return <code>Ok</code>.</p>
+<p>How does this work? <code>collect</code> knows how to take an Iterator of <code>Result</code>s and
+turn it into an <code>Result&lt;Vec&lt;A&gt;, B&gt;</code>. At the first sight of an <code>Err</code> the whole
+expression will become the <code>Err</code> case but if everything works out with <code>Ok</code> then
+the Iterator will take all the values into their own <code>Vec</code> and return <code>Ok</code> of
+the enclosing <code>Vec</code>. This is sometimes referred to as a &quot;transpose&quot; and you can
+see similar 'inside-out' behaviour elsewhere, including <code>Result</code>
+<a href="https://doc.rust-lang.org/std/option/enum.Option.html#method.transpose">itself</a>.</p>
 <p>You can also specify collections other than <code>Vec</code>. If <code>A</code> is something that can
 be <code>collect</code>ed into some container <code>V</code>, then an <code>Iterator&lt;Item=Result&lt;V, B&gt;&gt;</code> is
-possible. You can take a moment poking around the <code>FromIterator</code>
-<a href="https://doc.rust-lang.org/std/iter/trait.FromIterator.html">docs</a> to get a
+possible. Have a poke around the <code>FromIterator</code> <a href="https://doc.rust-lang.org/std/iter/trait.FromIterator.html">trait
+docs</a> to get a
 better sense of what <code>collect</code> can roll up!</p>
 
         ]]></content:encoded>
