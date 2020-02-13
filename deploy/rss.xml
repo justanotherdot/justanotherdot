@@ -10,6 +10,92 @@
     <language>en-us</language>
     
     <item>
+      <title>Idiomatic Argument Passing in Rust</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/idiomatic-argument-passing-in-rust.html</link>
+      <guid>https://justanotherdot.com/posts/idiomatic-argument-passing-in-rust.html</guid>
+      <pubDate>Fri, 14 Feb 2020 06:05:17 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>If you're coming from a language that supports automatically taking references
+to arguments you may wonder why Rust can't do the same. Rust is all about giving
+developers a better control of the memory layout of the data in their programs.
+Since Rust has the notion of ownership, we don't have to worry about large
+objects being copied into a function when the arguments to a function are owned.
+Instead, they are moved (pass-by-move), and when I first started writing Rust I
+assumed the idiom was to always use owned types for function arguments. For
+clarity, we call something an &quot;owned&quot; typed when it isn't behind a reference
+(<code>&amp;</code>). When an argument is behind a reference, we call that a &quot;borrowed&quot; type.</p>
+<p><strong>tl;dr</strong>
+<em>Idiomatic Rust functions ought to borrow arguments unless a function needs to
+completely own an argument for ergonomics (say, method chaining) or allocation
+(the caller won't need to re-use the data, perhaps).</em></p>
+<p>What's the case against owned types for function arguments as the default? All
+data in Rust must have an owner and that owner is a variable. Function arguments
+are variables. This means that when you give a function an owned type, you force
+a caller to give away ownership of the data it has allocated and probably wanted
+to use further down the line. If the function doesn't give back the value, it is
+lost to the caller, and the memory will be de-allocated at the end of the call's
+scope. Often callers <em>do</em> want to keep ownership of the values they pass into
+functions.</p>
+<p>Immutable borrows let functions decide if they want to make selective
+allocations but that does mean a function may be allocating when the caller may
+want to know all allocations upfront. Owned types are a good fit for this as it
+is the caller's responsibility to allocate and give up ownership to the function
+for its use. <em>Alternatively</em>, if a function wants to make a change (mutate) an
+argument, it will be clear to the caller that data may change signaled by adding
+<code>mut</code> after the <code>&amp;</code>. The common practice in C is to take pointers to
+non-primitive values. This is done so large objects don't get copied on each
+function call. However, with this approach of using raw pointers there is no way
+to clarify when a pointer is simply going to read data and when it is going to
+change it. With borrowed types in Rust we get this clarity at the syntactic
+level.</p>
+<p><strong>Idiomatic Rust functions borrow arguments unless it truly needs to own the
+values or they are primitives.</strong> Rust copies primitive values as they are part
+of the <code>Copy</code> trait. And this isn't to say you should <em>never</em> take owned
+arguments. The <a href="https://doc.rust-lang.org/1.0.0/style/ownership/builders.html">builder
+pattern</a>
+explicitly takes ownership and gives it back at each method call, allowing us to
+chain together calls prior to a <code>let</code> assignment. If we used <code>&amp;mut self</code> instead
+we'd need to first assign the value with <code>let mut</code> and make the calls
+separately.</p>
+<p>This leads us to an interesting example: How would we write the inside of this
+function?</p>
+<pre><code>fn thin_air() -&gt; &amp;Vec&lt;i32&gt; {
+    unimplemented!()
+}
+</code></pre>
+<p>We could try to allocate and take a reference to the allocation?</p>
+<pre><code>fn thin_air() -&gt; &amp;Vec&lt;i32&gt; {
+    &amp;vec![]
+}
+</code></pre>
+<p>But the borrow checker will refuse this program because our <code>Vec</code> only exists
+for the scope of <code>thin_air</code> and if we held a reference after the point it was
+dropped (its memory is freed) we'd be holding a pointer to garbage which is not
+safe to read or write to. Thus, if we want to return a borrowed type, we must
+also take a borrowed type or something that holds a borrowed type.</p>
+<pre><code>struct&lt;'a&gt; Data {
+  integers: &amp;'a Vec&lt;i32&gt;
+}
+
+fn thin_air(data: Data) -&gt; &amp;Vec&lt;i32&gt; {
+  data.integers
+}
+</code></pre>
+<p>To recap, Rust cares about memory safety and layout a fair amount and puts the
+work on the programmer to decide when references to arguments should be taken.
+Choosing immutable borrows by default means you won't cause any unintended
+consequences besides maybe some stray allocations. If you want to change the
+content that the caller owns and, hence, has allocated, switch to a mutable
+borrow. Lastly, if you know the caller won't need the argument anymore or if it
+wants to return an owned type in exchange of the passed in argument(s), the
+function ought to take ownership.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Error Handling With Closures In Iterators</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/error-handling-with-closures-in-iterators.html</link>
