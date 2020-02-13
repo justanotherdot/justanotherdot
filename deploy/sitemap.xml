@@ -7,6 +7,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/idiomatic-argument-passing-in-rust.html</loc>
+    <lastmod>2020-02-13T20:05:17.823423765+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/error-handling-with-closures-in-iterators.html</loc>
     <lastmod>2020-02-03T09:38:54.087319182+00:00</lastmod>
     <priority>0.95</priority>
