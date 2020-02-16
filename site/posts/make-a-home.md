@@ -4,6 +4,14 @@ author: Ryan James Spencer
 date: 2019-08-22T10:49:00Z
 tags: [code, software, health]
 image: "make-a-home.jpg"
+summary: >-
+  The analogies to construction and architecture in software are abundant. We say
+  that we are 'building' a codebase. We assign people the role of 'architect'. One
+  camp of people regale The Big Ball of Mud,
+  esteeming the progress they make as their rationale for constructing a wobblying
+  shantytown. Another camp sit high in The Ivory
+  Tower, planning the sanctuaries that may give their inhabitants stamina as they rest in its glory."
+
 ---
 
 I'd like to preface this article that analogies are rough comparisons. That is

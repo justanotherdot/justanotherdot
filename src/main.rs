@@ -32,6 +32,7 @@ struct PostHeader {
     date: String,
     tags: Option<Vec<String>>,
     image: Option<String>,
+    summary: Option<String>,
 }
 
 #[derive(Content, Clone, Debug)]
@@ -50,6 +51,7 @@ struct Post {
     domain: String,
     tags: Vec<Tag>,
     image: Option<String>,
+    summary: Option<String>,
 }
 
 #[derive(Content, Clone, Debug)]
@@ -165,6 +167,7 @@ where
         content: markdown.to_string(),
         tags: tags.clone(),
         image: header.image,
+        summary: header.summary,
     }
 }
 
