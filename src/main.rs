@@ -31,7 +31,7 @@ struct PostHeader {
     author: String,
     date: String,
     tags: Option<Vec<String>>,
-    image_url: Option<String>,
+    image: Option<String>,
 }
 
 #[derive(Content, Clone, Debug)]
@@ -49,7 +49,7 @@ struct Post {
     snake_url: String,
     domain: String,
     tags: Vec<Tag>,
-    image_url: Option<String>,
+    image: Option<String>,
 }
 
 #[derive(Content, Clone, Debug)]
@@ -164,7 +164,7 @@ where
         domain: JUSTANOTHERDOT_DOMAIN.to_string(),
         content: markdown.to_string(),
         tags: tags.clone(),
-        image_url: header.image_url,
+        image: header.image,
     }
 }
 
