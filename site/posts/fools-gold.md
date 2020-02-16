@@ -3,6 +3,16 @@ title: Fool's Gold, An Introduction
 author: Ryan James Spencer
 date: 2019-09-22T05:37:09Z
 tags: [software architecture, code, fools gold]
+image: fools-gold.jpg
+summary: >-
+  Developer's are a big target for what I call "fool's gold". It's the hope that a
+  piece of tech can solve all of our problems that keeps us going with the bait of
+  new tech. Solutions tempt despite us knowing better. An experienced software
+  developer realizes that everything has strengths and weaknesses which we call
+  "tradeoffs", but plenty of developer's don't realise this yet or are in denial.
+  This article is an introduction to the concept that plenty software and services
+  are sold as panacea but anything sold as panacea should be considered with
+  caution.
 ---
 
 Developer's are a big target for what I call "fool's gold". It's the hope that a

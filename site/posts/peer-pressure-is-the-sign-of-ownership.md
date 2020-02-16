@@ -7,6 +7,17 @@ tags:
   - ownership
   - leadership
   - management
+image: peer-pressure-is-the-sign-of-ownership.jpg
+summary: >-
+  I'm nearing 6,000 contributions on GitHub. I mix personal and private
+  contributions but I estimate a large portion of of the changes are from work.
+  This is up from about 1,700 contributions back in 2018. Not all valuable
+  contributions to a tech business are GitHub related; people write documentation,
+  sketch out strategic plans for the business, spend time researching technical
+  details, design user experiences, analyze user data for purposes of sales and
+  marketing, and so on. All of these things don't wind up being issues,
+  pull-requests, code review, or direct commits into a codebase and yet
+  nonetheless help keep the company move forward.
 ---
 
 I'm nearing 6,000 contributions on GitHub. I mix personal and private

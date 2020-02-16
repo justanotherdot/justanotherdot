@@ -3,6 +3,12 @@ title: Custom Search Functionality for Coding
 author: Ryan James Spencer
 date: 2019-08-19T06:10:36Z
 tags: [code, software]
+image: custom-search-functionality-for-coding.jpg
+summary: >-
+  This may not be revelatory to some, but it's a cool trick I use daily and I
+  thought I'd write about since it's managed to surprise enough colleagues and
+  friends when I've used it. Credit where credit is due, I was taught this trick
+  two years ago by Charles O'Farrell.
 ---
 
 This may not be revelatory to some, but it's a cool trick I use daily and I

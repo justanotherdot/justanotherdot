@@ -3,6 +3,12 @@ title: An Infinite Barrage of Mountains to Climb
 author: Ryan James Spencer
 date: 2019-11-13T09:14:36.242597959+00:00
 tags: [health, mental health, imposter syndrome]
+image: an-infinite-barrage-of-mountains-to-climb.jpg
+summary: >-
+  This Tuesday I went to my last therapy session for the year. In that session I
+  finalized a relapse prevention program for my obsessive compulsive disorder and
+  recapped strategies I learned to handle various stressors in my life.
+hero_font_color: light
 ---
 
 This Tuesday I went to my last therapy session for the year. In that session I

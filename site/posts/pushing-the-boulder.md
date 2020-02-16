@@ -3,6 +3,17 @@ title: Pushing the Boulder
 author: Ryan James Spencer
 date: 2019-09-19T10:15:00Z
 tags: [knowledge acquisition,  productivity]
+image: pushing-the-boulder.jpg
+summary: >-
+  Imagine you have a giant boulder in front of you. This is the task you want to
+  undertake. You know you need to push it to get it moving but you also
+  recognise that the inertia you'll need to overcome at first is substantial.
+  You unfortunately think that pushing the boulder will always take this much
+  force. The truth is, if you can get the boulder moving, keeping it in motion
+  only takes many small, infrequent pushes. The idea behind pushing a boulder is
+  the same as fast systems incurring usage. Want to improve your coding? Code.
+  Want to read more? Read. Action begets action.
+hero_font_color: light
 ---
 
 Imagine you have a giant boulder in front of you. This is the task you want to

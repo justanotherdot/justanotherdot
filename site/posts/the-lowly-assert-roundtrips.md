@@ -3,6 +3,14 @@ title: "The Lowly Assert: Roundtrips"
 author: Ryan James Spencer
 date: 2019-11-02T10:37:16.048817270+00:00
 tags: [the lowly assert, assertion, mathematics, rust]
+image: the-lowly-assert-roundtrips.jpg
+summary: >-
+  Data "roundtrips" when it goes from one value, to another, and back to the same
+  value without any data loss, gain, or corruption. If you write code, you have
+  probably roundtripped JSON, YAML, TOML, or some other serialization format in
+  your time. You have also probably written versions of functions that do a
+  similar 'cycle' of some data. Any time you care about data being the same after
+  it's gone through the ringer, you want to write a roundtrip test.
 ---
 
 Data "roundtrips" when it goes from one value, to another, and back to the same

@@ -3,6 +3,13 @@ title: How Fast Can You Take Your Time, Kid?
 author: Ryan James Spencer
 date: 2019-10-09T10:38:58.906711701+00:00
 tags: [automation, principle, do easy, wu wei]
+image: how-fast-can-you-take-your-time-kid.jpg
+summary: >-
+  There is nothing wrong with chopping wood and carrying water. Hard work
+  certainly pays off. Hackers are notorious for revelling in
+  laziness but laziness has a stigma of the lazy party
+  not _being enough_. Wikipedia states,
+hero_font_color: black-bis
 ---
 
 There is nothing wrong with chopping wood and carrying water. Hard work

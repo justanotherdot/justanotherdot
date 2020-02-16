@@ -3,6 +3,15 @@ title: Actually Using Git Worktrees
 author: Ryan James Spencer
 date: 2019-10-05T03:48:54.816375278+00:00
 tags: [git, version control]
+image: actually-using-worktrees.jpg
+summary: >-
+  Let's say you are expected to do code review and you are also expected to code.
+  When you do either a certain set of changes is in place. Switching because you
+  are blocking someone means you have to do a dance with stashing changes,
+  checking out a branch, perhaps cleaning temporary files, restarting tooling,
+  etc. Bar changing your codebase, workflow, and job requirements, here's an
+  approach that uses `git` `worktrees` to
+  ease the cost of these context-switches.
 ---
 
 Let's say you are expected to do code review and you are also expected to code.

@@ -3,6 +3,15 @@ title: Lightweight is Beautiful
 author: Ryan James Spencer
 date: 2019-09-08T10:03:00Z
 tags: [pattern, feedback loop, verification]
+image: lightweight-is-beautiful.jpg
+summary: >-
+  We are all guilty of having done the "edit a little bit, go to another terminal,
+  hit the up-arrow a number of times, fire off the found command" dance over and
+  over again at some point in our careers. It's such an easy automation to remove
+  these steps! IDEs give this to you because they know best about when a buffer or
+  a file has been saved or modified. Indeed, people go crazy for IDEs because they
+  provide information directly in the editor.
+hero_font_color: black-bis
 ---
 
 We are all guilty of having done the "edit a little bit, go to another terminal,

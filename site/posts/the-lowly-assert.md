@@ -3,6 +3,12 @@ title: The Lowly Assert
 author: Ryan James Spencer
 date: 2019-10-07T11:43:52.107748360+00:00
 tags: [testing, the lowly assert, principle]
+image: the-lowly-assert.jpg
+summary: >-
+  There is one thing that ties all forms of testing together; assertions. The
+  lowly assert humbly serves whether it's as types, panics, automated tests, or
+  any other glorious form. Regardless of how it manifests itself, it allows us to
+  declare things about our systems or program and automatically check them.
 ---
 
 There is one thing that ties all forms of testing together; **assertions**. The

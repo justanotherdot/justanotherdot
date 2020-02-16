@@ -3,6 +3,18 @@ title: "Fool's Gold: Time Estimates"
 author: Ryan James Spencer
 date: 2019-10-15T09:02:35.229078718+00:00
 tags: [fools gold, back of the envelope]
+image: fools-gold-time-estimates.jpg
+summary: >-
+  It would be fantastic if we knew the future. With that knowledge we could plan
+  with the utmost precision. But we are not clairvoyant. We actively exercise a
+  process of guesses we dress up in the fancier name of "estimates". Enrico
+  Fermi would feel these guesses are fine so long as you are within an order of
+  magnitude. This form of educated guess is also known as a "back of the
+  envelope" calculation and most random guesses are not doing anything near this
+  level of rigor. Back of the envelope calculations take rough approximations,
+  simplified assumptions, and various tidbits of top-of-the-mind knowledge to
+  calculate a ballpark figure.
+hero_font_color: black-bis
 ---
 
 It would be fantastic if we knew the future. With that knowledge we could plan

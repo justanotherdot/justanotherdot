@@ -3,6 +3,13 @@ title: A Love Letter to Feedback Loops
 author: Ryan James Spencer
 date: 2019-08-29T11:28:00Z
 tags: [productivity]
+image: a-love-letter-to-feedback-loops.jpg
+summary: >-
+  Feedback loops are everywhere and they're awesome. In essence, whenever
+  there is some system with inputs, outputs, and some readjustment based on the
+  outputs of the system, that's a feedback loop. The analysis of the output 'feeds
+  back' to the input and the system is now different, and hopefully better,
+  because of it.
 ---
 
 Feedback loops are everywhere and they're **awesome**. In essence, whenever
