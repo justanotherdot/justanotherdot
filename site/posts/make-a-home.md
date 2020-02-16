@@ -3,7 +3,7 @@ title: Make a home
 author: Ryan James Spencer
 date: 2019-08-22T10:49:00Z
 tags: [code, software, health]
-image_url: "../assets/images/make-a-home.jpg"
+image: "make-a-home.jpg"
 ---
 
 I'd like to preface this article that analogies are rough comparisons. That is
