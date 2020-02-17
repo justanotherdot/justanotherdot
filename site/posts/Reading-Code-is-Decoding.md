@@ -3,6 +3,12 @@ title: Reading Code is Decoding
 author: Ryan James Spencer
 date: 2018-01-27T03:43:09Z
 tags: [software, reading]
+image: "reading-code-is-decoding.jpg"
+summary: >-
+  Early this January I finished reading Coders at Work and in each interview
+  there is a recurring question of “how do you read code?” Here’s a rough summary
+  of some styles mentioned I found particularly useful.
+hero_font_color: "dark"
 ---
 
 Roger Antonsen says in his Ted Talk [*Mathematics is

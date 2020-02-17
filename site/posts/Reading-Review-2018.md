@@ -3,6 +3,17 @@ title: Reading Review for 2018
 author: Ryan James Spencer
 date: 2018-12-12T10:09:20Z
 tags: [software, reading, soft skills]
+image: "reading-review-2018.jpg"
+summary: >-
+  Being a voracious reader, one thing that helps bring the mountain of things I
+  want to read down to something manageable is being able to read things faster.
+  Reading faster itself probably hurts comprehension and digestion of core
+  concepts, but getting digested content from others who have already read the
+  main body of work can drastically reduce the amount of fluff you'll have to wade
+  through yourself. If you've ever read a book review that basically told you
+  everything you needed to know before you've read the book, you'll know what I'm
+  talking about.
+hero_font_color: dark
 ---
 
 Being a voracious reader, one thing that helps bring the mountain of things I

@@ -3,6 +3,18 @@ title: "Fool's Gold: Code Coverage"
 author: Ryan James Spencer
 date: 2019-10-01T20:41:51.704360598+00:00
 tags: [fools gold, tooling]
+image: fools-gold-code-coverage.jpg
+summary: >-
+  If you are unfamiliar with code coverage, the idea is simple: you write
+  accompanying tests to code and a code coverage tool produces reports of lines
+  covered by tests and the percentage of that coverage to all lines of code. The
+  hope is that a higher coverage with tests means you'll have a 'correct' system.
+  I have even heard of some establishments initiating quotas on required coverage
+  per lines of new code being introduced. "If it doesn't have tests it doesn't
+  exist" is the usual argument for this requirement; code without tests is
+  potentially problematic code, but tests are also untested chunks of code in
+  our codebase. For example, consider this bit of React code:
+hero_font_color: light
 ---
 
 If you are unfamiliar with code coverage, the idea is simple: you write

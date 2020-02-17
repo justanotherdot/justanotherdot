@@ -3,6 +3,15 @@ title: Errors Across a Boundary
 author: Ryan James Spencer
 date: 2019-09-27T11:10:01.917084567+00:00
 tags: [error handling, code]
+image: errors-across-a-boundary.jpg
+summary: >-
+  There is a line across our systems we shall call the boundary. On one end of the
+  boundary are the consumers and on the other side are the providers. This
+  boundary is what we are accustomed to calling an interface. Interfaces are the
+  embodiment of the dance needed to cross the boundary. The interface may have
+  adapters on either side whose purpose is to munge details of the internals into
+  this known language of communication. This way internals can continue working
+  without the fuss of the protocol driving their decisions.
 ---
 
 There is a line across our systems we shall call the boundary. On one end of the

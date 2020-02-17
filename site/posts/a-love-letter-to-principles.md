@@ -3,6 +3,11 @@ title: A Love Letter to Principles
 author: Ryan James Spencer
 date: 2019-09-01T08:43:00Z
 tags: [productivity]
+image: a-love-letter-to-principles.jpg
+summary: >-
+  Patterns are how we tend to carve up the world around us. Like feedback loops,
+  they are everywhere once we start noticing them.
+hero_font_color: light
 ---
 
 Programmers make assertions all the time with a wide range of utilities: tests,

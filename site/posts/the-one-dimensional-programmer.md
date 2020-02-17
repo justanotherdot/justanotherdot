@@ -3,6 +3,14 @@ title: The One Dimensional Programmer
 author: Ryan James Spencer
 date: 2019-12-29T10:00:26.969624557+00:00
 tags: [software development, career, skills, innovation]
+image: the-one-dimensional-programmer.jpg
+summary: >-
+  Technical skill alone is not going to advance your career as a programmer. In
+  the last two years I've received questions asking what I felt would be the
+  golden ticket to career advancement. The question is usually peppered with
+  specific examples, things such as "do I need to learn language X?" or "perhaps I
+  should focus more on data structures, algorithms, or even infrastructural
+  knowledge?".
 ---
 
 Technical skill alone is not going to advance your career as a programmer. In

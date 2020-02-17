@@ -6,6 +6,17 @@ tags:
   - software teams
   - feature flagging
   - feature flags
+image: the-production-environments-new-clothes.jpg
+summary: >-
+  Staging environments are a distraction. Massive hours have been poured into
+  making them coherent with production all to little effect. When staging
+  environments become unbearable developers start resorting to alternative
+  environments that can be spun up at will or are equally long-lived as staging
+  environments are. These production clones feel safe to developers and product
+  managers because they they aren't shown to customers. One uncomfortable fact
+  that developers and product managers struggle with is that production doesn't
+  mean seen.
+hero_font_color: light
 ---
 
 Staging environments are a distraction. Massive hours have been poured into

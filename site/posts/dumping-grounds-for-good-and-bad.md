@@ -3,6 +3,15 @@ title: Dumping Grounds for Good and Bad
 author: Ryan James Spencer
 date: 2019-10-21T09:04:52.675287331+00:00
 tags: [principle, pattern]
+image: dumping-grounds-for-good-and-bad.jpg
+summary: >-
+  A former colleague and friend once referred to modules that grow without any
+  clear organisation as "The Dumping Grounds". You probably know this module: it
+  often is named "utils" and acts as a kitchen sink for anything you are unsure
+  where to put. It might come in a different name, and there might be several of
+  them when the last dumping grounds were abandoned. When that happens, it's only
+  a matter of time until the majority of modules all become dumping grounds.
+hero_font_color: white-bis
 ---
 
 A former colleague and friend once referred to modules that grow without any

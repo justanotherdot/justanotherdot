@@ -56,11 +56,15 @@
   <body>
     <section style="background-image:url(../assets/images/{{image}});background-size:cover;" data-src="{{domain}}/assets/images/{{image}}" class="hero is-fullheight">
       <div class="hero-body">
-        <div class="container has-text-centered">
-          <!--<h1 class="title has-text-centered has-text-white-bis">{{title}}</h1>-->
-          <!--<h2 class="subtitle has-text-centered has-text-white-bis">Ryan James Spencer</h2>-->
-          <h1 class="title has-text-centered">{{title}}</h1>
-          <h2 class="subtitle has-text-centered">Ryan James Spencer</h2>
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-{{hero_font_color}}">{{title}}</h1>
+              <h2 class="subtitle has-text-{{hero_font_color}}">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
         <div>
       <div>
     </section>

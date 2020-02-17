@@ -3,6 +3,14 @@ title: Move Fast and Tuck Code Into the Shadows
 author: Ryan James Spencer
 date: 2019-08-23T11:51:00Z
 tags: [code, software]
+image: move-fast-and-tuck-code-into-the-shadows.jpg
+summary: >-
+  Migrations are a part of life as a dev. They help cut down tech
+  debt but they can be risky. It's always less
+  risky merging in new and different sets of changes rather than changing code
+  in-place. This buys you time. You gain the control over the switch granted
+  switching doesn't adversely affect some shared, mutable store of data.
+hero_font_color: light
 ---
 
 Migrations are a part of life as a dev. They help [cut down tech

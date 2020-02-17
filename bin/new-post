@@ -11,6 +11,8 @@ author: Ryan James Spencer
 date:
 tags:
   -
+image: ${SLUG}.jpg
+summary: >-
 ---
 EOF
 

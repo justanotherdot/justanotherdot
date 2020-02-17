@@ -3,6 +3,13 @@ title: What makes a good pull request?
 author: Ryan James Spencer
 date: 2018-07-20T10:40:08Z
 tags: [software, git]
+image: "what-makes-a-good-pull-request.jpg"
+summary: >-
+  Pull Requests (or PRs) are a tango between two parties; the code author and the
+  code reviewer which I will simply refer to as the 'author' and 'reviewer' in the
+  remainder of this article. In a pull request, the author has provided code to
+  solve a particular problem and the reviewer is there to provide a feedback
+  mechanism to the author.
 ---
 
 Pull Requests (or PRs) are a tango between two parties; the code author and the

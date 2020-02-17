@@ -3,6 +3,16 @@ title: Proficiency is Tiered and other Lies We Tell Ourselves
 author: Ryan James Spencer
 date: 2018-03-01T05:48:02Z
 tags: [learning, education]
+image: "proficiency-is-tiered-and-other-lies-we-tell-ourselves.jpg"
+summary: >-
+  Tiered categorisations of knowledge and proficiency are fundamentally flawed as
+  they rest on the notion that all knowledge can eventually be obtained,
+  retained, and divvied up amongst n-many categories. Such categorisations also
+  ignore the fact that most skills rely on overlapping knowledge from various
+  domains. In this article I propose a way to evaluate subject matter in the
+  context of best prioritising what should I learn next? I’ll also offer up an
+  approach to evaluating others that isn’t based on ‘skill level’ (admittedly
+  regurgitated from Amy Cuddy).
 ---
 
 Tiered categorisations of knowledge and proficiency are fundamentally flawed as

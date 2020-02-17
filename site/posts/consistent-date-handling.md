@@ -6,6 +6,12 @@ tags:
   - date handling
   - time
   - software
+image: consistent-date-handling.jpg
+summary: >-
+  Date handling is the kind of funny where you sob from of the ways it can
+  horribly cut you when you least expect it. Developers either pretend that _all_
+  date handling concerns can be shoved onto third-party libraries or that they
+  don't exist at all. Here's a short, incomplete primer.
 ---
 
 Date handling is the kind of funny where you sob from of the ways it can

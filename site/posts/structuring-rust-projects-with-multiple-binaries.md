@@ -8,6 +8,11 @@ tags:
   - shell
   - rust
   - linux
+image: structuring-rust-projects-with-multiple-binaries.jpg
+summary: >-
+  How do you organize Rust projects with multiple binaries so that the build
+  output winds up in a common subdirectory? Should you be looking for a solution
+  other than cargo?
 ---
 
 How do you organize Rust projects with multiple binaries so that the build

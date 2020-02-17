@@ -3,6 +3,15 @@ title: Soft Skill Hygiene
 author: Ryan James Spencer
 date: 2020-01-07T08:57:10.002376326+00:00
 tags: [soft skills]
+image: soft-skill-hygiene.jpg
+summary: >-
+  Eyes glaze over at the words "soft skills" for developers of both the "ship it"
+  and technical purists camp. Unfortunately, humans aren't emotionally empty
+  robots and team work is generally required to build anything of sufficient
+  complexity. Trust helps build innovative and productive teams. Trust is built up
+  from cultivating safety and vulnerability and we can achieve these
+  characteristics through effective communication.
+hero_font_color: black
 ---
 
 Eyes glaze over at the words "soft skills" for developers of both the "ship it"

@@ -3,6 +3,15 @@ title: "The Lowly Assert: Idempotence"
 author: Ryan James Spencer
 date: 2019-10-30T10:28:07.931497878+00:00
 tags: [the lowly assert, assertion, mathematics]
+image: the-lowly-assert-idempotence.jpg
+summary: >-
+  Charging someone twice is bad for business; it burns trust with customers and
+  it involves a lot of unnecessary churn. Payment providers go to great efforts
+  to support idempotent endpoints. When you do something more than a given
+  number of times, and every time after that, things don't change. In the case
+  of a payment it would be once and only once, no matter how many times the
+  request was submitted after that.
+hero_font_color: dark
 ---
 
 Charging someone twice is bad for business; it burns trust with customers and it

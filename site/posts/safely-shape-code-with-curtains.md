@@ -3,6 +3,15 @@ title: Safely Shape Code With Curtains
 author: Ryan James Spencer
 date: 2019-10-19T11:29:55.346897423+00:00
 tags: [principle, pattern, systems topology, systems design]
+image: safely-shape-code-with-curtains.jpg
+summary: >-
+  Once upon a time I studied photography at an art school. It was there that I
+  learned the importance of separation between tones in an image. If the
+  separation, tone or color, between objects in my images wasn't quite right I'd
+  have to redo all my work in order to get a grade. Separation is how we often
+  define our mental maps of the world. For this article, I'll call anything that
+  is distinct from other things an "entity".
+hero_font_color: light
 ---
 
 Once upon a time I studied photography at an art school. It was there that I

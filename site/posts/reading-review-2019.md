@@ -3,6 +3,13 @@ title: Reading Review 2019
 author: Ryan James Spencer
 date: 2019-12-03T09:53:17.174715975+00:00
 tags: [software, reading, soft skills, coding]
+image: "reading-review-2019.jpg"
+summary: >-
+  This year came up at roughly sixty books "consumed". I've pared the list here
+  down to about forty. I say "consumed" because I decided to give audio books a
+  go so while I would normally read about thirty books I've managed to double
+  that amount by listening to things while I work.
+hero_font_color: light
 ---
 
 This year came up at roughly sixty books "consumed". I've pared the list here

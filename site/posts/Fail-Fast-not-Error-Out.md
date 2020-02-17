@@ -3,6 +3,14 @@ title: Fail Fast not Error Out
 author: Ryan James Spencer
 date: 2017-10-07T02:50:02Z
 tags: [software]
+image: "fail-fast-not-error-out.jpg"
+summary: >-
+  The notion of 'failing fast' in programming details finding faults at the
+  earliest possible time; when the application developer is fitting out the code!
+  This seems to be sensible, but is often strangely antithetical to the notion of
+  'the only true test of code is production data'; how can we fail fast and catch
+  a ton of bugs when the truly icky bugs we want to smash are after we've done
+  some kind of deployment?
 ---
 
 **tl;dr** Static analysis is a form of 'failing fast' that does not consist of

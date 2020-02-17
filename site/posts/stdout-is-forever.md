@@ -8,6 +8,12 @@ tags:
   - pattern
   - go
   - rust
+image: "stdout-is-forever.jpg"
+summary: >-
+    Debuggers are worth their weight in gold but stdout is the diamond in the rough.
+    All the tools we have to pinpoint problems such as REPLs, automatic tracing,
+    stacktraces, and even printing to stdout wind up being about two things:
+    poking and prodding.
 ---
 
 Debuggers are worth their weight in gold but stdout is the diamond in the rough.

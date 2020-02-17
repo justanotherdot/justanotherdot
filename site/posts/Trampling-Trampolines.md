@@ -3,6 +3,11 @@ title: Trampling Trampolines
 author: Ryan James Spencer
 date: 2018-05-24T09:40:17Z
 tags: [javascript, python, code]
+image: "trampling-trampolines.jpg"
+summary: >-
+  There are some interesting ways to mimic tail-call
+  optimization in languages that don’t have native support for it.
+  We discuss a few approaches.
 ---
 
 ## Continuation Passing Style

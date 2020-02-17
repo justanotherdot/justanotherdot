@@ -3,6 +3,9 @@ title: The Simplest Programming Language I Know
 author: Ryan James Spencer
 date: 2019-11-20T10:35:16.488307008+00:00
 tags: [lambda calculus, computation]
+image: the-simplest-programming-language-i-know.jpg
+summary: >-
+  I'm going to teach you the simplest programming language I know.
 ---
 
 I'm going to teach you the simplest programming language I know.

@@ -10,6 +10,19 @@ tags:
   - nvim
   - vscode
   - emacs
+image: teleporting-at-the-speed-of-thought.jpg
+summary: >-
+  Adept text editor users fly around and manipulate text as if by teleportation.
+  For me, this is a principle I hold dear when considering my editing experience.
+  Teleportation is chiefly driven by thought and is effortless by
+  construction. This is actually not something inherent to teleportaiton.
+  Instead of hopping in a car and driving around the neighbourhood to find where
+  you want to go, you tend to make a decision about your destination ahead of
+  time. However, driving expects a certain amount of effort to reach a destination
+  whereas teleportation requires little effort if at all. Teleportation doesn't
+  just mean jumping someplace but also transporting text somewhere, whether it
+  be someplace else in a buffer or into textual purgatory.
+hero_font_color: light
 ---
 
 Adept text editor users fly around and manipulate text as if by _teleportation_.

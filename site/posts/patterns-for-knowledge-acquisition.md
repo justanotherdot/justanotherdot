@@ -3,6 +3,13 @@ title: Patterns Of Knowledge Acquisition
 author: Ryan James Spencer
 date: 2019-12-12T04:30:40.360687637+00:00
 tags: [knowledge, learning, reading, studying]
+image: patterns-for-knowledge-acquisition.jpg
+summary: >-
+  Having written another yearly review of reading I have been collecting
+  thoughts around how I think about learning in general. Although this list is
+  horribly incomplete, I've identified a few core patterns I tend to fall into
+  when learning.
+hero_font_color: white
 ---
 
 Having written another [yearly review of

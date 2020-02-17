@@ -11,6 +11,14 @@ tags:
   - local compute
   - cloud compute
   - hardware
+image: running-build-bots-on-premise.jpg
+summary: >-
+  Late November I did a video series discussing continuous integration and
+  automation strategies for projects. I used GitHub Actions as they aided me in
+  demonstrating configuration of pipelines without setting up supporting
+  infrastructure. If you are a developer making things having a fast response time
+  for feedback is crucial and continuous integration helps drastically.
+hero_font_color: white
 ---
 
 Late November I did a [video
