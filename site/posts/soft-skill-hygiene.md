@@ -3,7 +3,6 @@ title: Soft Skill Hygiene
 author: Ryan James Spencer
 date: 2020-01-07T08:57:10.002376326+00:00
 tags: [soft skills]
-image: soft-skill-hygiene.jpg
 summary: >-
   Eyes glaze over at the words "soft skills" for developers of both the "ship it"
   and technical purists camp. Unfortunately, humans aren't emotionally empty

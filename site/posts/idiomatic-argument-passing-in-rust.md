@@ -4,7 +4,6 @@ author: Ryan James Spencer
 date: 2020-02-13T20:05:17.823423765+00:00
 tags:
   - rust
-image: idiomatic-argument-passing-in-rust.jpg
 summary: >-
   If you're coming from a language that supports automatically taking references
   to arguments you may wonder why Rust can't do the same. Rust is all about giving

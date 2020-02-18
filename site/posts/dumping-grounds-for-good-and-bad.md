@@ -3,7 +3,6 @@ title: Dumping Grounds for Good and Bad
 author: Ryan James Spencer
 date: 2019-10-21T09:04:52.675287331+00:00
 tags: [principle, pattern]
-image: dumping-grounds-for-good-and-bad.jpg
 summary: >-
   A former colleague and friend once referred to modules that grow without any
   clear organisation as "The Dumping Grounds". You probably know this module: it

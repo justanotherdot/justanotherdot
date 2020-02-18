@@ -31,7 +31,6 @@ struct PostHeader {
     author: String,
     date: String,
     tags: Option<Vec<String>>,
-    image: Option<String>,
     summary: Option<String>,
     hero_font_color: Option<String>,
 }
@@ -51,7 +50,7 @@ struct Post {
     snake_url: String,
     domain: String,
     tags: Vec<Tag>,
-    image: Option<String>,
+    image: String,
     summary: Option<String>,
     hero_font_color: String,
 }
@@ -152,7 +151,15 @@ where
         .unwrap()
         .replace(".md", ".html")
         .to_lowercase();
+    let image = path
+        .file_name()
+        .unwrap()
+        .to_str()
+        .unwrap()
+        .replace(".md", ".jpg")
+        .to_lowercase();
     let snake_url = format!("/posts/{}", UNDERSCORE_RE.replace_all(&url, r"-"));
+    let snake_image = UNDERSCORE_RE.replace_all(&image, r"-").to_string();
     let url = format!("/posts/{}", url);
 
     Post {
@@ -168,7 +175,7 @@ where
         domain: JUSTANOTHERDOT_DOMAIN.to_string(),
         content: markdown.to_string(),
         tags: tags.clone(),
-        image: header.image,
+        image: snake_image,
         summary: header.summary,
         hero_font_color: header.hero_font_color.unwrap_or("white-bis".to_string()),
     }

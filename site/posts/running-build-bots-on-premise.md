@@ -11,7 +11,6 @@ tags:
   - local compute
   - cloud compute
   - hardware
-image: running-build-bots-on-premise.jpg
 summary: >-
   Late November I did a video series discussing continuous integration and
   automation strategies for projects. I used GitHub Actions as they aided me in

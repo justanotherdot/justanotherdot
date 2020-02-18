@@ -3,7 +3,6 @@ title: A Love Letter to Composition
 author: Ryan James Spencer
 date: 2019-11-06T20:07:08.632954959+00:00
 tags: [composition, principle, pattern]
-image: a-love-letter-to-composition.jpg
 summary: >-
   Using composition gives you superpowers. It is by far the most practical
   experimentation tool I know.

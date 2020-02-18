@@ -3,7 +3,6 @@ title: Fail Fast not Error Out
 author: Ryan James Spencer
 date: 2017-10-07T02:50:02Z
 tags: [software]
-image: "fail-fast-not-error-out.jpg"
 summary: >-
   The notion of 'failing fast' in programming details finding faults at the
   earliest possible time; when the application developer is fitting out the code!

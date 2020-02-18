@@ -7,7 +7,6 @@ tags:
   - ownership
   - leadership
   - management
-image: peer-pressure-is-the-sign-of-ownership.jpg
 summary: >-
   I'm nearing 6,000 contributions on GitHub. I mix personal and private
   contributions but I estimate a large portion of of the changes are from work.

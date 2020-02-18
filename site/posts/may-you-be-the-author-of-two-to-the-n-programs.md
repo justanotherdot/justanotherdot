@@ -3,7 +3,6 @@ title: May You Be The Author of 2^N Programs
 author: Ryan James Spencer
 date: 2019-08-26T10:00:00Z
 tags: [code, software]
-image: may-you-be-the-author-of-two-to-the-n-programs.jpg
 summary: >-
   The sheer propensity of articles detailing productivity tips for software
   developers under the auspices of them becoming better employees is alarming.
