@@ -75,83 +75,75 @@
           <div class="column is-half">
             <p class="has-text-weight-bold">February 20 2020,  8:34PM</p>
             <div class="content is-medium">
-              <p>It can be easy to fall into the habit of using <code>match</code> and <code>if let</code> everywhere
-but you soon may find yourself with heavily nested code. Rightward drift is a
-pain to decipher in any language. The good news is that you can easily manage
-rightward drift in Rust using a few techniques. Maybe this is the code you're
-writing which has a lot of if-let chaining:</p>
+              <p>How do you avoid deeply nested <code>if let</code> or <code>match</code> statements when you're first
+coming to Rust? Rightward drift is a pain to decipher in any language, but the
+good news is you can manage rightward drift in Rust with a few techniques and
+some mental shifting. Maybe this is the code you're writing which has a lot of
+if-let chaining:</p>
 <pre><code>if let Some(x) = some_func() {
     // do stuff with x
     if let Some(y) = some_func2() {
         // do other stuff with y
         if let Some(z) = some_func3() {
-        // and so on
+          // and so on
+        } else {
+          reticulating_splines()
+        }
+    } else {
+        engage_thrusters()
+    }
+} else {
+    launch_the_missiles()
+}
 </code></pre>
-<p>You could use a monadic style to fix this, and it <em>is</em> nice:</p>
-<pre><code>some_func().and_then(|x| {
-  // do stuff with x
-  some_func2()
-}).and_then(|y| {
-  // do stuff with y
-  some_func3()
-}).and_then(|z| {
-  // and so on
-})
-</code></pre>
-<p>But this doesn't include the possible <code>else</code> clauses mentioned in our original example.
-To get that back but use something other than <code>match</code> or <code>if-let</code> we could try:</p>
-<pre><code>some_func().and_then(|x| {
-  // do stuff with x
-  some_func2()
-    .or_else(|| { launch_the_missiles(); Some(1) })
-}).and_then(|y| {
-  // do stuff with y
-  some_func3()
-    .or_else(|| { engage_thrusters(); Some(2) })
-}).and_then(|z| {
-  // and so on
-}).or_else(|| { reticulating_splines(); Some(3) })
-</code></pre>
-<p>Now things aren't horribly indented but coding with this is a tad cumbersome. An
-alternative style I like to recommend to people is known by some as &quot;newspaper
-article&quot; style. Rust is an expression-oriented language which means we can
-<code>let</code>-bind to anything! Rust's move semantics and the <code>try</code> (<code>?</code>) operator means
-we can write our first fix as:</p>
-<pre><code>let x = some_func()?;
-let y = some_func2()?;
-let z = some_func3()?;
-</code></pre>
-<p>without any fuss about needless allocations or random panics. The mental shift
-in both approaches is that <strong>a <code>None</code> implies the absence of something, possibly with
-some added information for <em>why</em> the data we truly want isn't there, which is
-exactly what the <code>Err</code> variant on <code>Result</code> is for</strong>. With the <code>else</code> cases this
-becomes:</p>
+<p>In Rust, everything is an expression, and every expression has a value. For
+control flow, that means all branches must return values of the same type. If
+you look at the code above you ought to see that whole thing as <code>()</code>, assuming
+the functions in the <code>else</code> blocks above return <code>()</code>. When I look at the above
+code snippet I think &quot;this code is always meant to succeed but with different
+results on the types of success&quot;. This code is always mapping <code>Some</code> and <code>None</code>
+to <code>()</code>, which doesn't tell the caller much besides &quot;I did something.&quot;</p>
+<p><strong>A <code>None</code> implies the absence of something. If we want more information for
+<em>why</em> the data we want isn't there we can use the <code>Err</code> variant on <code>Result</code></strong>.
+The intent with the <code>try</code> operator is to always allow a way to express this
+'failure' back to the caller when it first happens; we should not assume we can
+go ahead safely with the subsequent code and return from the current function.</p>
+<p>A style I like to recommend to people is known by some as &quot;newspaper
+article&quot; style. Because Rust is an expression-oriented language which means we can
+<code>let</code>-bind to anything! Using the <code>try</code> (<code>?</code>) operator means we can write
+our fix as:</p>
 <pre><code>let x = some_func()
-  .or_else(|| { launch_the_missiles(); Some(1) })?;
+  .or_else(|| { launch_the_missiles(); None } )?;
 let y = some_func2()
-  .or_else(|| { engage_thrusters(); Some(2) })?;
+  .or_else(|| { engage_thrusters(); None } )?;
 let z = some_func3()
-  .or_else(|| { reticulating_splines(); Some(3) })?;
+  .or_else(|| { reticulating_splines(); None } )?;
+// and so on.
 </code></pre>
-<p>What I absolutely love about this approach is that it provides a lot of
-flexibility for modification and different types. If something in the middle of
-our monadic approach changes its type or is removed, we need to change the
-structure of our expression that builds up our final value, but with <code>let</code>
-bindings we can remove or modify just the offending assignments. I personally
-find this approachonestly more like <code>do</code>-notation that comes with using monads
-in Haskell, as if it were:</p>
-<pre><code>do
-  x &lt;- maybe some_func \() -&gt; do
-    launch_the_missiles
-    Just 1
-  y &lt;- maybe some_func1  \() -&gt;
-    engage_thrusters
-    Just 2
-  z &lt;- maybe some_func1  \() -&gt;
-    reticulating_splines
-    Just 3
+<p>If we wanted to only give the caller the sense that nothing bad happened,
+we could wrap the whole thing in a block and discard the result (NB. the
+semicolon at the end of the block):</p>
+<pre><code>fn top_level() {
+    fn go&lt;T&gt;() -&gt; Option&lt;T&gt; {
+        let x = some_func()
+          .or_else(|| { launch_the_missiles(); None } )?;
+        let y = some_func2()
+          .or_else(|| { engage_thrusters(); None } )?;
+        let z = some_func3()
+          .or_else(|| { reticulating_splines(); None } )?;
+        // and so on.
+    }
+    go(); // throw away the result for the caller.
+}
 </code></pre>
-<p>Rust also lets shadow variables, hence we can do things like expressing
+<p><strong>But this is weird</strong>. Giving callers control is at the crux of good error
+handling, especially when it comes to something as powerful as error handling
+with values!</p>
+<p>What I absolutely love about the rampant <code>let</code>-bindings approach is that it
+provides a lot of flexibility for modification; with <code>let</code> bindings we can
+remove or modify the offending assignments exactly.</p>
+<p>Rust also lets us shadow variables and with its move semantics we can avoid
+unexpected allocations, hence we can do things like expressing
 data as it changes throughout various steps:</p>
 <pre><code>struct Json {
   property: i64,
@@ -167,7 +159,7 @@ fn update_json() -&gt; Result&lt;(), Error&gt; {
   let json: Json = serde_json::from_str(&amp;json);
   json.property = 42;
   let json = serde_json::to_string(&amp;json);
-  fs::write(&quot;../some.json&quot;)?;
+  fs::write(&quot;../some.json&quot;, json)?;
 }
 </code></pre>
 <p>Use <code>let</code> bindings liberally and you'll make your code easier to modify and
@@ -181,8 +173,8 @@ read. If you have custom types you've written yourself you might,</p>
             </div>
             <hr>
             <!-- MOBILE NEWSLETTER BEGIN -->
-            <div class="columns">
-              <div class="column is-10 is-centered">
+            <div class="columns is-centered">
+              <div class="column is-10">
                 <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
                 <div>
                   <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
