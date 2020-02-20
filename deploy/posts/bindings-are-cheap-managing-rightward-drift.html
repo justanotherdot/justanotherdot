@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Bindings Are Cheap: Managing Rightward Drift">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="It can be easy to fall into the habit of using match and if let everywhere but you soon may find yourself with heavily nested code. Rightward drift is a pain to decipher in any language. The good news is that you can easily manage rightward drift in Rust using a few techniques.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Bindings Are Cheap: Managing Rightward Drift">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="It can be easy to fall into the habit of using match and if let everywhere but you soon may find yourself with heavily nested code. Rightward drift is a pain to decipher in any language. The good news is that you can easily manage rightward drift in Rust using a few techniques.">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>Bindings Are Cheap: Managing Rightward Drift &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/);background-size:cover;" data-src="https://justanotherdot.com/assets/images/" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis">Bindings Are Cheap: Managing Rightward Drift</h1>
+              <h2 class="subtitle has-text-white-bis">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">February 20 2020,  8:34PM</p>
+            <div class="content is-medium">
+              <p>It can be easy to fall into the habit of using <code>match</code> and <code>if let</code> everywhere
+but you soon may find yourself with heavily nested code. Rightward drift is a
+pain to decipher in any language. The good news is that you can easily manage
+rightward drift in Rust using a few techniques. Maybe this is the code you're
+writing which has a lot of if-let chaining:</p>
+<pre><code>if let Some(x) = some_func() {
+    // do stuff with x
+    if let Some(y) = some_func2() {
+        // do other stuff with y
+        if let Some(z) = some_func3() {
+        // and so on
+</code></pre>
+<p>You could use a monadic style to fix this, and it <em>is</em> nice:</p>
+<pre><code>some_func().and_then(|x| {
+  // do stuff with x
+  some_func2()
+}).and_then(|y| {
+  // do stuff with y
+  some_func3()
+}).and_then(|z| {
+  // and so on
+})
+</code></pre>
+<p>But this doesn't include the possible <code>else</code> clauses mentioned in our original example.
+To get that back but use something other than <code>match</code> or <code>if-let</code> we could try:</p>
+<pre><code>some_func().and_then(|x| {
+  // do stuff with x
+  some_func2()
+    .or_else(|| { launch_the_missiles(); Some(1) })
+}).and_then(|y| {
+  // do stuff with y
+  some_func3()
+    .or_else(|| { engage_thrusters(); Some(2) })
+}).and_then(|z| {
+  // and so on
+}).or_else(|| { reticulating_splines(); Some(3) })
+</code></pre>
+<p>Now things aren't horribly indented but coding with this is a tad cumbersome. An
+alternative style I like to recommend to people is known by some as &quot;newspaper
+article&quot; style. Rust is an expression-oriented language which means we can
+<code>let</code>-bind to anything! Rust's move semantics and the <code>try</code> (<code>?</code>) operator means
+we can write our first fix as:</p>
+<pre><code>let x = some_func()?;
+let y = some_func2()?;
+let z = some_func3()?;
+</code></pre>
+<p>without any fuss about needless allocations or random panics. The mental shift
+in both approaches is that <strong>a <code>None</code> implies the absence of something, possibly with
+some added information for <em>why</em> the data we truly want isn't there, which is
+exactly what the <code>Err</code> variant on <code>Result</code> is for</strong>. With the <code>else</code> cases this
+becomes:</p>
+<pre><code>let x = some_func()
+  .or_else(|| { launch_the_missiles(); Some(1) })?;
+let y = some_func2()
+  .or_else(|| { engage_thrusters(); Some(2) })?;
+let z = some_func3()
+  .or_else(|| { reticulating_splines(); Some(3) })?;
+</code></pre>
+<p>What I absolutely love about this approach is that it provides a lot of
+flexibility for modification and different types. If something in the middle of
+our monadic approach changes its type or is removed, we need to change the
+structure of our expression that builds up our final value, but with <code>let</code>
+bindings we can remove or modify just the offending assignments. I personally
+find this approachonestly more like <code>do</code>-notation that comes with using monads
+in Haskell, as if it were:</p>
+<pre><code>do
+  x &lt;- maybe some_func \() -&gt; do
+    launch_the_missiles
+    Just 1
+  y &lt;- maybe some_func1  \() -&gt;
+    engage_thrusters
+    Just 2
+  z &lt;- maybe some_func1  \() -&gt;
+    reticulating_splines
+    Just 3
+</code></pre>
+<p>Rust also lets shadow variables, hence we can do things like expressing
+data as it changes throughout various steps:</p>
+<pre><code>struct Json {
+  property: i64,
+}
+
+struct Error {
+  SerdeError(serde::Error),
+  IoError(std::fs::IoError),
+}
+
+fn update_json() -&gt; Result&lt;(), Error&gt; {
+  let json = include_str!(&quot;../some.json&quot;);
+  let json: Json = serde_json::from_str(&amp;json);
+  json.property = 42;
+  let json = serde_json::to_string(&amp;json);
+  fs::write(&quot;../some.json&quot;)?;
+}
+</code></pre>
+<p>Use <code>let</code> bindings liberally and you'll make your code easier to modify and
+read. If you have custom types you've written yourself you might,</p>
+<ul>
+<li>one day be able to write an implementation for the <code>Try</code> trait yourself when it stabilizes (its currently experimental)</li>
+<li>take a cue from <code>Option</code> and <code>Result</code> and write similar combinators that let you get at internal data for your type</li>
+<li>merely wrap things in <code>Option</code> and <code>Result</code> and use the bevy of methods they expose</li>
+</ul>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns">
+              <div class="column is-10 is-centered">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,10 +1,14 @@
 ---
-title: Bindings Are Cheap: Managing Rightward Drift
+title: "Bindings Are Cheap: Managing Rightward Drift"
 author: Ryan James Spencer
-date:
+date: 2020-02-20T10:34:34.578114198+00:00
 tags:
   - rust
 summary: >-
+  It can be easy to fall into the habit of using match and if let everywhere
+  but you soon may find yourself with heavily nested code. Rightward drift is a
+  pain to decipher in any language. The good news is that you can easily manage
+  rightward drift in Rust using a few techniques.
 ---
 
 It can be easy to fall into the habit of using `match` and `if let` everywhere

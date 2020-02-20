@@ -7,6 +7,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/bindings-are-cheap-managing-rightward-drift.html</loc>
+    <lastmod>2020-02-20T10:34:34.578114198+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/idiomatic-argument-passing-in-rust.html</loc>
     <lastmod>2020-02-13T20:05:17.823423765+00:00</lastmod>
     <priority>0.95</priority>
