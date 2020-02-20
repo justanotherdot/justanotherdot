@@ -3,7 +3,6 @@ title: A Love Letter to Patterns
 author: Ryan James Spencer
 date: 2019-08-30T11:47:00Z
 tags: [productivity]
-image: a-love-letter-to-patterns.jpg
 summary: >-
   Patterns are how we tend to carve up the world around us. Like feedback loops,
   they are everywhere once we start noticing them.

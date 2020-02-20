@@ -5,7 +5,6 @@ date: 2020-02-03T09:38:54.087319182+00:00
 tags:
   - rust
   - error handling
-image: error-handling-with-closures-in-iterators.jpg
 summary: >-
   Iterators give us a wonderful array of functional-style combinators. Past
   readability, the rust compiler can occasionally optimize iterators better than

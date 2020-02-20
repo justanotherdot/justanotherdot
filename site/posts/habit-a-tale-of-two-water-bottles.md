@@ -3,7 +3,6 @@ title: "Habit: A Tale of Two Water Bottles"
 author: Ryan James Spencer
 date: 2019-11-18T09:48:12.772914102+00:00
 tags: [habit, code, books, reading, pit of success, principle, automation]
-image: habit-a-tale-of-two-water-bottles.jpg
 summary: >-
   I've the same one-litre water bottle at work as I do at home. I always drink
   water at work, and I usually drink about 2L a day. When I work from home,

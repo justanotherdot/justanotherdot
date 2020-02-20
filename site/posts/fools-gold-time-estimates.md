@@ -3,7 +3,6 @@ title: "Fool's Gold: Time Estimates"
 author: Ryan James Spencer
 date: 2019-10-15T09:02:35.229078718+00:00
 tags: [fools gold, back of the envelope]
-image: fools-gold-time-estimates.jpg
 summary: >-
   It would be fantastic if we knew the future. With that knowledge we could plan
   with the utmost precision. But we are not clairvoyant. We actively exercise a

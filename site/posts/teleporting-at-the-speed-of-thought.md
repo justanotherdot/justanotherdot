@@ -10,7 +10,6 @@ tags:
   - nvim
   - vscode
   - emacs
-image: teleporting-at-the-speed-of-thought.jpg
 summary: >-
   Adept text editor users fly around and manipulate text as if by teleportation.
   For me, this is a principle I hold dear when considering my editing experience.

@@ -6,7 +6,6 @@ tags:
   - software teams
   - feature flagging
   - feature flags
-image: the-production-environments-new-clothes.jpg
 summary: >-
   Staging environments are a distraction. Massive hours have been poured into
   making them coherent with production all to little effect. When staging

@@ -3,7 +3,6 @@ title: Lightweight is Beautiful
 author: Ryan James Spencer
 date: 2019-09-08T10:03:00Z
 tags: [pattern, feedback loop, verification]
-image: lightweight-is-beautiful.jpg
 summary: >-
   We are all guilty of having done the "edit a little bit, go to another terminal,
   hit the up-arrow a number of times, fire off the found command" dance over and

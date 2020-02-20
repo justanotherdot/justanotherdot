@@ -3,7 +3,6 @@ title: Nothing of Value Will be Lost
 author: Ryan James Spencer
 date: 2019-11-10T08:49:53.949023651+00:00
 tags: [planning, software, fools gold]
-image: nothing-of-value-will-be-lost.jpg
 summary: >-
   Drop your backlog. Burn all of your tickets. Eject your issues into the sun.
   Nothing of value will be lost. Teams and maintainers alike cling to reminders

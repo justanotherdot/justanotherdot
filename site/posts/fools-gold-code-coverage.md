@@ -3,7 +3,6 @@ title: "Fool's Gold: Code Coverage"
 author: Ryan James Spencer
 date: 2019-10-01T20:41:51.704360598+00:00
 tags: [fools gold, tooling]
-image: fools-gold-code-coverage.jpg
 summary: >-
   If you are unfamiliar with code coverage, the idea is simple: you write
   accompanying tests to code and a code coverage tool produces reports of lines

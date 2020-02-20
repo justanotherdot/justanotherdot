@@ -3,7 +3,6 @@ title: A Plea For Style Guides
 author: Ryan James Spencer
 date: 2019-08-28T10:16:00Z
 tags: [code style]
-image: a-plea-for-style-guides.jpg
 summary: >-
   You commonly hear two particular attributes that drive style guides, and,
   subsequently, automatic formatting tools: 'consistency' and 'readability'. The

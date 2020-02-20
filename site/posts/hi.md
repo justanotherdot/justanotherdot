@@ -3,7 +3,6 @@ title: A Start
 author: Ryan James Spencer
 date: 2017-09-17T06:06:55Z
 tags: [haskell]
-image: "a-start.jpg"
 summary: >-
   I've managed to hack together this blog using Chris Penner's alternative to
   Hakyll, SitePipe, as well as using a CSS framework I've wanted to try out,
