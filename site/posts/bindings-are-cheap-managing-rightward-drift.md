@@ -41,18 +41,19 @@ you look at the code above you ought to see that whole thing as `()`, assuming
 the functions in the `else` blocks above return `()`. When I look at the above
 code snippet I think "this code is always meant to succeed but with different
 results on the types of success". This code is always mapping `Some` and `None`
-to `()`, which doesn't tell the caller much besides "I did something."
+to `()`, which doesn't tell the caller much besides "I might have done
+something."
 
 **A `None` implies the absence of something. If we want more information for
 _why_ the data we want isn't there we can use the `Err` variant on `Result`**.
-The intent with the `try` operator is to always allow a way to express this
-'failure' back to the caller when it first happens; we should not assume we can
-go ahead safely with the subsequent code and return from the current function.
+The intent with the `try` (`?`) operator is to always allow a way to express
+this 'failure' back to the caller when it first happens; we should not assume we
+can go ahead safely with the subsequent code and return from the current
+function.
 
-A style I like to recommend to people is known by some as "newspaper
-article" style. Because Rust is an expression-oriented language which means we can
-`let`-bind to anything! Using the `try` (`?`) operator means we can write
-our fix as:
+A style I like to recommend to people is known by some as "newspaper article"
+style. Since Rust is an expression-oriented language we can `let`-bind to almost
+anything! This means we can write our fix as:
 
 ```
 let x = some_func()
@@ -84,16 +85,16 @@ fn top_level() {
 ```
 
 **But this is weird**. Giving callers control is at the crux of good error
-handling, especially when it comes to something as powerful as error handling
-with values!
+handling, especially when it comes to something as powerful as errors as values!
 
 What I absolutely love about the rampant `let`-bindings approach is that it
 provides a lot of flexibility for modification; with `let` bindings we can
-remove or modify the offending assignments exactly.
+remove or modify the offending assignments exactly, rather than mangling a
+rather delicately constructed expression.
 
 Rust also lets us shadow variables and with its move semantics we can avoid
-unexpected allocations, hence we can do things like expressing
-data as it changes throughout various steps:
+unexpected allocations when doing things like expressing data as it changes
+throughout various steps but under the same name:
 
 ```
 struct Json {
@@ -114,8 +115,9 @@ fn update_json() -> Result<(), Error> {
 }
 ```
 
-Use `let` bindings liberally and you'll make your code easier to modify and
-read. If you have custom types you've written yourself you might,
+Use `let` bindings and the `try` operator liberally and you'll make your code
+easier to modify and read. If you have custom types you've written yourself you
+might,
 
 * one day be able to write an implementation for the `Try` trait yourself when it stabilizes (its currently experimental)
 * take a cue from `Option` and `Result` and write similar combinators that let you get at internal data for your type
