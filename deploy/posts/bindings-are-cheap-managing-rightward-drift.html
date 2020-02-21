@@ -102,16 +102,17 @@ you look at the code above you ought to see that whole thing as <code>()</code>,
 the functions in the <code>else</code> blocks above return <code>()</code>. When I look at the above
 code snippet I think &quot;this code is always meant to succeed but with different
 results on the types of success&quot;. This code is always mapping <code>Some</code> and <code>None</code>
-to <code>()</code>, which doesn't tell the caller much besides &quot;I did something.&quot;</p>
+to <code>()</code>, which doesn't tell the caller much besides &quot;I might have done
+something.&quot;</p>
 <p><strong>A <code>None</code> implies the absence of something. If we want more information for
 <em>why</em> the data we want isn't there we can use the <code>Err</code> variant on <code>Result</code></strong>.
-The intent with the <code>try</code> operator is to always allow a way to express this
-'failure' back to the caller when it first happens; we should not assume we can
-go ahead safely with the subsequent code and return from the current function.</p>
-<p>A style I like to recommend to people is known by some as &quot;newspaper
-article&quot; style. Because Rust is an expression-oriented language which means we can
-<code>let</code>-bind to anything! Using the <code>try</code> (<code>?</code>) operator means we can write
-our fix as:</p>
+The intent with the <code>try</code> (<code>?</code>) operator is to always allow a way to express
+this 'failure' back to the caller when it first happens; we should not assume we
+can go ahead safely with the subsequent code and return from the current
+function.</p>
+<p>A style I like to recommend to people is known by some as &quot;newspaper article&quot;
+style. Since Rust is an expression-oriented language we can <code>let</code>-bind to almost
+anything! This means we can write our fix as:</p>
 <pre><code>let x = some_func()
   .or_else(|| { launch_the_missiles(); None } )?;
 let y = some_func2()
@@ -137,14 +138,14 @@ semicolon at the end of the block):</p>
 }
 </code></pre>
 <p><strong>But this is weird</strong>. Giving callers control is at the crux of good error
-handling, especially when it comes to something as powerful as error handling
-with values!</p>
+handling, especially when it comes to something as powerful as errors as values!</p>
 <p>What I absolutely love about the rampant <code>let</code>-bindings approach is that it
 provides a lot of flexibility for modification; with <code>let</code> bindings we can
-remove or modify the offending assignments exactly.</p>
+remove or modify the offending assignments exactly, rather than mangling a
+rather delicately constructed expression.</p>
 <p>Rust also lets us shadow variables and with its move semantics we can avoid
-unexpected allocations, hence we can do things like expressing
-data as it changes throughout various steps:</p>
+unexpected allocations when doing things like expressing data as it changes
+throughout various steps but under the same name:</p>
 <pre><code>struct Json {
   property: i64,
 }
@@ -162,8 +163,9 @@ fn update_json() -&gt; Result&lt;(), Error&gt; {
   fs::write(&quot;../some.json&quot;, json)?;
 }
 </code></pre>
-<p>Use <code>let</code> bindings liberally and you'll make your code easier to modify and
-read. If you have custom types you've written yourself you might,</p>
+<p>Use <code>let</code> bindings and the <code>try</code> operator liberally and you'll make your code
+easier to modify and read. If you have custom types you've written yourself you
+might,</p>
 <ul>
 <li>one day be able to write an implementation for the <code>Try</code> trait yourself when it stabilizes (its currently experimental)</li>
 <li>take a cue from <code>Option</code> and <code>Result</code> and write similar combinators that let you get at internal data for your type</li>
