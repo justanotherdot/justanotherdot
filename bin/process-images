@@ -1,3 +1,23 @@
 #!/bin/sh -eu
 
-imagemin --plugin.mozjpeg.quality=80 images/* --out-dir=deploy/assets/images
+echo "resizing images"
+for image in images/*; do
+  copied_image="deploy/assets/images/$(basename $image)"
+  cp "$image" "$copied_image"
+  image_size=$(identify $copied_image | awk '{print $3}')
+  width=$( echo $image_size | awk -F'x' '{print $1}')
+  height=$( echo $image_size | awk -F'x' '{print $2}')
+  if [ $width -gt 1500 ]; then
+    resize_amt=$(echo $width | awk '{ print (1500.0 / $0) * 100 }')
+    convert "$copied_image" -resize "$resize_amt%" "$copied_image"
+    echo "  + resized: $(basename $copied_image)"
+  fi
+done
+
+echo "compressing images"
+for copied_image in deploy/assets/images/*; do
+  imagemin --plugin.mozjpeg.quality=80 "$copied_image" > "$copied_image.tmp"
+  mv "$copied_image.tmp" "$copied_image"
+  echo "  + compressed: $(basename $copied_image)"
+done
+
