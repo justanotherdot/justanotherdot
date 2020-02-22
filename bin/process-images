@@ -1,6 +1,3 @@
 #!/bin/sh -eu
 
-for image in deploy/assets/images/*.jpg; do
-  imagemin --plugin.mozjpeg.quality=80 images/* --out-dir=deploy/assets/images
-  echo "  + processed $image"
-done
+imagemin --plugin.mozjpeg.quality=80 images/* --out-dir=deploy/assets/images
