@@ -6,7 +6,7 @@ tags:
   - rust
 summary: >-
   You've likely tried to write a simple program using references that would
-  normally have taken you an hour in C only to find yourself _hours_ later still
+  normally have taken you an hour in C only to find yourself hours later still
   fussing about with the Rust compiler. If the borrow checker seems too
   restricting, here are four ways to loosen its grip!
 ---
