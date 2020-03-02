@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Four Ways To Avoid The Wrath Of The Borrow Checker">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/four-ways-to-avoid-the-wrath-of-the-borrow-checker.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="You've likely tried to write a simple program using references that would normally have taken you an hour in C only to find yourself _hours_ later still fussing about with the Rust compiler. If the borrow checker seems too restricting, here are four ways to loosen its grip!">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Four Ways To Avoid The Wrath Of The Borrow Checker">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/four-ways-to-avoid-the-wrath-of-the-borrow-checker.jpg">
+    <meta name="twitter:description" content="You've likely tried to write a simple program using references that would normally have taken you an hour in C only to find yourself _hours_ later still fussing about with the Rust compiler. If the borrow checker seems too restricting, here are four ways to loosen its grip!">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>Four Ways To Avoid The Wrath Of The Borrow Checker &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/four-ways-to-avoid-the-wrath-of-the-borrow-checker.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/four-ways-to-avoid-the-wrath-of-the-borrow-checker.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis">Four Ways To Avoid The Wrath Of The Borrow Checker</h1>
+              <h2 class="subtitle has-text-white-bis">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">March  1 2020,  4:07PM</p>
+            <div class="content is-medium">
+              <p>Maybe you've tried to write a simple program in Rust using references that would
+normally have taken less than an hour in C only to find yourself <em>hours</em> later
+still fussing about with the Rust compiler. If the borrow checker seems too
+restricting, here are four ways to loosen its grip.</p>
+<h3>Shared Ownership with <code>Arc</code> or <code>Rc</code></h3>
+<p>Shared ownership is what most garbage collected languages support. This is done
+using a reference counting to objects in memory. We can mimic this in Rust with
+the wrapper type <code>Rc</code>. If you plan on reference counting in multi-threaded code
+you can use <code>Arc</code> where the <code>A</code> stands for <code>Atomic</code>.</p>
+<p>Passing around an <code>Rc</code> means that if someone wants to jointly own the data, they
+can simply call <code>clone</code> on the <code>Rc</code>. This can be used as a drop-in replacement
+for places where you would borrow. Since these reference bumps count as new
+owners there is no borrowing at all. However, now that we can express shared
+ownership we also express a <em>graph</em> and graphs can have cycles (place where
+pointers loop back on themselves). A cycle in a graph means a value may never be
+deallocated, hence any self-referential structure poses a memory leak in our
+program. You can avoid this by having the pointer that &quot;ties the knot&quot; be a
+<code>Weak</code> pointer, which just means it's a non-owning pointer. A classic example is
+with a cache: you want to have entries in the cache to objects owned outside of
+the cache but you don't want the entries to count towards owning anything,
+otherwise keeping the cache around means keeping all of the memory! Also, <code>Rc</code>
+means you won't be able to take mutable borrows to the contents. This is easily
+remedied with the use of <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> or even <code>RwLock</code> as we'll see later.</p>
+<p>&quot;When in doubt, reference count&quot; is appropriate for places where laying out
+borrows and static lifetimes can be a pain and you want to get things passing
+quick. Places where you temporarily use an <code>Rc</code> can easily be targeted for
+borrows, so going back to fix things is clear. It may take some jiggling to get
+things into place but at least it can happen later down the line when you've got
+the breathing room, perhaps.</p>
+<p><code>Rc</code> can be particularly handy when you want to pass around function references
+in all sorts of ways. I used <code>Rc</code> extensively when porting a functional library
+from F# and Haskell directly into Rust and needed to easily get mutual recursion
+working quickly where using direct references or owned trait generics (e.g. F:
+Fn(A) -&gt; B). I was later able to swap out the calls to references, which meant
+the ergonomics of the first call simplified to borrowing rather than wrapping
+the closures in question in <code>Rc</code>s.</p>
+<h3>Interior Mutability with Cell or RefCell</h3>
+<p>Exterior mutability (otherwise known as &quot;inherited mutability&quot;) is great because
+it lets us know what things are actually changing beneath us. But sometimes
+clients don't care that some housekeeping state is changing underneath an
+operation. Perhaps we memoize the result of a function or manipulate a counter;
+in both of these cases, with exterior mutability, the function wrapping this
+action would have to be marked as mutable in some way, but if we want to keep
+things looking immutable on the surface, we can use <code>Cell</code> or <code>RefCell</code> instead.</p>
+<p>To give a concrete example with memoization, you might have an expensive
+computation that you only want to do once and stash the result. As such, you
+have a function that only need to be mutable for this one time and can be
+immutable the rest of the time, so it doesn't make sense to have it marked as
+<code>mut</code>. Whatever the result type is, we can wrap that in a <code>Cell</code> or <code>RefCell</code>,
+depending on type: <code>Cell</code> is generally for things that support <code>Copy</code> and
+<code>RefCell</code> for the rest.</p>
+<p>As <code>RefCell</code> uses dynamic borrow checking, it can panic if multiple mutable
+borrows are taken to the contents. <code>Cell</code> doesn't suffer from the same issue as
+it moves the values in and out of the internals of the <code>Cell</code>. As such, you may
+want to use something like <code>RwLock</code> if you are using an <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> for
+multi-threaded code. <code>Rc&lt;RefCell&lt;T&gt;&gt;</code> is a common way to have a shared object,
+such as a <code>HashMap</code>, across several owners, but still mutate it. If one used
+<code>Rc::get_mut</code> one would need to mark the <code>HashMap</code> itself as <code>mut</code>.</p>
+<h3>Duplicate the data</h3>
+<p>Often people think that coming to Rust means programs should be completely
+devoid of <code>clone</code> but if you think about the language you may be coming from,
+whatever <code>clone</code>ing you are doing is in Rust probably pales in comparison.</p>
+<p>You don't need to feel bound to a <code>clone</code>less program by default. By abandoning
+this idea of a slim program from the outset and move towards something far more
+flexible. This generally means having duplicate formats of a data structure for
+varying purposes such as one be a game map where walls are located whereas
+another could be where someone has explored and yet another could contain items
+on each tile, etc. It can also mean having a duplicate you want to make changes
+to, leaving the original in-tact. This is more of the pure approach functional
+programming languages tend to take, but these languages can also make particular
+optimizations around immutability such as persistent data structures or
+&quot;sharing&quot; of data since <em>everything</em> is immutable by default. Here's an example
+that having some duplication of data might help. Perhaps you are trying to
+iterate over a collection and mutate it:</p>
+<pre><code>let mut xs = vec![1,2,3];
+for x in xs.iter_mut() {
+  if x % 2 == 0 {
+    xs.push(x+1);
+  }
+}
+</code></pre>
+<p>In fact, this fails because we are borrowing to <code>xs</code> mutably twice! Once when we
+construct the iterator and another time when we push to the <code>Vec</code>. This is a
+classic &quot;modify a data structure while you iterate over it&quot; issue. However, we
+could easily do this:</p>
+<pre><code>let mux xs = vec![1,2,3];
+let ys = xs.clone();
+for x in xs.iter() {
+  if x % 2 == 0 {
+    ys.push(x+1);
+  }
+}
+</code></pre>
+<p>and hum along. In fact, we can keep these allocations to be short-lived, which
+may or may not be a performance issue but that can always be addressed later
+with proper profiling.</p>
+<h3>Single ownership and data pipelines</h3>
+<p>Lastly, you can try to go away from references entirely. Ownership is ideal for
+the kinds of problems best described as transforming values into other kinds of
+values.</p>
+<p>Pipelines have stages or steps. Steps may build up required changes or apply
+earlier changesets. Pipelines are useful for a variety of solutions. Parsers,
+compilers, streaming analysis, and so on, however that isn't the end of it.
+Configuration could be seen as a stream that updates when new values are added.
+This isn't to say all pipelines are pull models but it is to say the solutions
+are broad.</p>
+<p>If the use of borrows is for performance (want to ensure a large structure isn't
+<code>memcpy</code>d to a function), this type of optimization should already happen behind
+the scenes with move semantics; an owned type will typically get passed by
+<code>memcpy</code> for smaller sized objects and may be passed as a pointer for larger
+objects. This means that there is no mechanical difference for borrows besides
+marking the earlier variable as uninitialized meaning we always have no more
+than one owner of a value at a time.</p>
+<p>When data flows through a pipeline, doing it all by mutable reference can
+achieve the same effect and the owner doesn't relinquish control. Although this
+<em>might</em> mean there are less allocations, it will mean each step of the way we
+are passing a pointer where copying an object might have actually been faster.
+This is also limiting in that we can only have on mutable borrow at a time! If
+callers allocate the objects they own and request they be transformed into a new
+shape, any number of threads could pass values into this pipeline for changes
+and be content that value changes will be isolated from one-another.</p>
+<h3>Recap</h3>
+<ol>
+<li>Use <code>Rc</code> or <code>Arc</code> when you want to quickly get past tricky borrow issues and
+want to convert back to borrows possibly later in time to reap the benefits
+they offer</li>
+<li>Use <code>Cell</code> or <code>RefCell</code> when you have an API that doesn't need to expose
+mutability to a client</li>
+<li>Get comfortable with cloning data for multiple purposes to avoid conflicting
+borrows</li>
+<li>Don't borrow at all and create pipelines that pass ownership from step to
+step, producing a final, desired result</li>
+</ol>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

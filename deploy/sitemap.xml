@@ -7,6 +7,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/four-ways-to-avoid-the-wrath-of-the-borrow-checker.html</loc>
+    <lastmod>2020-03-01T06:07:25.271933517+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/bindings-are-cheap-managing-rightward-drift.html</loc>
     <lastmod>2020-02-20T10:34:34.578114198+00:00</lastmod>
     <priority>0.95</priority>
