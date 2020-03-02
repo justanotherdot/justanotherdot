@@ -158,6 +158,10 @@ where
         .unwrap()
         .replace(".md", ".jpg")
         .to_lowercase();
+    assert!(
+        std::path::Path::new(&image).exists(),
+        format!("could not find image: {}", image),
+    );
     let snake_url = format!("/posts/{}", UNDERSCORE_RE.replace_all(&url, r"-"));
     let snake_image = UNDERSCORE_RE.replace_all(&image, r"-").to_string();
     let url = format!("/posts/{}", url);
