@@ -48,6 +48,8 @@ is dependent on when the copying is preferred.*
 3. I own values when I want total control of the data in question. I like to
    think of this as *data recycling*.
 
+Here's some examples centered around iterators to give you a sense in practice.
+
 ### When to borrow
 
 Firstly, we can make a Vec of references, since the owner still lives while the
