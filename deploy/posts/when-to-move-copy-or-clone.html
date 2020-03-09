@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="When to move, copy, or clone?">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/when-to-move-copy-or-clone.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Do you understand ownership and borrowing in theory but find it hard in practice? Do the differences between things like `iter` and `into_iter` still confuse you? Is the difference between `Copy` and `Clone` still unclear? I will shed some light on practical examples that should help you gain a better grip on owning and borrowing values.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="When to move, copy, or clone?">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/when-to-move-copy-or-clone.jpg">
+    <meta name="twitter:description" content="Do you understand ownership and borrowing in theory but find it hard in practice? Do the differences between things like `iter` and `into_iter` still confuse you? Is the difference between `Copy` and `Clone` still unclear? I will shed some light on practical examples that should help you gain a better grip on owning and borrowing values.">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>When to move, copy, or clone? &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/when-to-move-copy-or-clone.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/when-to-move-copy-or-clone.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis">When to move, copy, or clone?</h1>
+              <h2 class="subtitle has-text-white-bis">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">March  9 2020,  7:35PM</p>
+            <div class="content is-medium">
+              <p>Do you understand ownership and borrowing in theory but find it hard in
+practice? Do the differences between things like <code>iter</code> and <code>into_iter</code> still
+confuse you? Maybe the difference between <code>Copy</code> and <code>Clone</code> is still unclear? I
+will shed some light on practical examples that should help you gain a better
+grip on owning and borrowing values.</p>
+<p>As you may know, all values in Rust need an owner. <em>Owners are about
+responsibility</em>; some resource, usually, but not always, memory, is allocated and
+the responsibility for releasing it is up to the owner. Ownership, or rather,
+responsibility, is only transferred on a move, hence borrowing, not counting
+towards releasing resources, is a <em>view</em> into the data. Rust's borrowing rules
+mimic the solution to the readers-writers problem of concurrency; there may be
+any number of readers but no writers and only ever one writer and no readers.
+These two states are the same as immutable borrows and mutable borrows,
+respectively.</p>
+<p>When we rebind values that aren't <code>Copy</code>, by default we use move semantics and
+transfer ownership to the new identifier. However, if somthing is <code>Copy</code> this
+action now performs a bit-wise copy of the contents. An <code>i64</code> that is
+re-assigned to a new variable will be a bit-wise copy. Contrast this to <code>Clone</code>
+where the copying is explicit with the call to <code>Clone</code>. <em>Thus both <code>Clone</code> and
+<code>Copy</code> signify copying of some kind, whether cheap or expensive, but the choice
+is dependent on when the copying is preferred.</em></p>
+<h3>tl;dr</h3>
+<ol>
+<li>
+<p>I borrow values to avoid producing new values. In other words, I re-use
+values that are already hanging around so as not to be wasteful with
+allocations.</p>
+</li>
+<li>
+<p>I copy/clone based on how I want to reduce allocations in the face of needing
+to duplicate data, picking to allocate automatically or explicitly respectively.</p>
+</li>
+<li>
+<p>I own values when I want total control of the data in question. I like to
+think of this as <em>data recycling</em>.</p>
+</li>
+</ol>
+<p>Here's some examples centered around iterators to give you a sense in practice.</p>
+<h3>When to borrow</h3>
+<p>Firstly, we can make a Vec of references, since the owner still lives while the
+references live we don't need to allocate any new data.</p>
+<pre><code>struct Wrapper {
+  id: i64,
+}
+
+let values: Vec&lt;Wrapper&gt; = vec![
+    Wrapper { id: 1 },
+    Wrapper { id: 2 },
+    Wrapper { id: 3 },
+];
+let xs: Vec&lt;&amp;Wrapper&gt; = values.iter().collect();
+</code></pre>
+<h3>When to clone or copy</h3>
+<p>Next up, we might want to keep two copies of our <code>values</code>, if we change the
+<code>Wrapper</code> to derive <code>Clone</code> we can use <code>cloned</code> on our iterator which is
+functionally the same as <code>.map(|x| x.clone())</code>:</p>
+<pre><code>#[derive(Clone)]
+struct Wrapper {
+  id: i64,
+}
+
+let values: Vec&lt;Wrapper&gt; = vec![
+    Wrapper { id: 1 },
+    Wrapper { id: 2 },
+    Wrapper { id: 3 },
+];
+let xs: Vec&lt;Wrapper&gt; = values.iter().cloned().collect();
+</code></pre>
+<p>By default, most primitives are <code>Copy</code> because it's easy enough and usually
+performant for the compiler to bitwise copy them. Since our <code>Wrapper</code> type in
+the previous examples is just wrapping up a primitive <code>i64</code> integer, we can make
+it also derive <code>Copy</code>:</p>
+<pre><code>#[derive(Copy)]
+struct Wrapper {
+  id: i64,
+}
+
+let values: Vec&lt;Wrapper&gt; = vec![
+    Wrapper { id: 1 },
+    Wrapper { id: 2 },
+    Wrapper { id: 3 },
+];
+let xs: Vec&lt;Wrapper&gt; = values.iter().copied().collect();
+</code></pre>
+<p>You might use <code>copied</code> if you don't want to write <code>.map(|x| *x)</code> if you happen
+to have a collection of borrowed values at your disposal (imagine you are passed
+a <code>Vec&lt;&amp;Wrapper&gt;</code>), this could be handy. The same logic stands for <code>cloned</code>. The
+case is a little bit different for <code>Copy</code>, though. If we can own the iterator
+with <code>into_iter</code> then any move of the values will result in a bitwise copy. This
+is why you will sometimes see the rust compiler complain that a value is moved
+and doesn't implement the <code>Copy</code> trait: it can't make a copy for you and it also
+can't re-use a moved value.</p>
+<h3>When to own</h3>
+<p>Ownership is the basis of why we don't need garbage collection in Rust. Passing
+an owned value across several different method calls could make copies or pass
+pointers depending on what optimizations the compiler wishes to perform, hence
+they could be <code>memcpy</code>s or as copied pointers. Regardless of how they work under
+the hood, they prevent a host of bugs by ensuring <em>only one thing</em> has the
+responsibility of finalizing the release of memory.</p>
+<p>Expecting owned values is a nice way to push the decision to allocate on the
+caller. If the caller wants to keep the value it owns, it must clone the value
+itself, instead of guessing if a clone is happening elsewhere. More importantly,
+writing code that expects values to be owned exposes the intent that I want to
+have full control over the memory to do as I please, rather than trying to work
+around what may already exist. This is why anytime you want to transform
+something from one shape to another and don't care much or at all about the
+original shape, taking ownership is the right choice.</p>
+<pre><code>#[derive(Copy)]
+struct Wrapper {
+  id: i64,
+}
+
+let values: Vec&lt;Wrapper&gt; = vec![
+    Wrapper { id: 1 },
+    Wrapper { id: 2 },
+    Wrapper { id: 3 },
+];
+let values: Vec&lt;Wrapper&gt; = values.into_iter().collect();
+</code></pre>
+<p>Note how I re-assign <code>values</code> after the transformation; albeit not necessary, it
+does let me think a bit less about re-naming the original binding that I can't
+use anymore.</p>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,7 +1,8 @@
 #!/bin/sh -eu
 
 TITLE="$*"
-SLUG="$(echo $TITLE | tr A-Z a-z | tr -s ' :' '-')"
+SLUG="$(echo $TITLE | tr A-Z a-z | tr -d ',?!.' | tr -s ' :' '-')"
+echo $SLUG
 git co -b "topic/${SLUG}"
 
 cat <<EOF > "site/posts/${SLUG}.md"
