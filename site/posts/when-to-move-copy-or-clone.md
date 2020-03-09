@@ -1,7 +1,7 @@
 ---
 title: When to move, copy, or clone?
 author: Ryan James Spencer
-date:
+date: 2020-03-09T09:35:28.554050161+00:00
 tags:
   - rust
 summary: >-
