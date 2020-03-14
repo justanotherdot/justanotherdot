@@ -1,10 +1,14 @@
 ---
 title: Why Are There Two Types of String Types In Rust?
 author: Ryan James Spencer
-date:
+date: 2020-03-14T00:45:46.961720071+00:00
 tags:
   - rust
 summary: >-
+  Understanding the distinction between str and String can be painful if you
+  need to get something done in Rust now. Rust doesn't sugar coat a lot of the
+  ugliness and complexity of string handling from developers like other languages
+  do and therefore helps in avoiding critical mistakes in the future.
 ---
 
 Understanding the distinction between `str` and `String` can be painful if you

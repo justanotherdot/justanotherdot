@@ -7,6 +7,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/why-are-there-two-types-of-string-types-in-rust.html</loc>
+    <lastmod>2020-03-14T00:45:46.961720071+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/when-to-move-copy-or-clone.html</loc>
     <lastmod>2020-03-09T09:35:28.554050161+00:00</lastmod>
     <priority>0.95</priority>
