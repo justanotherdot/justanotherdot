@@ -1,5 +1,5 @@
 ---
-title: Why Are There Two Types of String Types In Rust?
+title: Why Are There Two Types of Strings In Rust?
 author: Ryan James Spencer
 date: 2020-03-14T00:45:46.961720071+00:00
 tags:
