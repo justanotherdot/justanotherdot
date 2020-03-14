@@ -32,7 +32,9 @@ or shrink an array we can turn to a `Vec` which is sometimes known as a
 "resizable array". This type abstracts away the housekeeping around allocating
 bigger or smaller arrays.
 
-A vec grow as elements fill the backing array near or at capacity. Vecs also
+A vec grow as elements fill the backing memory near or at capacity. Without
+getting too distracted, a vec doesn't quite use an array but it does use a
+contiguous chunk of allocated memory that is similar to an array. Vecs also
 shrink to size if requested. The perks of ownership in Rust mean we, the vec,
 can do whatever we please to the data we own. We can always borrow owned things
 to temporarily read or change data. Why do you need more?
