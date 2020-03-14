@@ -73,7 +73,7 @@ syntax to create a slice into a portion of a string if you want.
 As a final point, the backing store of a `String` is actually `Vec`; `String`
 just brings along the requirement that the contents are valid UTF-8 and heaps of
 convenience functions, as does `&str`. A slice is what we commonly call a "fat
-pointer" which consists of two words: one pointing to the start of data and
-another dictating the length of the content. In this sense casting between a
-slice and back is cheap in the sense that we do not copy any data besides
-creating a fat point and perhaps re-using it when we borrow.
+pointer" which consists of two machine words: one pointing to the start of data
+and another dictating the length. In this sense casting between a slice and back
+is cheap in the sense that we do not copy any data besides creating a fat
+pointer which is possibly reused it when we borrow.

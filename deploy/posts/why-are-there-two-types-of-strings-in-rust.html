@@ -124,10 +124,10 @@ syntax to create a slice into a portion of a string if you want.</p>
 <p>As a final point, the backing store of a <code>String</code> is actually <code>Vec</code>; <code>String</code>
 just brings along the requirement that the contents are valid UTF-8 and heaps of
 convenience functions, as does <code>&amp;str</code>. A slice is what we commonly call a &quot;fat
-pointer&quot; which consists of two words: one pointing to the start of data and
-another dictating the length of the content. In this sense casting between a
-slice and back is cheap in the sense that we do not copy any data besides
-creating a fat point and perhaps re-using it when we borrow.</p>
+pointer&quot; which consists of two machine words: one pointing to the start of data
+and another dictating the length. In this sense casting between a slice and back
+is cheap in the sense that we do not copy any data besides creating a fat
+pointer which is possibly reused it when we borrow.</p>
 
             </div>
             <hr>
