@@ -12,7 +12,7 @@
     <!-- OPEN GRAPH BEG -->
     <meta property="og:url" content="https://justanotherdot.com">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Why Are There Two Types of String Types In Rust?">
+    <meta property="og:title" content="Why Are There Two Types of Strings In Rust?">
     <meta property="og:image" content="https://justanotherdot.com/assets/images/why-are-there-two-types-of-string-types-in-rust.jpg">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
@@ -22,14 +22,14 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@_justanotherdot">
     <meta name="twitter:creator" content="@_justanotherdot">
-    <meta name="twitter:title" content="Why Are There Two Types of String Types In Rust?">
+    <meta name="twitter:title" content="Why Are There Two Types of Strings In Rust?">
     <meta name="twitter:image" content="https://justanotherdot.com/assets/images/why-are-there-two-types-of-string-types-in-rust.jpg">
     <meta name="twitter:description" content="Understanding the distinction between str and String can be painful if you need to get something done in Rust now. Rust doesn't sugar coat a lot of the ugliness and complexity of string handling from developers like other languages do and therefore helps in avoiding critical mistakes in the future.">
     <!-- OPEN GRAPH END -->
 
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
-    <title>Why Are There Two Types of String Types In Rust? &#8226; Ryan James Spencer</title>
+    <title>Why Are There Two Types of Strings In Rust? &#8226; Ryan James Spencer</title>
     <style>
       .social-icon {
         stroke: currentColor;
@@ -60,7 +60,7 @@
           <div class="columns">
             <div class="column is-one-quarter"></div>
             <div class="column">
-              <h1 class="title has-text-white-bis">Why Are There Two Types of String Types In Rust?</h1>
+              <h1 class="title has-text-white-bis">Why Are There Two Types of Strings In Rust?</h1>
               <h2 class="subtitle has-text-white-bis">Ryan James Spencer</h2>
             </div>
             <div class="column is-one-quarter"></div>
@@ -124,10 +124,10 @@ syntax to create a slice into a portion of a string if you want.</p>
 <p>As a final point, the backing store of a <code>String</code> is actually <code>Vec</code>; <code>String</code>
 just brings along the requirement that the contents are valid UTF-8 and heaps of
 convenience functions, as does <code>&amp;str</code>. A slice is what we commonly call a &quot;fat
-pointer&quot; which consists of two words: one pointing to the start of data and
-another dictating the length of the content. In this sense casting between a
-slice and back is cheap in the sense that we do not copy any data besides
-creating a fat point and perhaps re-using it when we borrow.</p>
+pointer&quot; which consists of two machine words: one pointing to the start of data
+and another dictating the length. In this sense casting between a slice and back
+is cheap in the sense that we do not copy any data besides creating a fat
+pointer which is possibly reused it when we borrow.</p>
 
             </div>
             <hr>
