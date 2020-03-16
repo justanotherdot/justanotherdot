@@ -116,3 +116,6 @@ A majority of these boil down to a couple of heuristics:
 2. Ensure you have routines and structure in place to keep your mind focused
 3. Be flexible with your expectations on yourself, your experience, and you
    work, particularly with respect to your hours and what you spend time on
+
+As I write this it's a stressful period. Go easy on yourself and those around
+you while everyone adjusts. Hopefully some points here help ease the adjustment.
