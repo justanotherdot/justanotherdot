@@ -1,7 +1,7 @@
 ---
 title: Working From Home Without Clawing At The Walls
 author: Ryan James Spencer
-date:
+date: 2020-03-16T08:49:21.863280673+00:00
 tags:
   - health
   - wfh
