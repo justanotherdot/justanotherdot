@@ -11,7 +11,7 @@ summary: >-
   productivity will be a change even for those that _are_ used to working from
   home. I have a fair amount of experience working from home and I thought I'd
   share some thoughts from my experience of key things that have helped keep me
-  productive but also, more importantly, sane. Afterall, long periods of time kept
+  productive but also, more importantly, sane. After all, long periods of time kept
   locked up inside can easily drive one to cabin fever; how do all the
   introverts and remote workers keep from space madness?
 ---
@@ -21,7 +21,7 @@ Swaths of people are shifting into working from home, otherwise acronymized as
 productivity will be a change even for those that _are_ used to working from
 home. I have a fair amount of experience working from home and I thought I'd
 share some thoughts from my experience of key things that have helped keep me
-productive but also, more importantly, sane. Afterall, long periods of time kept
+productive but also, more importantly, sane. After all, long periods of time kept
 locked up inside can easily drive one to cabin fever; how do all the
 introverts and remote workers keep from space madness?
 
@@ -35,10 +35,10 @@ Take what I say with a grain of salt.
 
 _NB. I started writing this on a Sunday and became aware of Alice Goldfuss'
 [fantastic article](https://blog.alicegoldfuss.com/work-in-the-time-of-corona/)
-on the same subject the Monday wafter. It is far more thorough and I really
+on the same subject the Monday after. It is far more thorough and I really
 recommend it._
 
-* Wear your work clothes. This is going to set of the "I'm wearing work cloths,
+* Wear your work clothes. This is going to set of the "I'm wearing work clothes,
   I'm going to work" cells firing. Resist the urge to wear the same clothes
   you wore last night post shower and relaxation. There's a few points here that
   are about separation
@@ -107,7 +107,7 @@ recommend it._
   you do have the option, it is powerful to push your laptop away and go
   someplace with just your journal. Once there, try to de-stress a bit and
   forget work. Once your head is a bit clear, focus on whatever problem you are
-  dealing with on paper first. Being indoors is claustrophic. Being indoors
+  dealing with on paper first. Being indoors is claustrophobic. Being indoors
   _inside the mental space of a computer_ is doubly so.
 
 A majority of these boil down to a couple of heuristics:
