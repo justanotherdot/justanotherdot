@@ -2,7 +2,12 @@
 
 TITLE="$*"
 SLUG="$(echo $TITLE | tr A-Z a-z | tr -d ',?!.' | tr -s ' :' '-')"
-echo $SLUG
+if [ -z "$SLUG" ]; then
+  echo "cannot create a post with an empty article title."
+  exit 1
+fi
+
+echo "Generating a post with the title $SLUG"
 git co -b "topic/${SLUG}"
 
 cat <<EOF > "site/posts/${SLUG}.md"
