@@ -111,10 +111,10 @@ recommend it._
 
 A majority of these boil down to a couple of heuristics:
 
-    1. Focus on your physiological needs when things seem off
-    1. Ensure you have routines and structure in place to keep your mind focused
-    1. Be flexible with your expectations on yourself and on your work,
-       particularly concerning where hours are dedicated
+1. Focus on your physiological needs when things seem off
+2. Ensure you have routines and structure in place to keep your mind focused
+3. Be flexible with your expectations on yourself and on your work,
+   particularly concerning where hours are dedicated
 
 As I write this it's a stressful period. Go easy on yourself and those around
 you while everyone adjusts. I hope some points here help ease the adjustment.
