@@ -1,7 +1,7 @@
 ---
 title: How To Return An Iterator From a Function
 author: Ryan James Spencer
-date:
+date: 2020-03-19T09:40:42.111963174+00:00
 tags:
   - rust
 summary: >-
