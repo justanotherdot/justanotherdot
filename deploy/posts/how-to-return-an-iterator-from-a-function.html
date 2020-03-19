@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How To Return An Iterator From a Function">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/how-to-return-an-iterator-from-a-function.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Iterators are handy ways to describe the potential for looping over data but without eagerly evaluating it. In other words, we can describe the shape of looping over things but we only do work when we call something like `collect`. The compiler can do several optimizations around iterators and each `collect` needs to allocate memory to store our results. To avoid a lot of needless allocations it pays to returns iterators sometimes from functions.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="How To Return An Iterator From a Function">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/how-to-return-an-iterator-from-a-function.jpg">
+    <meta name="twitter:description" content="Iterators are handy ways to describe the potential for looping over data but without eagerly evaluating it. In other words, we can describe the shape of looping over things but we only do work when we call something like `collect`. The compiler can do several optimizations around iterators and each `collect` needs to allocate memory to store our results. To avoid a lot of needless allocations it pays to returns iterators sometimes from functions.">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>How To Return An Iterator From a Function &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/how-to-return-an-iterator-from-a-function.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/how-to-return-an-iterator-from-a-function.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis">How To Return An Iterator From a Function</h1>
+              <h2 class="subtitle has-text-white-bis">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">March 19 2020,  7:40PM</p>
+            <div class="content is-medium">
+              <p>Iterators are handy ways to describe the potential for looping over data but
+without eagerly evaluating it. In other words, we can describe the shape of
+looping over things but we only do work when we call something like <code>collect</code>.
+The compiler can do several optimizations around iterators and each <code>collect</code>
+needs to allocate memory to store our results. To avoid a lot of needless
+allocations it pays to returns iterators sometimes from functions.</p>
+<p>Alright, that's great but you're hitting a wall returning one from a function.
+I'll provide two ways you can do just that:</p>
+<p>We could use the <code>impl Trait</code> syntax where <code>Trait</code> is the trait in question we
+want to return. In this case, we'd have:</p>
+<pre><code>fn unboxed_iterator() -&gt; impl Iterator&lt;Item = usize&gt; {
+  (0..3).into_iter()
+}
+</code></pre>
+<p>This is where the compiler will determine the exact type that is being returned
+and substitute that in. This approach, albeit with static dispatch, has its
+limits. You can read Bodil Stokke's <a href="https://bodil.lol/parser-combinators/">wonderful introduction to parser
+combinators</a> as an example where the
+<code>impl Trait</code> approach starts to get too complex and require turning to our next
+approach of <code>Box</code>ing the iterators. This static approach also doesn't work when
+we have anonymous types, such as with async functions. Marking a function as
+<code>async</code> has support from the compiler to return the right type.</p>
+<p>We could also use a <code>Box</code>. It is the simplest way to package up an iterator but
+at the cost of allocation. Anything behind a <code>Box</code> is allocated on the heap.</p>
+<pre><code>fn boxed_iterator() -&gt; Box&lt;dyn Iterator&lt;Item = usize&gt;&gt; {
+  Box::new((0..3).into_iter())
+}
+</code></pre>
+<p>We have to pay the price of dereferencing a pointer each time we want to deal
+with this specific boxed iterator. We can manipulate both iterators in the same
+way because <code>Box</code> implements <code>Deref</code> which lets you access the methods
+underneath. So we can call <code>map</code> and friends on the resulting <code>Box</code>. Both of
+these forms can usually be used with one another, as, for example, we can chain
+both together since they both can be turned <code>IntoIterator</code>s.</p>
+<pre><code>fn unboxed_iterator() -&gt; impl Iterator&lt;Item = usize&gt; {
+  (0..3).into_iter()
+}
+
+fn boxed_iterator() -&gt; Box&lt;dyn Iterator&lt;Item = usize&gt;&gt; {
+  Box::new((0..3).into_iter())
+}
+
+fn main() {
+  dbg!(boxed_iterator().chain(unboxed_iterator()).collect::&lt;Vec&lt;_&gt;&gt;());
+}
+</code></pre>
+<p>The above prints:</p>
+<pre><code>[src/main.rs:10] boxed_iterator().chain(unboxed_iterator()).collect::&lt;Vec&lt;_&gt;&gt;() = [
+    0,
+    1,
+    2,
+    0,
+    1,
+    2,
+]
+</code></pre>
+<p>You preferably want to use the <code>impl Trait</code> approach as much as you can and
+fall back to the <code>Box</code> approach when that starts to fail or become inordinately
+slow to compile. With time this restriction may go away as work on the compiler
+continues.</p>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

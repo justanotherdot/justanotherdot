@@ -10,6 +10,78 @@
     <language>en-us</language>
     
     <item>
+      <title>How To Return An Iterator From a Function</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/how-to-return-an-iterator-from-a-function.html</link>
+      <guid>https://justanotherdot.com/posts/how-to-return-an-iterator-from-a-function.html</guid>
+      <pubDate>Thu, 19 Mar 2020 19:40:42 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Iterators are handy ways to describe the potential for looping over data but
+without eagerly evaluating it. In other words, we can describe the shape of
+looping over things but we only do work when we call something like <code>collect</code>.
+The compiler can do several optimizations around iterators and each <code>collect</code>
+needs to allocate memory to store our results. To avoid a lot of needless
+allocations it pays to returns iterators sometimes from functions.</p>
+<p>Alright, that's great but you're hitting a wall returning one from a function.
+I'll provide two ways you can do just that:</p>
+<p>We could use the <code>impl Trait</code> syntax where <code>Trait</code> is the trait in question we
+want to return. In this case, we'd have:</p>
+<pre><code>fn unboxed_iterator() -&gt; impl Iterator&lt;Item = usize&gt; {
+  (0..3).into_iter()
+}
+</code></pre>
+<p>This is where the compiler will determine the exact type that is being returned
+and substitute that in. This approach, albeit with static dispatch, has its
+limits. You can read Bodil Stokke's <a href="https://bodil.lol/parser-combinators/">wonderful introduction to parser
+combinators</a> as an example where the
+<code>impl Trait</code> approach starts to get too complex and require turning to our next
+approach of <code>Box</code>ing the iterators. This static approach also doesn't work when
+we have anonymous types, such as with async functions. Marking a function as
+<code>async</code> has support from the compiler to return the right type.</p>
+<p>We could also use a <code>Box</code>. It is the simplest way to package up an iterator but
+at the cost of allocation. Anything behind a <code>Box</code> is allocated on the heap.</p>
+<pre><code>fn boxed_iterator() -&gt; Box&lt;dyn Iterator&lt;Item = usize&gt;&gt; {
+  Box::new((0..3).into_iter())
+}
+</code></pre>
+<p>We have to pay the price of dereferencing a pointer each time we want to deal
+with this specific boxed iterator. We can manipulate both iterators in the same
+way because <code>Box</code> implements <code>Deref</code> which lets you access the methods
+underneath. So we can call <code>map</code> and friends on the resulting <code>Box</code>. Both of
+these forms can usually be used with one another, as, for example, we can chain
+both together since they both can be turned <code>IntoIterator</code>s.</p>
+<pre><code>fn unboxed_iterator() -&gt; impl Iterator&lt;Item = usize&gt; {
+  (0..3).into_iter()
+}
+
+fn boxed_iterator() -&gt; Box&lt;dyn Iterator&lt;Item = usize&gt;&gt; {
+  Box::new((0..3).into_iter())
+}
+
+fn main() {
+  dbg!(boxed_iterator().chain(unboxed_iterator()).collect::&lt;Vec&lt;_&gt;&gt;());
+}
+</code></pre>
+<p>The above prints:</p>
+<pre><code>[src/main.rs:10] boxed_iterator().chain(unboxed_iterator()).collect::&lt;Vec&lt;_&gt;&gt;() = [
+    0,
+    1,
+    2,
+    0,
+    1,
+    2,
+]
+</code></pre>
+<p>You preferably want to use the <code>impl Trait</code> approach as much as you can and
+fall back to the <code>Box</code> approach when that starts to fail or become inordinately
+slow to compile. With time this restriction may go away as work on the compiler
+continues.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Working From Home Without Clawing At The Walls</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/working-from-home-without-clawing-at-the-walls.html</link>
