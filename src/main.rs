@@ -117,7 +117,7 @@ where
     let markdown = std::fs::read_to_string(path_str).expect("could not read post");
 
     let markdown_raw = markdown.split("---").collect::<Vec<&str>>();
-    let markdown = markdown_raw.get(2).unwrap();
+    let markdown = &markdown_raw[2..].join("");
 
     let header_raw = markdown_raw.get(1).unwrap();
     let header: PostHeader = serde_yaml::from_str(&header_raw).expect("could not parse header");

@@ -195,7 +195,37 @@ test tests::fuzz_regression_01 ... FAILED
 
 failures:
 
+- tests::fuzz_regression_01 stdout -
+[src/lib.rs:17] &amp;s = &quot;0+1&quot;
+thread 'tests::fuzz_regression_01' panicked at 'called `Result::unwrap_err()` on an `Ok` value: 1', /home/rjs/.cargo/registry/src/github.com-1ecc6299db9ec823/num-0.1.31/src/bigint.rs:388:25
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+failures:
+    tests::fuzz_regression_01
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+
+error: test failed, to rerun pass '--lib'
 </code></pre>
+<p>And there is our offending input, <code>&quot;0+1&quot;</code>! Beautiful. I can use these specific
+cases in issues for upstream projects instead of wasting time trying to find
+exact cases on my own. Switching to <code>num</code> v0.1.41 avoids the panic and we can
+run <code>cargo fuzz</code> again. We can also change the fuzzing library used, such as
+libfuzz or <a href="https://rust-fuzz.github.io/book/afl.html">afl</a>, which <code>cargo fuzz</code>
+supports. You can also use <code>honggfuzz</code> via the <code>honggfuzz.rs</code> library over at
+<a href="https://github.com/rust-fuzz/honggfuzz-rs">honggfuzz-rs</a>. Different fuzzers
+have different features and guarantees but most are relatively easy to write
+targets for and get fuzzing so it can pay to try a few alternatives to see if
+other cases are lurking around.</p>
+<p>Before I go, I want to talk about a related concept known as &quot;property based
+testing&quot; where we define how random data should be generated. We'll dig more
+into that another day but for now, it suffices to say that both approaches help
+to drive out test cases you might not have imagined! I am in the habit of making
+my own regression suites from cases I find from either method, but you don't
+<em>have</em> to do this as some fuzzers and property-based testing libraries will keep
+a &quot;corpus&quot; of data that has failed that it can try again on future runs, but I
+find it helpful to have the regressions as unit tests so there is a fast way to
+verify earlier failures aren't still happening.</p>
 
             </div>
             <hr>

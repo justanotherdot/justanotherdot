@@ -167,18 +167,13 @@ failures:
 
 ---- tests::fuzz_regression_01 stdout ----
 [src/lib.rs:17] &s = "0+1"
-thread 'tests::fuzz_regression_01' panicked at 'called `Result::unwrap_err
-()` on an `Ok` value: 1', /home/rjs/.cargo/registry/src/github.com-1ecc629
-9db9ec823/num-0.1.31/src/bigint.rs:388:25
-note: run with `RUST_BACKTRACE=1` environment variable to display a backtr
-ace
-
+thread 'tests::fuzz_regression_01' panicked at 'called `Result::unwrap_err()` on an `Ok` value: 1', /home/rjs/.cargo/registry/src/github.com-1ecc6299db9ec823/num-0.1.31/src/bigint.rs:388:25
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 failures:
     tests::fuzz_regression_01
 
-test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered
- out
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
 
 error: test failed, to rerun pass '--lib'
 ```
