@@ -10,6 +10,139 @@
     <language>en-us</language>
     
     <item>
+      <title>Catching panics in dependencies</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/catching-panics-in-dependencies.html</link>
+      <guid>https://justanotherdot.com/posts/catching-panics-in-dependencies.html</guid>
+      <pubDate>Fri, 27 Mar 2020 11:55:26 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Having crates panic on you feels random because the specific conditions that
+trigger the panic may not seem clear. Having external crates bring down your
+program is a pain, but there is currently no static analysis tool to help us
+easily find panics in external crates. You can get pretty close with fuzzing,
+though!</p>
+<p>The format for fuzzing is generally:</p>
+<ol>
+<li>Get some random bytes</li>
+<li>Shape them into the right shape needed for our interface</li>
+<li>Run the interface with the random data and see if it blows up</li>
+</ol>
+<p>Some fuzzing libraries take the input that leads to a crash and continually mutates it
+to find other cases where it might crash as well. I'm going to use <code>cargo fuzz</code>
+to reproduce finding a panic in an external dependency. <a href="https://github.com/rust-num/num/issues/268">Here's a
+case</a> taken from the <code>rust-fuzz</code>
+organisations <a href="https://github.com/rust-fuzz/trophy-case">trophy case</a>. I'll use
+<code>num</code> v0.1.31 which panics when parsing <code>BigInt</code>s as per the linked issue. I'll
+add it to the <code>Cargo.toml</code> of our project:</p>
+<pre><code>[dependencies]
+num = &quot;=0.1.31&quot;
+</code></pre>
+<p>Then, I'll install <code>cargo fuzz</code>.</p>
+<pre><code>cargo install cargo-fuzz
+</code></pre>
+<p>then in our project, we can initialize cargo fuzz.</p>
+<pre><code>cargo fuzz init
+</code></pre>
+<p>Which gives me a single fuzz target which I can rename if I want. I'll rename it
+to <code>parse.rs</code> so the name is <code>parse</code> when listed but you can call it anything
+that fits. To do this I will change the <code>fuzz</code> subdirectories <code>Cargo.toml</code>. A
+<code>[[bin]]</code> key is in there that designates what targets are available. Since
+we're moving <code>fuzz_target_1</code> to <code>parse</code>, we have to do this in the TOML file
+since the <code>cargo fuzz</code> subcommand doesn't have this ability, but we <em>can</em> use
+the <code>cargo fuzz add</code> subcommand to add extra targets with custom names in the
+future.</p>
+<p>The new key should look like this</p>
+<pre><code>[[bin]]
+name = &quot;parse&quot;
+path = &quot;fuzz_targets/parse.rs&quot;
+</code></pre>
+<p>with the rest of the <code>fuzz/Cargo.toml</code> left as-is.</p>
+<p>Then we can write a simple case for our function. This can be a little tricky
+because the fuzzer will hand us raw bytes and it's up to us to shape them into
+the right format, whether that be a struct, i64, f32, and so on. For this case
+I'll make a string from the random bytes and feed it into our project's <code>parse</code>
+function:</p>
+<pre><code>#![no_main]
+use our_project::parse;
+use libfuzzer_sys::fuzz_target;
+
+fuzz_target!(|data: &amp;[u8]| {
+    if let Ok(s) = std::str::from_utf8(data) {
+        let _ = parse(&amp;s);
+    }
+});
+</code></pre>
+<p>the <code>parse</code> function might look something like this (lifted from the issue):</p>
+<pre><code>use num::Num;
+
+pub fn parse(str: &amp;str) {
+    num::BigUint::from_str_radix(str, 10);
+}
+</code></pre>
+<p>and then I'll run the fuzzer for this target:</p>
+<pre><code>cargo fuzz run parse
+</code></pre>
+<p>This finds offending strings similar to the trophy case example quite quickly:</p>
+<pre><code>&lt;snip&gt;
+────────────────────────────────────────────────────────────────────────────────
+
+Failing input:
+
+        fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc
+
+Output of `std::fmt::Debug`:
+
+        [48, 43, 49]
+
+Reproduce with:
+
+        cargo fuzz run parse fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc
+
+Minimize test case with:
+
+        cargo fuzz tmin parse fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc
+
+────────────────────────────────────────────────────────────────────────────────
+
+Error: Fuzz target exited with exit code: 77
+</code></pre>
+<p>Hang on, that debug output doesn't look like the offending case mentioned in the
+issue we linked above from the trophy case, does it? Again, this is because it's
+the raw bytes. A handy trick I use when running regressions is to utilize the
+stored failing input. In this case it's stored at
+<code>fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc</code> per the
+output above. We can write a regression that uses this directly with the macro
+<code>include_bytes!</code>:</p>
+<pre><code>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn fuzz_regression_01() {
+        let data = include_bytes!(
+            &quot;../fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc&quot;
+        );
+        let s = std::str::from_utf8(data).expect(&quot;should be able to make test input&quot;);
+        dbg!(&amp;s);
+        parse(&amp;s);
+    }
+}
+</code></pre>
+<p>You can run the tests the usual way with <code>cargo test</code> which should panic. I've
+lobbed a <code>dbg!</code> in there of the transformed raw bytes into the string. When the
+test panics we see:</p>
+<pre><code>running 1 test
+test tests::fuzz_regression_01 ... FAILED
+
+failures:
+
+</code></pre>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>How To Return An Iterator From a Function</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/how-to-return-an-iterator-from-a-function.html</link>
