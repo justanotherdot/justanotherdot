@@ -1,7 +1,7 @@
 #!/bin/sh -eu
 
 TITLE="$*"
-SLUG="$(echo $TITLE | tr A-Z a-z | tr -d ',?!.' | tr -s ' :' '-')"
+SLUG="$(echo $TITLE | tr A-Z a-z | tr -d ',?!.' | tr -d "'" | tr -s ' :' '-')"
 if [ -z "$SLUG" ]; then
   echo "cannot create a post with an empty article title."
   exit 1
