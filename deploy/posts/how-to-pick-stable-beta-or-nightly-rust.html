@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How to pick stable, beta, or nightly Rust">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/how-to-pick-stable-beta-or-nightly-rust.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="How to pick stable, beta, or nightly Rust">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/how-to-pick-stable-beta-or-nightly-rust.jpg">
+    <meta name="twitter:description" content="">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>How to pick stable, beta, or nightly Rust &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/how-to-pick-stable-beta-or-nightly-rust.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/how-to-pick-stable-beta-or-nightly-rust.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">How to pick stable, beta, or nightly Rust</h1>
+              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">April  2 2020,  7:04PM</p>
+            <div class="content is-medium">
+              <p>It would seem natural to always pick stable Rust, but how much awesome new
+stuff do beta and nightly have and how unstable are they? It can be confusing
+that such a plethora of feature flags sits in nightly but we don't want to
+sacrifice stability.</p>
+<p>Stability is a guarantee that something won't change. With that said, unstable
+features theoretically have no guarantees, but in practice there is generally a
+modicum of acceptable change and stability in nightly releases for most
+purposes.</p>
+<p>Before we begin, I've condensed my thought process into a simple diagram:</p>
+<figure>
+  <img
+    src="/assets/images/pick-rust-toolchain-flowchart.png"
+    alt="a flowchart describing how to choose between rust toolchains"
+    title="A flowchart for choosing between stable, beta, and nightly toolchains">
+  </img>
+</figure>
+<p><strong>If you don't need anything specifically from nightly or beta, stable should be
+your default option.</strong> Cargo is quite good at mentioning what features you can
+possibly turn on to help guide you into nightly. If you want a full guide on all
+current and prior unstable features you can check out the <a href="https://doc.rust-lang.org/unstable-book/index.html">unstable
+book</a>.</p>
+<p>A way to run nightly with a slightly increased sense of stability is to use a
+pinned variant. Cargo supports finding <code>rust-toolchain</code> files (the <a href="https://github.com/rust-lang/rustup#the-toolchain-file">toolchain
+file</a>, as it's called)
+at the root of crates which specify the specific version to use when building
+the project. You can pin a nightly with a date, so something like</p>
+<pre><code>nightly-2020-01-01
+</code></pre>
+<p>will ensure the nightly released on January 1st, 2020 will be the toolchain
+picked.</p>
+<p>In my own experience, when I encounter a bug in a pinned nightly I am using, I
+can usually bump the pinned version to the latest nightly and go on with my
+life. Although nightly Rust is still a moving target but in my experience it is
+a remarkably sturdy moving target! Having run Rust for work and personal uses,
+I've used pinned nightlies in both cases to great effect.</p>
+<p>What's the difference between beta and nightly? <code>beta</code> is the first step before
+a stable release. Beta is continually improved as nightlies progress and
+regressions and features are discovered. The flow goes from nightly, to beta, to
+stable, as you can see here in the <a href="https://doc.rust-lang.org/book/appendix-07-nightly-rust.html">Rust Programming Language Book Appendix
+G</a>. As stated in
+the same appendix:</p>
+<blockquote>
+<p>Most Rust users do not use beta releases actively, but test against beta in
+their CI system to help Rust discover possible regressions.</p>
+</blockquote>
+<p>Or, another way of putting it; if you use stable, having beta and nightly builds
+can help point out failures to be raised with the Rust core team, i.e. beta
+should do everything stable does, and more. In the same vein, nightly should do
+everything beta does, and more, but with the caveat that unstable APIs are
+subject to change. Technically, one could try stable, then go to a pinned beta,
+then go to a pinned nightly if they really want to tracking changes to specific
+features.</p>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
