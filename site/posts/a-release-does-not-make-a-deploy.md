@@ -7,7 +7,6 @@ summary: >-
   Is the vision in your head of your pipelines that of lean, graceful atheletes?
   Do branch builds simply test your changes swiftly and anything that hits master
   builds artifacts finished with the flourish of a ephemeral "deployment"?
-hero_font_color: light
 ---
 
 Is the vision in your head of your pipelines that of lean, graceful atheletes?

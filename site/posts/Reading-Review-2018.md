@@ -12,7 +12,6 @@ summary: >-
   through yourself. If you've ever read a book review that basically told you
   everything you needed to know before you've read the book, you'll know what I'm
   talking about.
-hero_font_color: dark
 ---
 
 Being a voracious reader, one thing that helps bring the mountain of things I

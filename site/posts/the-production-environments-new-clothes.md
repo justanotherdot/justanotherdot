@@ -15,7 +15,6 @@ summary: >-
   managers because they they aren't shown to customers. One uncomfortable fact
   that developers and product managers struggle with is that production doesn't
   mean seen.
-hero_font_color: light
 ---
 
 Staging environments are a distraction. Massive hours have been poured into

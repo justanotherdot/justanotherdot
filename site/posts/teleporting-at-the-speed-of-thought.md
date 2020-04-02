@@ -21,7 +21,6 @@ summary: >-
   whereas teleportation requires little effort if at all. Teleportation doesn't
   just mean jumping someplace but also transporting text somewhere, whether it
   be someplace else in a buffer or into textual purgatory.
-hero_font_color: light
 ---
 
 Adept text editor users fly around and manipulate text as if by _teleportation_.

@@ -8,7 +8,6 @@ summary: >-
   thoughts around how I think about learning in general. Although this list is
   horribly incomplete, I've identified a few core patterns I tend to fall into
   when learning.
-hero_font_color: white
 ---
 
 Having written another [yearly review of

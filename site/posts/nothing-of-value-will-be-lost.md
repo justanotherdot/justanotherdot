@@ -9,7 +9,6 @@ summary: >-
   of work as if they are the same as the result of the work itself. Backlog
   grooming sessions pass and only thin slabs of the gelatinous mass disappear into
   the abyss all the while delaying developers from focusing on actual work.
-hero_font_color: black-bis
 ---
 
 **Drop your backlog. Burn all of your tickets. Eject your issues into the sun.

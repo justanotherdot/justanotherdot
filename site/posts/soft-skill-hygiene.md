@@ -10,7 +10,6 @@ summary: >-
   complexity. Trust helps build innovative and productive teams. Trust is built up
   from cultivating safety and vulnerability and we can achieve these
   characteristics through effective communication.
-hero_font_color: black
 ---
 
 Eyes glaze over at the words "soft skills" for developers of both the "ship it"

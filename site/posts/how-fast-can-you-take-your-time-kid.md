@@ -8,7 +8,6 @@ summary: >-
   certainly pays off. Hackers are notorious for revelling in
   laziness but laziness has a stigma of the lazy party
   not _being enough_. Wikipedia states,
-hero_font_color: black-bis
 ---
 
 There is nothing wrong with chopping wood and carrying water. Hard work

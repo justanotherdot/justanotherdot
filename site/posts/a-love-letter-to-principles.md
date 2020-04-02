@@ -6,7 +6,6 @@ tags: [productivity]
 summary: >-
   Patterns are how we tend to carve up the world around us. Like feedback loops,
   they are everywhere once we start noticing them.
-hero_font_color: light
 ---
 
 Programmers make assertions all the time with a wide range of utilities: tests,

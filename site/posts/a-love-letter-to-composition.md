@@ -6,7 +6,6 @@ tags: [composition, principle, pattern]
 summary: >-
   Using composition gives you superpowers. It is by far the most practical
   experimentation tool I know.
-hero_font_color: white
 ---
 
 Using composition gives you superpowers. It is by far the most practical

@@ -10,7 +10,6 @@ summary: >-
   number of times, and every time after that, things don't change. In the case
   of a payment it would be once and only once, no matter how many times the
   request was submitted after that.
-hero_font_color: dark
 ---
 
 Charging someone twice is bad for business; it burns trust with customers and it

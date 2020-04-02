@@ -12,7 +12,6 @@ summary: >-
   It's often lamented that software projects become dead plants in an unloved
   garden: we excitedly keep buying new plants but we don't put in the time to see
   them thrive.
-hero_font_color: light
 ---
 
 It's often lamented that software projects become dead plants in an unloved

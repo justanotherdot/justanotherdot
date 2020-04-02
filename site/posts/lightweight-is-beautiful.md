@@ -10,7 +10,6 @@ summary: >-
   these steps! IDEs give this to you because they know best about when a buffer or
   a file has been saved or modified. Indeed, people go crazy for IDEs because they
   provide information directly in the editor.
-hero_font_color: black-bis
 ---
 
 We are all guilty of having done the "edit a little bit, go to another terminal,

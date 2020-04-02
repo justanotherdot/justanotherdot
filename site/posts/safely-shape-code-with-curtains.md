@@ -10,7 +10,6 @@ summary: >-
   have to redo all my work in order to get a grade. Separation is how we often
   define our mental maps of the world. For this article, I'll call anything that
   is distinct from other things an "entity".
-hero_font_color: light
 ---
 
 Once upon a time I studied photography at an art school. It was there that I

@@ -13,7 +13,6 @@ summary: >-
   exist" is the usual argument for this requirement; code without tests is
   potentially problematic code, but tests are also untested chunks of code in
   our codebase. For example, consider this bit of React code:
-hero_font_color: light
 ---
 
 If you are unfamiliar with code coverage, the idea is simple: you write

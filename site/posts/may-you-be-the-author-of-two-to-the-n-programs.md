@@ -9,7 +9,6 @@ summary: >-
   What about our mental health? Why not more articles about our productivity from
   the point of view of improving our ability to deal with discomfort, burn out,
   imposter syndrome, and so on?
-hero_font_color: dark
 ---
 
 The sheer propensity of articles detailing productivity tips for software

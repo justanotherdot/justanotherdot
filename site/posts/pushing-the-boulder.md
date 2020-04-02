@@ -12,7 +12,6 @@ summary: >-
   only takes many small, infrequent pushes. The idea behind pushing a boulder is
   the same as fast systems incurring usage. Want to improve your coding? Code.
   Want to read more? Read. Action begets action.
-hero_font_color: light
 ---
 
 Imagine you have a giant boulder in front of you. This is the task you want to

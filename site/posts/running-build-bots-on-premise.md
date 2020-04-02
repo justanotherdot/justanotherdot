@@ -17,7 +17,6 @@ summary: >-
   demonstrating configuration of pipelines without setting up supporting
   infrastructure. If you are a developer making things having a fast response time
   for feedback is crucial and continuous integration helps drastically.
-hero_font_color: white
 ---
 
 Late November I did a [video

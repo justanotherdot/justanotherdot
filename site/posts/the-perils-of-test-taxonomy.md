@@ -6,7 +6,6 @@ tags: [the lowly assert, test taxonomy, test classification, tests, testing]
 summary: >-
   You are wasting your time by classifying tests. Instead of discerning what
   defines a test we'll hone in on tests to avoid.
-hero_font_color: black
 ---
 
 You are wasting your time by classifying tests. Instead of discerning what
