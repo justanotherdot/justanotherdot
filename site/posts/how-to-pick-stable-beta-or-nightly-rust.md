@@ -5,6 +5,10 @@ date: 2020-04-02T09:04:29.420894589+00:00
 tags:
   - rust
 summary: >-
+  It would seem natural to always pick stable Rust, but how much awesome new
+  stuff do beta and nightly have and how unstable are they? It can be confusing
+  that such a plethora of feature flags sits in nightly but we don't want to
+  sacrifice stability.
 ---
 
 It would seem natural to always pick stable Rust, but how much awesome new
