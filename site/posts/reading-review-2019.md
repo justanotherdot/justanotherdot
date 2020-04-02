@@ -8,7 +8,6 @@ summary: >-
   down to about forty. I say "consumed" because I decided to give audio books a
   go so while I would normally read about thirty books I've managed to double
   that amount by listening to things while I work.
-hero_font_color: light
 ---
 
 This year came up at roughly sixty books "consumed". I've pared the list here

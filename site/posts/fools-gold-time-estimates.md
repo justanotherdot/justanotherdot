@@ -13,7 +13,6 @@ summary: >-
   level of rigor. Back of the envelope calculations take rough approximations,
   simplified assumptions, and various tidbits of top-of-the-mind knowledge to
   calculate a ballpark figure.
-hero_font_color: black-bis
 ---
 
 It would be fantastic if we knew the future. With that knowledge we could plan

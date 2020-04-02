@@ -10,7 +10,6 @@ summary: >-
   where to put. It might come in a different name, and there might be several of
   them when the last dumping grounds were abandoned. When that happens, it's only
   a matter of time until the majority of modules all become dumping grounds.
-hero_font_color: white-bis
 ---
 
 A former colleague and friend once referred to modules that grow without any

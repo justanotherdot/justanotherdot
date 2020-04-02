@@ -9,7 +9,6 @@ summary: >-
   risky merging in new and different sets of changes rather than changing code
   in-place. This buys you time. You gain the control over the switch granted
   switching doesn't adversely affect some shared, mutable store of data.
-hero_font_color: light
 ---
 
 Migrations are a part of life as a dev. They help [cut down tech

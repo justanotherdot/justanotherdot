@@ -7,7 +7,6 @@ summary: >-
   As part of The Lowly Assert series I wanted to go over some mathematical
   patterns. Filling your arsenal of known properties helps with recognizing common
   ways functions, systems, etc. are, and should continue, to behave.
-hero_font_color: dark
 ---
 
 As part of [The Lowly

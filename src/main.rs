@@ -32,7 +32,6 @@ struct PostHeader {
     date: String,
     tags: Option<Vec<String>>,
     summary: Option<String>,
-    hero_font_color: Option<String>,
 }
 
 #[derive(Content, Clone, Debug)]
@@ -52,7 +51,6 @@ struct Post {
     tags: Vec<Tag>,
     image: String,
     summary: Option<String>,
-    hero_font_color: String,
 }
 
 #[derive(Content, Clone, Debug)]
@@ -181,7 +179,6 @@ where
         tags: tags.clone(),
         image: snake_image,
         summary: header.summary,
-        hero_font_color: header.hero_font_color.unwrap_or("white-bis".to_string()),
     }
 }
 
