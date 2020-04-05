@@ -7,6 +7,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/make-your-errors-clearer-by-splitting-them-in-half.html</loc>
+    <lastmod>2020-04-06T10:26:18.979664965+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/how-to-pick-stable-beta-or-nightly-rust.html</loc>
     <lastmod>2020-04-02T09:04:29.420894589+00:00</lastmod>
     <priority>0.95</priority>
