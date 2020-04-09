@@ -17,14 +17,14 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:description" content="">
+    <meta property="og:description" content="We call the wildcard variable, denoted by an underscore (`_`), the &quot;don't care&quot; variable to throw away values we don't care to keep. Wildcards don't bind any values, so wildcards have specific support in the language, as opposed to other languages where an underscore may be yet another variable name.">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@_justanotherdot">
     <meta name="twitter:creator" content="@_justanotherdot">
     <meta name="twitter:title" content="Ways Wildcards Hide Bugs">
     <meta name="twitter:image" content="https://justanotherdot.com/assets/images/ways-wildcards-hide-bugs.jpg">
-    <meta name="twitter:description" content="">
+    <meta name="twitter:description" content="We call the wildcard variable, denoted by an underscore (`_`), the &quot;don't care&quot; variable to throw away values we don't care to keep. Wildcards don't bind any values, so wildcards have specific support in the language, as opposed to other languages where an underscore may be yet another variable name.">
     <!-- OPEN GRAPH END -->
 
     <link rel="shortcut icon" href="/favicon.ico">
@@ -75,7 +75,10 @@
           <div class="column is-half">
             <p class="has-text-weight-bold">April  9 2020,  8:42PM</p>
             <div class="content is-medium">
-              <p>We call the wildcard variable, denoted by an underscore (<code>_</code>), the &quot;don't care&quot; variable to throw away values we don't care to keep. Wildcards don't bind any values, so wildcards have specific support in the language, as opposed to other languages where an underscore may be yet another variable name.</p>
+              <p>We call the wildcard variable, denoted by an underscore (<code>_</code>), the &quot;don't care&quot;
+variable to throw away values we don't care to keep. Wildcards don't bind any
+values, so wildcards have specific support in the language, as opposed to other
+languages where an underscore may be yet another variable name.</p>
 <p>I'll discuss three ways bugs can lurk innocently behind wildcards. Wildcards are useful, but reckless use of them can lead to bugs! I'll discuss three ways this can happen and how to be a bit more vigilant with their use. The general principle across these fixes is to think twice when you find yourself writing a wildcard. Ask if it is a value you want to ignore?</p>
 <h3>Throwing away values</h3>
 <p>The <code>;</code> without a <code>let</code> statement in Rust means &quot;turn this thing into a <code>()</code>because I want to cast the value into something that isn't an error but isn't a useful value.&quot; If you write a <code>Result</code> in Rust and don't propagate the value with <code>?</code> and don't assign the value to a variable name, say something like this:</p>

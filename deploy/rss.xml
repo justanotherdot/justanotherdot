@@ -17,7 +17,10 @@
       <pubDate>Thu, 09 Apr 2020 20:42:10 +1000</pubDate>
       <description></description>
       <content:encoded><![CDATA[
-        <p>We call the wildcard variable, denoted by an underscore (<code>_</code>), the &quot;don't care&quot; variable to throw away values we don't care to keep. Wildcards don't bind any values, so wildcards have specific support in the language, as opposed to other languages where an underscore may be yet another variable name.</p>
+        <p>We call the wildcard variable, denoted by an underscore (<code>_</code>), the &quot;don't care&quot;
+variable to throw away values we don't care to keep. Wildcards don't bind any
+values, so wildcards have specific support in the language, as opposed to other
+languages where an underscore may be yet another variable name.</p>
 <p>I'll discuss three ways bugs can lurk innocently behind wildcards. Wildcards are useful, but reckless use of them can lead to bugs! I'll discuss three ways this can happen and how to be a bit more vigilant with their use. The general principle across these fixes is to think twice when you find yourself writing a wildcard. Ask if it is a value you want to ignore?</p>
 <h3>Throwing away values</h3>
 <p>The <code>;</code> without a <code>let</code> statement in Rust means &quot;turn this thing into a <code>()</code>because I want to cast the value into something that isn't an error but isn't a useful value.&quot; If you write a <code>Result</code> in Rust and don't propagate the value with <code>?</code> and don't assign the value to a variable name, say something like this:</p>

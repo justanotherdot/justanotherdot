@@ -5,9 +5,16 @@ date: 2020-04-09T10:42:10.396858392+00:00
 tags:
   - rust
 summary: >-
+  We call the wildcard variable, denoted by an underscore (`_`), the "don't care"
+  variable to throw away values we don't care to keep. Wildcards don't bind any
+  values, so wildcards have specific support in the language, as opposed to other
+  languages where an underscore may be yet another variable name.
 ---
 
-We call the wildcard variable, denoted by an underscore (`_`), the "don't care" variable to throw away values we don't care to keep. Wildcards don't bind any values, so wildcards have specific support in the language, as opposed to other languages where an underscore may be yet another variable name.
+We call the wildcard variable, denoted by an underscore (`_`), the "don't care"
+variable to throw away values we don't care to keep. Wildcards don't bind any
+values, so wildcards have specific support in the language, as opposed to other
+languages where an underscore may be yet another variable name.
 
 I'll discuss three ways bugs can lurk innocently behind wildcards. Wildcards are useful, but reckless use of them can lead to bugs! I'll discuss three ways this can happen and how to be a bit more vigilant with their use. The general principle across these fixes is to think twice when you find yourself writing a wildcard. Ask if it is a value you want to ignore?
 
