@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Skip Unnecessary Allocations In Your Collections">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/skip-unnecessary-allocations-in-your-collections.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Rust's standard library offers a lot of neat dynamically-sized data structures for use in Rust programs. They are quite performant, but the allocations they perform may add up and cause performance issues in your programs.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Skip Unnecessary Allocations In Your Collections">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/skip-unnecessary-allocations-in-your-collections.jpg">
+    <meta name="twitter:description" content="Rust's standard library offers a lot of neat dynamically-sized data structures for use in Rust programs. They are quite performant, but the allocations they perform may add up and cause performance issues in your programs.">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>Skip Unnecessary Allocations In Your Collections &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/skip-unnecessary-allocations-in-your-collections.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/skip-unnecessary-allocations-in-your-collections.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Skip Unnecessary Allocations In Your Collections</h1>
+              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">April 14 2020,  7:47PM</p>
+            <div class="content is-medium">
+              <p>Rust's standard library offers a lot of neat dynamically-sized data structures
+for use in Rust programs. They are quite performant, but the allocations they
+conduct behind the scenes to grow may add up and cause performance issues in
+your programs.</p>
+<p>Rust intentionally avoids costly uses of <code>new</code> in a program by having the
+allocation be empty by default, including types outside of<code>std::collections</code>,
+too, such as <code>String::new</code>.</p>
+<p>The backing store usually grows with a doubling strategy, and the growth tends
+to happen right as it is needed, as is the case for <code>Vec</code>, see
+<a href="https://github.com/rust-lang/rust/blob/42abbd8878d3b67238f3611b0587c704ba94f39c/src/liballoc/raw_vec.rs#L462-L464">here</a>
+and
+<a href="https://github.com/rust-lang/rust/blob/42abbd8878d3b67238f3611b0587c704ba94f39c/src/liballoc/raw_vec.rs#L476-L540">here</a>
+for references to code as of this writing, but it may not always be the same
+story for other collections. I strongly encourage looking at the actual source
+code for the standard library when you are curious. Rust uses the language of
+<strong>capacity</strong> to designate the total possible amount of memory the backing store
+has room for and <strong>length</strong> to designate the total number of actual values in
+the data structure.</p>
+<p>One of the core tenants of optimization is to avoid doing needless work. Putting
+data on the heap isn't necessarily expensive if you've already paid the price
+upfront for allocating it. Doing work in this way is called <strong>amortization</strong>.
+Imagine I have to store 4096 things in a vector. By default, the vector grows in
+powers of two with capacities of 0, 2, 4, 8, 16, 32, 64, and so on, in that
+order. That's already six allocations I've mentioned and not done reaching the
+final size. Avoiding unnecessary work is at the heart of performance
+optimization and these are intermediate steps are unnecessary!</p>
+<p>A fantastic part of the Rust standard library collections is they tend to have
+common interfaces precisely for this sort of thing! You can avoid these
+allocations by using<code>with_capacity</code> if you know the value or upper bound you
+need initially. If you already have the data structure hanging around, you can
+also call <code>reserve</code> to request additional capacity to avoid needless allocation.</p>
+<p>The way allocation happens with the doubling strategy <em>is</em> a form of
+amortization. As the collection grows in powers of two, the number of calls
+reduces, but the cost of growing the vector increases. Each time the vector
+grows, it will copy all the values over to a new backing store. In general, any
+time you think you can use a big chunk of data up front, you should allocate the
+full capacity, but if the exact amount you are requesting is unknown, isn't that
+a bit wasteful? An alternative strategy where the amount may only be partly
+known is to request a large chunk of memory and size it down either with
+<code>shrink_to_fit</code> or <code>resize</code>, but be careful with <code>resize</code> as it may truncate the
+collection if you aren't careful!</p>
+<p>It is always best to get empirical data on how to reasonably size the collection
+upfront or while the program is running. If we instead take a chaotic approach
+to allocations we may do more harm than good. At the end of the day, the reason
+why these data structures grow on their own is to avoid thinking about them
+<em>until</em> performance is an issue and we reveal that spending our time on this is
+important through profiling.</p>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
