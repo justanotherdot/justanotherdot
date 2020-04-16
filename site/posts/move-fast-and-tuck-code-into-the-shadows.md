@@ -2,7 +2,7 @@
 title: Move Fast and Tuck Code Into the Shadows
 author: Ryan James Spencer
 date: 2019-08-23T11:51:00Z
-tags: [code, software]
+tags: [coding]
 summary: >-
   Migrations are a part of life as a dev. They help cut down tech
   debt but they can be risky. It's always less

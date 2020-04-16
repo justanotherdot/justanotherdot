@@ -2,7 +2,7 @@
 title: "The Lowly Assert: Involution"
 author: Ryan James Spencer
 date: 2019-10-28T19:43:10.534012654+00:00
-tags: [the lowly assert, assertion, mathematics]
+tags: [the lowly assert]
 summary: >-
   As part of The Lowly Assert series I wanted to go over some mathematical
   patterns. Filling your arsenal of known properties helps with recognizing common

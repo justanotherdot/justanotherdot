@@ -4,8 +4,7 @@ author: Ryan James Spencer
 date: 2020-01-18T09:27:50.965014871+00:00
 tags:
   - date handling
-  - time
-  - software
+  - coding
 summary: >-
   Date handling is the kind of funny where you sob from of the ways it can
   horribly cut you when you least expect it. Developers either pretend that _all_

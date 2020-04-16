@@ -2,7 +2,7 @@
 title: The Perils of Test Taxonomy
 author: Ryan James Spencer
 date: 2019-12-08T04:53:57.916842789+00:00
-tags: [the lowly assert, test taxonomy, test classification, tests, testing]
+tags: [testing]
 summary: >-
   You are wasting your time by classifying tests. Instead of discerning what
   defines a test we'll hone in on tests to avoid.

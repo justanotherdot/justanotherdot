@@ -3,8 +3,8 @@ title: Working From Home Without Clawing At The Walls
 author: Ryan James Spencer
 date: 2020-03-16T08:49:21.863280673+00:00
 tags:
-  - health
-  - wfh
+  - mental health
+  - working from home
 summary: >-
   Swaths of people are shifting into working from home, otherwise acronymized as
   "wfh", and for some it's a drastic shift. For those with kids, the reduce

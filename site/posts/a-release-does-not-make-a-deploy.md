@@ -2,7 +2,7 @@
 title: A Release Does Not Make a Deploy
 author: Ryan James Spencer
 date: 2019-11-24T09:21:53.272218419+00:00
-tags: [ci, continuous integration, releases, deploys, artifacts]
+tags: [infrastructure]
 summary: >-
   Is the vision in your head of your pipelines that of lean, graceful atheletes?
   Do branch builds simply test your changes swiftly and anything that hits master

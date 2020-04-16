@@ -4,9 +4,7 @@ author: Ryan James Spencer
 date: 2020-01-21T09:27:28.702008021+00:00
 tags:
   - teams
-  - ownership
   - leadership
-  - management
 summary: >-
   I'm nearing 6,000 contributions on GitHub. I mix personal and private
   contributions but I estimate a large portion of of the changes are from work.

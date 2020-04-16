@@ -2,7 +2,7 @@
 title: Make a home
 author: Ryan James Spencer
 date: 2019-08-22T10:49:00Z
-tags: [code, software, health]
+tags: [coding]
 summary: >-
   The analogies to construction and architecture in software are abundant. We say
   that we are 'building' a codebase. We assign people the role of 'architect'. One

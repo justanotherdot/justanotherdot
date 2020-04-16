@@ -2,7 +2,7 @@
 title: How Fast Can You Take Your Time, Kid?
 author: Ryan James Spencer
 date: 2019-10-09T10:38:58.906711701+00:00
-tags: [automation, principle, do easy, wu wei]
+tags: [automation, principle]
 summary: >-
   There is nothing wrong with chopping wood and carrying water. Hard work
   certainly pays off. Hackers are notorious for revelling in

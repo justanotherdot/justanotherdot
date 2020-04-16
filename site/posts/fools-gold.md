@@ -2,7 +2,7 @@
 title: Fool's Gold, An Introduction
 author: Ryan James Spencer
 date: 2019-09-22T05:37:09Z
-tags: [software architecture, code, fools gold]
+tags: [software architecture, coding, fools gold]
 summary: >-
   Developer's are a big target for what I call "fool's gold". It's the hope that a
   piece of tech can solve all of our problems that keeps us going with the bait of
