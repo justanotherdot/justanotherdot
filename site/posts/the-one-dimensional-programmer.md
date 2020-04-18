@@ -2,7 +2,7 @@
 title: The One Dimensional Programmer
 author: Ryan James Spencer
 date: 2019-12-29T10:00:26.969624557+00:00
-tags: [software development, career, skills, innovation]
+tags: [coding, career]
 summary: >-
   Technical skill alone is not going to advance your career as a programmer. In
   the last two years I've received questions asking what I felt would be the

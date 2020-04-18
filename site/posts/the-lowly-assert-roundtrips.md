@@ -2,7 +2,7 @@
 title: "The Lowly Assert: Roundtrips"
 author: Ryan James Spencer
 date: 2019-11-02T10:37:16.048817270+00:00
-tags: [the lowly assert, assertion, mathematics, rust]
+tags: [the lowly assert, rust]
 summary: >-
   Data "roundtrips" when it goes from one value, to another, and back to the same
   value without any data loss, gain, or corruption. If you write code, you have

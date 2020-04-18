@@ -2,7 +2,7 @@
 title: Safely Shape Code With Curtains
 author: Ryan James Spencer
 date: 2019-10-19T11:29:55.346897423+00:00
-tags: [principle, pattern, systems topology, systems design]
+tags: [principle, pattern]
 summary: >-
   Once upon a time I studied photography at an art school. It was there that I
   learned the importance of separation between tones in an image. If the

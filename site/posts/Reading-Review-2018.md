@@ -2,7 +2,7 @@
 title: Reading Review for 2018
 author: Ryan James Spencer
 date: 2018-12-12T10:09:20Z
-tags: [software, reading, soft skills]
+tags: [coding, reading, soft skills]
 summary: >-
   Being a voracious reader, one thing that helps bring the mountain of things I
   want to read down to something manageable is being able to read things faster.

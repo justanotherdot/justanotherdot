@@ -4,12 +4,8 @@ author: Ryan James Spencer
 date: 2019-11-15T09:25:52.666511749+00:00
 tags:
   - editor
-  - code
+  - coding
   - principle
-  - vim
-  - nvim
-  - vscode
-  - emacs
 summary: >-
   Adept text editor users fly around and manipulate text as if by teleportation.
   For me, this is a principle I hold dear when considering my editing experience.

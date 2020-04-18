@@ -3,11 +3,8 @@ title: Making Plants Thrive
 author: Ryan James Spencer
 date: 2019-10-23T09:38:18.919799940+00:00
 tags:
-  - continuous integration
-  - continuous delivery
-  - software
+  - infrastructure
   - coding
-  - bitrot
 summary: >-
   It's often lamented that software projects become dead plants in an unloved
   garden: we excitedly keep buying new plants but we don't put in the time to see

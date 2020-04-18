@@ -3,13 +3,7 @@ title: Running Build Bots On Premise
 author: Ryan James Spencer
 date: 2019-12-22T04:13:05.717405584+00:00
 tags:
-  - continuous integration
-  - ci
-  - build bots
-  - computers
-  - compute
-  - local compute
-  - cloud compute
+  - infrastructure
   - hardware
 summary: >-
   Late November I did a video series discussing continuous integration and

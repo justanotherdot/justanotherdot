@@ -2,7 +2,7 @@
 title: "The Lowly Assert: Idempotence"
 author: Ryan James Spencer
 date: 2019-10-30T10:28:07.931497878+00:00
-tags: [the lowly assert, assertion, mathematics]
+tags: [the lowly assert]
 summary: >-
   Charging someone twice is bad for business; it burns trust with customers and
   it involves a lot of unnecessary churn. Payment providers go to great efforts

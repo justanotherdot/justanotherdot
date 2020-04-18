@@ -3,7 +3,7 @@ title: Stdout is Forever
 author: Ryan James Spencer
 date: 2019-09-04T05:49:00Z
 tags:
-  - code
+  - coding
   - debugging
   - pattern
   - go

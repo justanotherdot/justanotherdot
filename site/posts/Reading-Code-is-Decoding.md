@@ -2,7 +2,7 @@
 title: Reading Code is Decoding
 author: Ryan James Spencer
 date: 2018-01-27T03:43:09Z
-tags: [software, reading]
+tags: [coding, reading]
 summary: >-
   Early this January I finished reading Coders at Work and in each interview
   there is a recurring question of “how do you read code?” Here’s a rough summary

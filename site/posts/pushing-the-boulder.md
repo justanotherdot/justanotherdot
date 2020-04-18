@@ -2,7 +2,7 @@
 title: Pushing the Boulder
 author: Ryan James Spencer
 date: 2019-09-19T10:15:00Z
-tags: [knowledge acquisition,  productivity]
+tags: [learning,  productivity]
 summary: >-
   Imagine you have a giant boulder in front of you. This is the task you want to
   undertake. You know you need to push it to get it moving but you also

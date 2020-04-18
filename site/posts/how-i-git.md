@@ -2,7 +2,7 @@
 title: How I Git
 author: Ryan James Spencer
 date: 2019-10-07T10:02:46.655278266+00:00
-tags: [git, version control, pattern]
+tags: [git, pattern]
 summary: >-
   I thought it might be worth having a look at two things `git` allows I've abused
   to remove some warts and toil from my day-to-day flow.
