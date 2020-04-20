@@ -7,6 +7,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/untangle-your-errors-with-enums.html</loc>
+    <lastmod>2020-04-22T11:04:16.302310060+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/skip-unnecessary-allocations-in-your-collections.html</loc>
     <lastmod>2020-04-14T09:47:45.519198005+00:00</lastmod>
     <priority>0.95</priority>
