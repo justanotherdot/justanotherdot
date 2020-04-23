@@ -10,6 +10,148 @@
     <language>en-us</language>
     
     <item>
+      <title>Untangle Your Errors With Enums</title>
+      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <link>https://justanotherdot.com/posts/untangle-your-errors-with-enums.html</link>
+      <guid>https://justanotherdot.com/posts/untangle-your-errors-with-enums.html</guid>
+      <pubDate>Wed, 22 Apr 2020 21:04:16 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Do you find it far too easy to reach for panics or shoehorn pre-existing errors
+to fit your needs? Is it unsatisfying that there are no exceptions in Rust and
+challenging to adjust to handling errors with <code>Result</code>? Here is a fundamental
+method for modeling data that will help untangle error handling in your
+programs.</p>
+<p>Programs laden with <code>unwrap</code>, <code>expect</code>, <code>assert</code>, and <code>panic</code> are quick to gain
+momentum, but this approach is clunky. For those coming from languages where
+exceptions are the norm for error handling, it can feel natural to reach for,
+but also awkward to use, something as blunt as a panic. Exceptions have handlers
+registered, whereas panics do not, which is the primary difference between the
+two.</p>
+<p>Panics are for critical situations where a program has no other option but to
+commit suicide. These vital situations are why capturing a panic in Rust carries
+a stigma. Recovering from a panic depends on how the panic unwinds or aborts,
+which is not always under our control.</p>
+<p>Handle errors in Rust with <code>Result</code>. However, for newcomers, it's not apparent
+how to best design error types. <code>Result&lt;A, B&gt;</code> implies that <code>B</code> could be
+anything and we don't want to put <em>anything</em> in there; ad hoc matching of
+strings or cross-referencing integers for errors is the pits.</p>
+<p>The problem with strings, integers, and other unrefined types is that the range
+of values you can express with them is <em>vast</em>, and when it comes to errors, we
+want to categorize them neatly, so the range of things we can express is
+<em>concise</em>. Unstructured data is hard to check against, parse by a machine, and
+find in a codebase. If you do not want to be caught in molasses later in your
+project, error handling brevity and classification matter a lot.</p>
+<p>Enter the endlessly useful enum. <strong>The beauty of enums is that we can refine
+and, therefore, narrow down the range of things we can express</strong>. Enums expose a
+handle other coders can rely on, whether they be consumers of your crate or
+internal maintainers. Enums optimize for categorization and aggregation, which
+makes errors easy to find in code.</p>
+<p>To start, create a bare-bones <code>error</code> module in your project with a top-level
+<code>Error</code> enum. I'll put some things in here for demonstration purposes, but I'm
+sure you can extrapolate for your own needs:</p>
+<pre><code>use std::fmt::Display;
+
+mod error {
+  pub enum Error {
+    IoError(std::io::Error),
+    SerdeError(serde_json::Error),
+    // ... and so on.
+  }
+
+  impl Display {
+    // display implementations for each variant.
+  }
+}
+</code></pre>
+<p>Once we have this top-level <code>Error</code>, keep pushing; Maybe <code>Error</code> is too much of a
+grab bag. <a href="https://www.justanotherdot.com/posts/make-your-errors-clearer-by-splitting-them-in-half.html">Keep clarifying your error
+types</a>.
+In the above example, we only expressed external errors but we will inevitably
+need to express errors relating to our concerns. I'll extend our top-level
+error and even grow some new ones:</p>
+<pre><code>use std::fmt::Display;
+use crate::token::Token;
+
+mod error {
+  pub enum Error {
+    pub Vendor(VendorError),
+    pub StdError(StdError),
+    pub Internal(InternalError),
+  }
+
+  pub enum InternalError {
+    pub Lex(LexError),
+  }
+
+  pub struct LexError {
+    pub path: Path,
+    pub line: i64,
+    pub column: i64,
+    pub token: Token,
+  }
+
+  pub enum VendorError {
+    pub SerdeError(serde_json::Error),
+    // ... and so on.
+  }
+
+  pub enum StdError {
+    pub IoError(std::io::Error),
+    // ... and so on.
+  }
+
+  impl Display {
+    // display implementations for each variant.
+  }
+}
+</code></pre>
+<p>From such small beginnings we have grown a relatively comprehensive error type
+to use in a variety of situations for our program or library. With all of this
+in place there is little reason to turn to a panic. The astute observer noted
+that we had <code>Display</code> impls laying around. I've structured the output in the
+&quot;NASA&quot; style of error reporting, showing a 'stack' of errors. Each layer of the
+classification above might have nested descriptions with colons or some other
+nested format, for example:</p>
+<pre><code>&lt;snip&gt;
+  //  top level, we start with [foo] to help describe things.
+  impl Display for Error {
+    fn fmt(error: Error, f: Formatter) -&gt; {
+      match error {
+        Error::Vendor(ve) =&gt; fmt.write(&quot;vendor: {}&quot;, ve),
+        Error::StdError(se) =&gt; fmt.write(&quot;stdlib:  {}&quot;, se),
+        Error::Internal(ie) =&gt; fmt.write(&quot;internal: {}&quot;, ie),
+      }
+    }
+  }
+
+  impl Display for InternalError {
+    fn fmt(error: InternalError, f: Formatter) -&gt; {
+      match error {
+        Internal::Lex(e) =&gt; fmt.write(&quot;could not lex source: {}&quot;, e),
+      }
+    }
+  }
+
+  impl Display for LexError {
+    fn fmt(le: LexError, f: Formatter) -&gt; {
+      fmt.write(&quot;unrecognized token `{}' in {}:{}:{}&quot;, le.token, le.path, le.line, le.column),
+    }
+  }
+&lt;snip&gt;
+</code></pre>
+<p>If we had a lexing error we could get a nice output like this:</p>
+<pre><code>internal: could not lex source: unrecognized token `asdf' in src/main.rs:3:4
+</code></pre>
+<p>In a language with sum types, or as Rust calls them, enums, there's no excuse
+not to use them liberally for data modeling of all kinds. Being meticulous about
+how you design errors and using categorization as a guiding heuristic makes
+error handling a snap rather than a grind.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Skip Unnecessary Allocations In Your Collections</title>
       <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
       <link>https://justanotherdot.com/posts/skip-unnecessary-allocations-in-your-collections.html</link>
