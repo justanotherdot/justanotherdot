@@ -17,10 +17,10 @@
       <pubDate>Wed, 29 Apr 2020 18:59:34 +1000</pubDate>
       <description></description>
       <content:encoded><![CDATA[
-        <p>At the start of a program, it is easy to <code>clone</code> data all over the place to get
-things working and soon enough the program is overrun by them. Switching away from
-clones can be hard because it requires fighting with the borrow checker, and
-<a href="https://www.justanotherdot.com/posts/four-ways-to-avoid-the-wrath-of-the-borrow-checker.html">alternative
+        <p>At the start of a program, it is straightforward to <code>clone</code> data all over the
+place to get things working, and, soon enough, the program is overrun by them.
+Switching away from clones can be hard because it requires fighting with the
+borrow checker, and <a href="https://www.justanotherdot.com/posts/four-ways-to-avoid-the-wrath-of-the-borrow-checker.html">alternative
 solutions</a>
 aren't quite right for the job. How do you cut down allocations from cloning as
 if you were borrowing without winding up in borrow hell? Consider using a Cow.</p>
@@ -29,28 +29,27 @@ they can do in this regard. On their own <a href="https://play.rust-lang.org/?ve
 owned or borrowed
 variants</a>,
 but cutting down careless memory allocations may help improve performance.</p>
-<p>Use a <code>Cow</code> when there is data allocated outside of a function or block and
-there is some runtime logic that determines whether a write will take place.
-<strong>Cows are a useful mechanism for transferring ownership lazily by cloning data
-once and only once</strong>. The clone occurs when you call <code>to_mut</code> on the Cow, but
-the all reads of the data are behind an immutable reference.</p>
-<p>Cow's are like hybrids such that at runtime they might be borrowing data that's
-already been around or they may be handing out borrows to an owned piece of data
-that <em>they</em> own.</p>
+<p>Use a <code>Cow</code> when there is data allocated outside of a function or block, and
+there is some runtime logic that determines whether a write takes place. <strong>Cows
+are a useful mechanism for transferring ownership lazily by cloning data once
+and only once</strong>.</p>
+<p>Cows are like hybrids such that at runtime, they might be borrowing data that's
+already been around, or they may be handing out borrows to an owned piece of
+data that <em>they</em> own.</p>
 <p>Consider a function that replaces values in a string that we already have
 allocated outside of the function. Replacing characters might mean changing the
-size of the string or it could even be a case of soft failure where we replace
-all invalid characters with the <a href="https://doc.rust-lang.org/std/char/constant.REPLACEMENT_CHARACTER.html">U+FFFD REPLACEMENT
-CHARACTER</a>
+size of the string or it could be a case of soft failure where we replace
+invalid characters with the unicode replacement character
+<a href="https://doc.rust-lang.org/std/char/constant.REPLACEMENT_CHARACTER.html">U+FFFD</a>,
 as is the case for
 <a href="https://doc.rust-lang.org/std/string/struct.String.html#method.from_utf8_lossy"><code>String::from_utf8_lossy</code></a>.
-We don't need to always return an owned value if we can recycle data that's
-already hanging around. We can recycle in other ways, too, such as taking a
-reference to a default rather than assuming it must always be allocated on the
-fly, or having a collection lazily clone values as it needs to rather than
-cloning the base set of values from the start. With a bit of imagination there's
-a number of places that Cows can be used to possibly improve performance and cut
-down on clones.</p>
+<strong>We should strive to recycle what values are already hanging around if we can
+help it</strong>. We can recycle in other ways, such as taking a reference to a default
+rather than assuming it must always be allocated on the fly, or having a
+collection lazily clone and take ownership of values as it needs to rather than
+cloning the collection from the start. With a bit of imagination, there are
+several places that Cows can be used to improve performance and cut down on
+clones.</p>
 
         ]]></content:encoded>
     </item>
