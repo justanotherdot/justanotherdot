@@ -10,8 +10,97 @@
     <language>en-us</language>
     
     <item>
+      <title>Magnifying Glasses for Rust Assembly</title>
+      <author>Ryan James Spencer</author>
+      <link>https://justanotherdot.com/posts/magnifying-glasses-for-rust-assembly.html</link>
+      <guid>https://justanotherdot.com/posts/magnifying-glasses-for-rust-assembly.html</guid>
+      <pubDate>Sun, 03 May 2020 14:40:08 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Compilers are complicated beasts. Our high-level source code goes through many
+transformations until it winds up becoming machine code that runs on real or
+virtual hardware. Assembly is the final destination before machine code, and it
+doesn't have to be menacing! <strong>Whether you intend to write assembly directly or
+not, knowing how your code translates to assembly can drastically improve your
+ability to analyze programs from the standpoint of performance.</strong></p>
+<p>Yes, we need numbers to guide us towards improvements, and yes, that means
+having benchmarks. <strong>Arguments over performance that don't include data are
+conjecture but understanding assembly gives you a magnifying glass to help guide
+you in your optimization adventures.</strong> With some experience, we can learn how to
+look at assembly and determine such things as whether or not the assembly
+contains efficient instructions, chunks of code are replaced with constant
+values, and so on. Benchmarks and analyzing assembly can go hand in hand, but
+how do you even get at the assembly in the first place?</p>
+<p>If you want to look at Rust's assembly in your project using just <code>cargo</code>, there
+are two ways. You can call</p>
+<pre><code>cargo rustc --release -- --emit asm &lt;ARGS&gt;
+</code></pre>
+<p><code>--release</code> is optional here. The primary argument that's needed is <code>--emit asm</code>. <code>ARGS</code> is the list of arguments you want to pass to <code>rustc</code> that might
+influence compilation. By default, <code>rustc</code> generates AT&amp;T syntax. Still, you can
+change to Intel syntax if that's what you prefer by passing <code>-C llvm-args=--x86-asm-syntax=intel</code>, which may not matter to you if this is your
+first foray into analyzing assembly, but it can be fun to see as an experiment!</p>
+<p>If you want a good starting point for flags, try using:</p>
+<pre><code>-C target-cpu=native -C opt-level=3
+</code></pre>
+<p>These two codegen options instruct the compiler to emit code specifically for
+the processor it guesses you are running the compiler on as well as using all
+optimizations. You can also pass <code>opt-level=z</code> or <code>opt-level=s</code> if you want to
+optimize for total disk space, instead. <strong>As a note, fewer instructions doesn't
+necessarily mean efficient code.</strong> A short set of instructions may end up taking
+more cycles than the more verbose alternative.</p>
+<p>If, instead, you want to call the standard <code>cargo build</code>, you can pass all these
+arguments with the <code>RUSTFLAGS</code> environment variable. For example:</p>
+<pre><code>RUSTFLAGS=&quot;--emit asm -C opt-level=3 -C target-cpu=native&quot; cargo build --release
+</code></pre>
+<p>When the build finishes, the assembly will live in a file with the suffix of<code>.s</code>
+under <code>target/debug/deps/CRATE_NAME-HASH.s</code>
+or<code>target/release/deps/CRATE_NAME-HASH.s</code>, depending on whether or not you
+builtwith the <code>--release</code> flag. If I run the above command on a crate with the
+name<code>project</code> I'll get something like the following:</p>
+<pre><code>$ find . -name &quot;*.s&quot; -type f./target/release/deps/project-1693e028130a9fa3.s
+</code></pre>
+<p>Keep in mind that there may be several of these outputs. If you are confused,
+which is the latest, you can try <code>cargo clean</code> and building fresh. By default,
+the names are going to look pretty weird in the output due to mangling!
+<strong>Mangling</strong> ensures that names for identifiers are unique across the process of
+compilation. You can try feeding the resulting assembly into
+<a href="https://github.com/luser/rustfilt">rustfilt</a> to get cleaner names:</p>
+<pre><code>find . -name &quot;*.s&quot; -type f | xargs cat | rustfilt
+</code></pre>
+<p>Ok, this is great if you have a project going, but maybe you have some transient
+code in the <a href="https://play.rust-lang.org/">Rust playground</a> and want to know what
+the assembly is there. You can emit assembly there, too! If you click on the
+ellipses next to the <code>Run</code> button, you'll get a menu that has several options.
+Select <code>ASM</code> for assembly output in another tab. There isn't much control over
+compilation options with the Rust playground approach besides picking stable,
+beta, or nightly. A more fully-featured web version for picking apart assembly
+is <a href="https://godbolt.org/">godbolt</a>, describes itself as a &quot;compiler explorer&quot;
+and provides a <em>lot</em> of features to aid you in exploration over the above
+bare-bones approaches. Advantage of using godbolt include:</p>
+<ul>
+<li>Viewing highlighted segments of our source code and where they line up to the assembly</li>
+<li>Access to a bevy of compilers from a wide variety of languages, even  selecting which version of Rust you want to use</li>
+<li>Passing arbitrary flags to influence how the generated output is produced</li>
+<li>Diffing changes in assembly between source code assembly</li>
+<li>Looking up the documentation for instructions on the fly</li>
+</ul>
+<p>You now know three ways to emit assembly, whether it's on your machine, the Rust
+playground, or <code>godbolt</code>! To the uninitiated, this can be overwhelming, but
+opening the hood can be liberating and allow us to start exploring the various
+instructions and how they all tie together.</p>
+<p>To reiterate, you don't always have to look at assembly to guide performance
+optimization. Benchmarks are crucial at guiding us towards real-world results.
+Try to make it a habit to look at assembly when you're curious about what's
+going on under the hood. If you start optimizing, it can be interesting to
+compare how assembly changes as you make high-level changes. If things seem to
+speed up, try to explore how the assembly itself has changed!</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Cut Down On Clones With Cows</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/cut-down-on-clones-with-cows.html</link>
       <guid>https://justanotherdot.com/posts/cut-down-on-clones-with-cows.html</guid>
       <pubDate>Wed, 29 Apr 2020 18:59:34 +1000</pubDate>
@@ -56,7 +145,7 @@ clones.</p>
     
     <item>
       <title>Untangle Your Errors With Enums</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/untangle-your-errors-with-enums.html</link>
       <guid>https://justanotherdot.com/posts/untangle-your-errors-with-enums.html</guid>
       <pubDate>Wed, 22 Apr 2020 21:04:16 +1000</pubDate>
@@ -198,7 +287,7 @@ error handling a snap rather than a grind.</p>
     
     <item>
       <title>Skip Unnecessary Allocations In Your Collections</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/skip-unnecessary-allocations-in-your-collections.html</link>
       <guid>https://justanotherdot.com/posts/skip-unnecessary-allocations-in-your-collections.html</guid>
       <pubDate>Tue, 14 Apr 2020 19:47:45 +1000</pubDate>
@@ -257,7 +346,7 @@ important through profiling.</p>
     
     <item>
       <title>Ways Wildcards Hide Bugs</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/ways-wildcards-hide-bugs.html</link>
       <guid>https://justanotherdot.com/posts/ways-wildcards-hide-bugs.html</guid>
       <pubDate>Thu, 09 Apr 2020 20:42:10 +1000</pubDate>
@@ -379,7 +468,7 @@ pub fn main() {
     
     <item>
       <title>Make Your Errors Clearer By Splitting Them In Half</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/make-your-errors-clearer-by-splitting-them-in-half.html</link>
       <guid>https://justanotherdot.com/posts/make-your-errors-clearer-by-splitting-them-in-half.html</guid>
       <pubDate>Mon, 06 Apr 2020 20:26:18 +1000</pubDate>
@@ -433,7 +522,7 @@ is best to define them clearly!</p>
     
     <item>
       <title>How to pick stable, beta, or nightly Rust</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/how-to-pick-stable-beta-or-nightly-rust.html</link>
       <guid>https://justanotherdot.com/posts/how-to-pick-stable-beta-or-nightly-rust.html</guid>
       <pubDate>Thu, 02 Apr 2020 19:04:29 +1000</pubDate>
@@ -497,7 +586,7 @@ features.</p>
     
     <item>
       <title>Catching panics in dependencies</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/catching-panics-in-dependencies.html</link>
       <guid>https://justanotherdot.com/posts/catching-panics-in-dependencies.html</guid>
       <pubDate>Fri, 27 Mar 2020 11:55:26 +1000</pubDate>
@@ -660,7 +749,7 @@ verify earlier failures aren't still happening.</p>
     
     <item>
       <title>How To Return An Iterator From a Function</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/how-to-return-an-iterator-from-a-function.html</link>
       <guid>https://justanotherdot.com/posts/how-to-return-an-iterator-from-a-function.html</guid>
       <pubDate>Thu, 19 Mar 2020 19:40:42 +1000</pubDate>
@@ -732,7 +821,7 @@ continues.</p>
     
     <item>
       <title>Working From Home Without Clawing At The Walls</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/working-from-home-without-clawing-at-the-walls.html</link>
       <guid>https://justanotherdot.com/posts/working-from-home-without-clawing-at-the-walls.html</guid>
       <pubDate>Mon, 16 Mar 2020 18:49:21 +1000</pubDate>
@@ -854,7 +943,7 @@ you while everyone adjusts. I hope some points here help ease the adjustment.</p
     
     <item>
       <title>Why Are There Two Types of Strings In Rust?</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/why-are-there-two-types-of-strings-in-rust.html</link>
       <guid>https://justanotherdot.com/posts/why-are-there-two-types-of-strings-in-rust.html</guid>
       <pubDate>Sat, 14 Mar 2020 10:45:46 +1000</pubDate>
@@ -921,7 +1010,7 @@ pointer which is possibly reused it when we borrow.</p>
     
     <item>
       <title>When to move, copy, or clone?</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/when-to-move-copy-or-clone.html</link>
       <guid>https://justanotherdot.com/posts/when-to-move-copy-or-clone.html</guid>
       <pubDate>Mon, 09 Mar 2020 19:35:28 +1000</pubDate>
@@ -1055,7 +1144,7 @@ use anymore.</p>
     
     <item>
       <title>Four Ways To Avoid The Wrath Of The Borrow Checker</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/four-ways-to-avoid-the-wrath-of-the-borrow-checker.html</link>
       <guid>https://justanotherdot.com/posts/four-ways-to-avoid-the-wrath-of-the-borrow-checker.html</guid>
       <pubDate>Sun, 01 Mar 2020 16:07:25 +1000</pubDate>
@@ -1200,7 +1289,7 @@ step, producing a final, desired result</li>
     
     <item>
       <title>Bindings Are Cheap: Managing Rightward Drift</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/bindings-are-cheap-managing-rightward-drift.html</link>
       <guid>https://justanotherdot.com/posts/bindings-are-cheap-managing-rightward-drift.html</guid>
       <pubDate>Thu, 20 Feb 2020 20:34:34 +1000</pubDate>
@@ -1308,7 +1397,7 @@ might,</p>
     
     <item>
       <title>Idiomatic Argument Passing in Rust</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/idiomatic-argument-passing-in-rust.html</link>
       <guid>https://justanotherdot.com/posts/idiomatic-argument-passing-in-rust.html</guid>
       <pubDate>Fri, 14 Feb 2020 06:05:17 +1000</pubDate>
@@ -1394,7 +1483,7 @@ function ought to take ownership.</p>
     
     <item>
       <title>Error Handling With Closures In Iterators</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/error-handling-with-closures-in-iterators.html</link>
       <guid>https://justanotherdot.com/posts/error-handling-with-closures-in-iterators.html</guid>
       <pubDate>Mon, 03 Feb 2020 19:38:54 +1000</pubDate>
@@ -1467,7 +1556,7 @@ better sense of what <code>collect</code> can roll up!</p>
     
     <item>
       <title>Structuring Rust Projects With Multiple Binaries</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html</link>
       <guid>https://justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html</guid>
       <pubDate>Thu, 30 Jan 2020 16:31:53 +1000</pubDate>
@@ -1563,7 +1652,7 @@ is that they are executables!</p>
     
     <item>
       <title>Peer Pressure Is The Sign Of Ownership</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/peer-pressure-is-the-sign-of-ownership.html</link>
       <guid>https://justanotherdot.com/posts/peer-pressure-is-the-sign-of-ownership.html</guid>
       <pubDate>Tue, 21 Jan 2020 19:27:28 +1000</pubDate>
@@ -1630,7 +1719,7 @@ prophecy. The experiment will change you and your teams for the better.</p>
     
     <item>
       <title>Consistent Date Handling</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/consistent-date-handling.html</link>
       <guid>https://justanotherdot.com/posts/consistent-date-handling.html</guid>
       <pubDate>Sat, 18 Jan 2020 19:27:50 +1000</pubDate>
@@ -1739,7 +1828,7 @@ things. A little upfront focus on consistency will save you a lot of shed tears.
     
     <item>
       <title>The Production Environment's New Clothes</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-production-environments-new-clothes.html</link>
       <guid>https://justanotherdot.com/posts/the-production-environments-new-clothes.html</guid>
       <pubDate>Fri, 10 Jan 2020 19:08:56 +1000</pubDate>
@@ -1823,7 +1912,7 @@ seen.</strong></p>
     
     <item>
       <title>Soft Skill Hygiene</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/soft-skill-hygiene.html</link>
       <guid>https://justanotherdot.com/posts/soft-skill-hygiene.html</guid>
       <pubDate>Tue, 07 Jan 2020 18:57:10 +1000</pubDate>
@@ -1904,7 +1993,7 @@ to luck.</p>
     
     <item>
       <title>The One Dimensional Programmer</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-one-dimensional-programmer.html</link>
       <guid>https://justanotherdot.com/posts/the-one-dimensional-programmer.html</guid>
       <pubDate>Sun, 29 Dec 2019 20:00:26 +1000</pubDate>
@@ -1990,7 +2079,7 @@ time to time.</p>
     
     <item>
       <title>Running Build Bots On Premise</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/running-build-bots-on-premise.html</link>
       <guid>https://justanotherdot.com/posts/running-build-bots-on-premise.html</guid>
       <pubDate>Sun, 22 Dec 2019 14:13:05 +1000</pubDate>
@@ -2126,7 +2215,7 @@ cloud compute.</p>
     
     <item>
       <title>Patterns Of Knowledge Acquisition</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/patterns-for-knowledge-acquisition.html</link>
       <guid>https://justanotherdot.com/posts/patterns-for-knowledge-acquisition.html</guid>
       <pubDate>Thu, 12 Dec 2019 14:30:40 +1000</pubDate>
@@ -2232,7 +2321,7 @@ more invigorating to work through material that is high signal <em>for you</em>.
     
     <item>
       <title>The Perils of Test Taxonomy</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-perils-of-test-taxonomy.html</link>
       <guid>https://justanotherdot.com/posts/the-perils-of-test-taxonomy.html</guid>
       <pubDate>Sun, 08 Dec 2019 14:53:57 +1000</pubDate>
@@ -2307,7 +2396,7 @@ assert?</strong></a></p>
     
     <item>
       <title>Reading Review 2019</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/reading-review-2019.html</link>
       <guid>https://justanotherdot.com/posts/reading-review-2019.html</guid>
       <pubDate>Tue, 03 Dec 2019 19:53:17 +1000</pubDate>
@@ -2654,7 +2743,7 @@ course</a></p>
     
     <item>
       <title>A Release Does Not Make a Deploy</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/a-release-does-not-make-a-deploy.html</link>
       <guid>https://justanotherdot.com/posts/a-release-does-not-make-a-deploy.html</guid>
       <pubDate>Sun, 24 Nov 2019 19:21:53 +1000</pubDate>
@@ -2721,7 +2810,7 @@ infrastructure that makes Friday deploys a nightmare.</strong></p>
     
     <item>
       <title>The Simplest Programming Language I Know</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-simplest-programming-language-i-know.html</link>
       <guid>https://justanotherdot.com/posts/the-simplest-programming-language-i-know.html</guid>
       <pubDate>Wed, 20 Nov 2019 20:35:16 +1000</pubDate>
@@ -2780,7 +2869,7 @@ calculus&quot;</a>.</p>
     
     <item>
       <title>Habit: A Tale of Two Water Bottles</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/habit-a-tale-of-two-water-bottles.html</link>
       <guid>https://justanotherdot.com/posts/habit-a-tale-of-two-water-bottles.html</guid>
       <pubDate>Mon, 18 Nov 2019 19:48:12 +1000</pubDate>
@@ -2858,7 +2947,7 @@ autonomy of people is their most valuable asset to a technical team.</p>
     
     <item>
       <title>Teleporting At The Speed Of Thought</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/teleporting-at-the-speed-of-thought.html</link>
       <guid>https://justanotherdot.com/posts/teleporting-at-the-speed-of-thought.html</guid>
       <pubDate>Fri, 15 Nov 2019 19:25:52 +1000</pubDate>
@@ -2917,7 +3006,7 @@ building your own.</p>
     
     <item>
       <title>An Infinite Barrage of Mountains to Climb</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/an-infinite-barrage-of-mountains-to-climb.html</link>
       <guid>https://justanotherdot.com/posts/an-infinite-barrage-of-mountains-to-climb.html</guid>
       <pubDate>Wed, 13 Nov 2019 19:14:36 +1000</pubDate>
@@ -3026,7 +3115,7 @@ tends to comes with it, easier.</p>
     
     <item>
       <title>Nothing of Value Will be Lost</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/nothing-of-value-will-be-lost.html</link>
       <guid>https://justanotherdot.com/posts/nothing-of-value-will-be-lost.html</guid>
       <pubDate>Sun, 10 Nov 2019 18:49:53 +1000</pubDate>
@@ -3074,7 +3163,7 @@ todo lists to offload information.</p>
     
     <item>
       <title>A Love Letter to Composition</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/a-love-letter-to-composition.html</link>
       <guid>https://justanotherdot.com/posts/a-love-letter-to-composition.html</guid>
       <pubDate>Thu, 07 Nov 2019 06:07:08 +1000</pubDate>
@@ -3144,7 +3233,7 @@ improved retention of knowledge. This is why composition is a superpower.</p>
     
     <item>
       <title>The Lowly Assert: Roundtrips</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-lowly-assert-roundtrips.html</link>
       <guid>https://justanotherdot.com/posts/the-lowly-assert-roundtrips.html</guid>
       <pubDate>Sat, 02 Nov 2019 20:37:16 +1000</pubDate>
@@ -3258,7 +3347,7 @@ suffices to simply show the action going forwards and backwards.</p>
     
     <item>
       <title>The Lowly Assert: Idempotence</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-lowly-assert-idempotence.html</link>
       <guid>https://justanotherdot.com/posts/the-lowly-assert-idempotence.html</guid>
       <pubDate>Wed, 30 Oct 2019 20:28:07 +1000</pubDate>
@@ -3318,7 +3407,7 @@ button for a slowly loading payment submission page!</p>
     
     <item>
       <title>The Lowly Assert: Involution</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-lowly-assert-involution.html</link>
       <guid>https://justanotherdot.com/posts/the-lowly-assert-involution.html</guid>
       <pubDate>Tue, 29 Oct 2019 05:43:10 +1000</pubDate>
@@ -3361,7 +3450,7 @@ example of The Lowly Assert.</p>
     
     <item>
       <title>Making Plants Thrive</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/making-plants-thrive.html</link>
       <guid>https://justanotherdot.com/posts/making-plants-thrive.html</guid>
       <pubDate>Wed, 23 Oct 2019 19:38:18 +1000</pubDate>
@@ -3407,7 +3496,7 @@ problem you are trying to solve).</strong></p>
     
     <item>
       <title>Dumping Grounds for Good and Bad</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/dumping-grounds-for-good-and-bad.html</link>
       <guid>https://justanotherdot.com/posts/dumping-grounds-for-good-and-bad.html</guid>
       <pubDate>Mon, 21 Oct 2019 19:04:52 +1000</pubDate>
@@ -3451,7 +3540,7 @@ keep</em>&quot;.</p>
     
     <item>
       <title>Safely Shape Code With Curtains</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/safely-shape-code-with-curtains.html</link>
       <guid>https://justanotherdot.com/posts/safely-shape-code-with-curtains.html</guid>
       <pubDate>Sat, 19 Oct 2019 21:29:55 +1000</pubDate>
@@ -3554,7 +3643,7 @@ experimentation.</strong></p>
     
     <item>
       <title>Fool's Gold: Time Estimates</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/fools-gold-time-estimates.html</link>
       <guid>https://justanotherdot.com/posts/fools-gold-time-estimates.html</guid>
       <pubDate>Tue, 15 Oct 2019 19:02:35 +1000</pubDate>
@@ -3636,7 +3725,7 @@ a guess, educated or not.</p>
     
     <item>
       <title>How Fast Can You Take Your Time, Kid?</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/how-fast-can-you-take-your-time-kid.html</link>
       <guid>https://justanotherdot.com/posts/how-fast-can-you-take-your-time-kid.html</guid>
       <pubDate>Wed, 09 Oct 2019 20:38:58 +1000</pubDate>
@@ -3720,7 +3809,7 @@ subtlety until the whole thing crumbles before you.</strong></p>
     
     <item>
       <title>The Lowly Assert</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-lowly-assert.html</link>
       <guid>https://justanotherdot.com/posts/the-lowly-assert.html</guid>
       <pubDate>Mon, 07 Oct 2019 21:43:52 +1000</pubDate>
@@ -3813,7 +3902,7 @@ can leverage within reason.</strong></p>
     
     <item>
       <title>How I Git</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/how-i-git.html</link>
       <guid>https://justanotherdot.com/posts/how-i-git.html</guid>
       <pubDate>Mon, 07 Oct 2019 20:02:46 +1000</pubDate>
@@ -3880,7 +3969,7 @@ to better suit their needs.</p>
     
     <item>
       <title>Actually Using Git Worktrees</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/actually-using-worktrees.html</link>
       <guid>https://justanotherdot.com/posts/actually-using-worktrees.html</guid>
       <pubDate>Sat, 05 Oct 2019 13:48:54 +1000</pubDate>
@@ -3941,7 +4030,7 @@ your eye open to automation opportunities!</p>
     
     <item>
       <title>Fool's Gold: Code Coverage</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/fools-gold-code-coverage.html</link>
       <guid>https://justanotherdot.com/posts/fools-gold-code-coverage.html</guid>
       <pubDate>Wed, 02 Oct 2019 06:41:51 +1000</pubDate>
@@ -4007,7 +4096,7 @@ and instrument your application.</p>
     
     <item>
       <title>Errors Across a Boundary</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/errors-across-a-boundary.html</link>
       <guid>https://justanotherdot.com/posts/errors-across-a-boundary.html</guid>
       <pubDate>Fri, 27 Sep 2019 21:10:01 +1000</pubDate>
@@ -4047,7 +4136,7 @@ side of the fence the mistake or complication came from.</strong></p>
     
     <item>
       <title>Fool's Gold, An Introduction</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/fools-gold.html</link>
       <guid>https://justanotherdot.com/posts/fools-gold.html</guid>
       <pubDate>Sun, 22 Sep 2019 15:37:09 +1000</pubDate>
@@ -4128,7 +4217,7 @@ you. <strong>Take marketing with a grain of salt and throw out the fool's gold!<
     
     <item>
       <title>Pushing the Boulder</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/pushing-the-boulder.html</link>
       <guid>https://justanotherdot.com/posts/pushing-the-boulder.html</guid>
       <pubDate>Thu, 19 Sep 2019 20:15:00 +1000</pubDate>
@@ -4194,7 +4283,7 @@ boulder.</p>
     
     <item>
       <title>Lightweight is Beautiful</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/lightweight-is-beautiful.html</link>
       <guid>https://justanotherdot.com/posts/lightweight-is-beautiful.html</guid>
       <pubDate>Sun, 08 Sep 2019 20:03:00 +1000</pubDate>
@@ -4280,7 +4369,7 @@ and <a href="http://jsomers.net/blog/speed-matters">fast systems incur usage</a>
     
     <item>
       <title>Stdout is Forever</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/stdout-is-forever.html</link>
       <guid>https://justanotherdot.com/posts/stdout-is-forever.html</guid>
       <pubDate>Wed, 04 Sep 2019 15:49:00 +1000</pubDate>
@@ -4392,7 +4481,7 @@ write code in?&quot;</em></p>
     
     <item>
       <title>A Love Letter to Principles</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/a-love-letter-to-principles.html</link>
       <guid>https://justanotherdot.com/posts/a-love-letter-to-principles.html</guid>
       <pubDate>Sun, 01 Sep 2019 18:43:00 +1000</pubDate>
@@ -4457,7 +4546,7 @@ the code and the culture we wish to embody.</p>
     
     <item>
       <title>A Love Letter to Patterns</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/a-love-letter-to-patterns.html</link>
       <guid>https://justanotherdot.com/posts/a-love-letter-to-patterns.html</guid>
       <pubDate>Fri, 30 Aug 2019 21:47:00 +1000</pubDate>
@@ -4505,7 +4594,7 @@ have the mental room to solve other problems with deliberate attention.</p>
     
     <item>
       <title>A Love Letter to Feedback Loops</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/a-love-letter-to-feedback-loops.html</link>
       <guid>https://justanotherdot.com/posts/a-love-letter-to-feedback-loops.html</guid>
       <pubDate>Thu, 29 Aug 2019 21:28:00 +1000</pubDate>
@@ -4564,7 +4653,7 @@ risks, make mistakes, refine, and repeat.</p>
     
     <item>
       <title>A Plea For Style Guides</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/a-plea-for-style-guides.html</link>
       <guid>https://justanotherdot.com/posts/a-plea-for-style-guides.html</guid>
       <pubDate>Wed, 28 Aug 2019 20:16:00 +1000</pubDate>
@@ -4619,7 +4708,7 @@ you consider your codebase as another magnum opus.</p>
     
     <item>
       <title>May You Be The Author of 2^N Programs</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/may-you-be-the-author-of-two-to-the-n-programs.html</link>
       <guid>https://justanotherdot.com/posts/may-you-be-the-author-of-two-to-the-n-programs.html</guid>
       <pubDate>Mon, 26 Aug 2019 20:00:00 +1000</pubDate>
@@ -4678,7 +4767,7 @@ your mental health to grow more flexible by accepting mess.</p>
     
     <item>
       <title>Move Fast and Tuck Code Into the Shadows</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/move-fast-and-tuck-code-into-the-shadows.html</link>
       <guid>https://justanotherdot.com/posts/move-fast-and-tuck-code-into-the-shadows.html</guid>
       <pubDate>Fri, 23 Aug 2019 21:51:00 +1000</pubDate>
@@ -4733,7 +4822,7 @@ implementation <em>and</em> the coupling to the rest of the system.</p>
     
     <item>
       <title>Make a home</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/make-a-home.html</link>
       <guid>https://justanotherdot.com/posts/make-a-home.html</guid>
       <pubDate>Thu, 22 Aug 2019 20:49:00 +1000</pubDate>
@@ -4793,7 +4882,7 @@ sacrificing progress and stamina.</p>
     
     <item>
       <title>Custom Search Functionality for Coding</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/custom-search-functionality-for-coding.html</link>
       <guid>https://justanotherdot.com/posts/custom-search-functionality-for-coding.html</guid>
       <pubDate>Mon, 19 Aug 2019 16:10:36 +1000</pubDate>
@@ -4838,7 +4927,7 @@ gain a handle on parameterizing search functionality with your address bar.</p>
     
     <item>
       <title>Reading Review for 2018</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/reading-review-2018.html</link>
       <guid>https://justanotherdot.com/posts/reading-review-2018.html</guid>
       <pubDate>Wed, 12 Dec 2018 20:09:20 +1000</pubDate>
@@ -5155,7 +5244,7 @@ useful or fun!</p>
     
     <item>
       <title>What makes a good pull request?</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/what-makes-a-good-pr.html</link>
       <guid>https://justanotherdot.com/posts/what-makes-a-good-pr.html</guid>
       <pubDate>Fri, 20 Jul 2018 20:40:08 +1000</pubDate>
@@ -5299,7 +5388,7 @@ resilient code.</p>
     
     <item>
       <title>Trampling Trampolines</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/trampling-trampolines.html</link>
       <guid>https://justanotherdot.com/posts/trampling-trampolines.html</guid>
       <pubDate>Thu, 24 May 2018 19:40:17 +1000</pubDate>
@@ -5398,7 +5487,7 @@ let hof = trampoline(higherOrderFunc);
     
     <item>
       <title>Proficiency is Tiered and other Lies We Tell Ourselves</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/proficiency-is-tiered-and-other-lies-we-tell-ourselves.html</link>
       <guid>https://justanotherdot.com/posts/proficiency-is-tiered-and-other-lies-we-tell-ourselves.html</guid>
       <pubDate>Thu, 01 Mar 2018 15:48:02 +1000</pubDate>
@@ -5493,7 +5582,7 @@ code.</p>
     
     <item>
       <title>Reading Code is Decoding</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/reading-code-is-decoding.html</link>
       <guid>https://justanotherdot.com/posts/reading-code-is-decoding.html</guid>
       <pubDate>Sat, 27 Jan 2018 13:43:09 +1000</pubDate>
@@ -5589,7 +5678,7 @@ be pouring time and attention into.</p>
     
     <item>
       <title>Fail Fast not Error Out</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/fail-fast-not-error-out.html</link>
       <guid>https://justanotherdot.com/posts/fail-fast-not-error-out.html</guid>
       <pubDate>Sat, 07 Oct 2017 12:50:02 +1000</pubDate>
@@ -5661,7 +5750,7 @@ validating the correctness of our programs.</p>
     
     <item>
       <title>A Start</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/hi.html</link>
       <guid>https://justanotherdot.com/posts/hi.html</guid>
       <pubDate>Sun, 17 Sep 2017 16:06:55 +1000</pubDate>

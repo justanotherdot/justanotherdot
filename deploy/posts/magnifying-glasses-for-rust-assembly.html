@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Magnifying Glasses for Rust Assembly">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/magnifying-glasses-for-rust-assembly.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Compilers are complex beasts. Our high level source code goes through many transformations until it winds up becoming machine code that runs on real or virtual hardware. Assembly is the final destination before machine code and it doesn't have to be menacing! **Whether you intend to write assembly directly or not, knowing how your code translates to assembly can drastically improve your ability to analyze programs from the standpoint of performance.**">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Magnifying Glasses for Rust Assembly">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/magnifying-glasses-for-rust-assembly.jpg">
+    <meta name="twitter:description" content="Compilers are complex beasts. Our high level source code goes through many transformations until it winds up becoming machine code that runs on real or virtual hardware. Assembly is the final destination before machine code and it doesn't have to be menacing! **Whether you intend to write assembly directly or not, knowing how your code translates to assembly can drastically improve your ability to analyze programs from the standpoint of performance.**">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>Magnifying Glasses for Rust Assembly &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/magnifying-glasses-for-rust-assembly.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/magnifying-glasses-for-rust-assembly.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Magnifying Glasses for Rust Assembly</h1>
+              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">May  3 2020,  2:40PM</p>
+            <div class="content is-medium">
+              <p>Compilers are complicated beasts. Our high-level source code goes through many
+transformations until it winds up becoming machine code that runs on real or
+virtual hardware. Assembly is the final destination before machine code, and it
+doesn't have to be menacing! <strong>Whether you intend to write assembly directly or
+not, knowing how your code translates to assembly can drastically improve your
+ability to analyze programs from the standpoint of performance.</strong></p>
+<p>Yes, we need numbers to guide us towards improvements, and yes, that means
+having benchmarks. <strong>Arguments over performance that don't include data are
+conjecture but understanding assembly gives you a magnifying glass to help guide
+you in your optimization adventures.</strong> With some experience, we can learn how to
+look at assembly and determine such things as whether or not the assembly
+contains efficient instructions, chunks of code are replaced with constant
+values, and so on. Benchmarks and analyzing assembly can go hand in hand, but
+how do you even get at the assembly in the first place?</p>
+<p>If you want to look at Rust's assembly in your project using just <code>cargo</code>, there
+are two ways. You can call</p>
+<pre><code>cargo rustc --release -- --emit asm &lt;ARGS&gt;
+</code></pre>
+<p><code>--release</code> is optional here. The primary argument that's needed is <code>--emit asm</code>. <code>ARGS</code> is the list of arguments you want to pass to <code>rustc</code> that might
+influence compilation. By default, <code>rustc</code> generates AT&amp;T syntax. Still, you can
+change to Intel syntax if that's what you prefer by passing <code>-C llvm-args=--x86-asm-syntax=intel</code>, which may not matter to you if this is your
+first foray into analyzing assembly, but it can be fun to see as an experiment!</p>
+<p>If you want a good starting point for flags, try using:</p>
+<pre><code>-C target-cpu=native -C opt-level=3
+</code></pre>
+<p>These two codegen options instruct the compiler to emit code specifically for
+the processor it guesses you are running the compiler on as well as using all
+optimizations. You can also pass <code>opt-level=z</code> or <code>opt-level=s</code> if you want to
+optimize for total disk space, instead. <strong>As a note, fewer instructions doesn't
+necessarily mean efficient code.</strong> A short set of instructions may end up taking
+more cycles than the more verbose alternative.</p>
+<p>If, instead, you want to call the standard <code>cargo build</code>, you can pass all these
+arguments with the <code>RUSTFLAGS</code> environment variable. For example:</p>
+<pre><code>RUSTFLAGS=&quot;--emit asm -C opt-level=3 -C target-cpu=native&quot; cargo build --release
+</code></pre>
+<p>When the build finishes, the assembly will live in a file with the suffix of<code>.s</code>
+under <code>target/debug/deps/CRATE_NAME-HASH.s</code>
+or<code>target/release/deps/CRATE_NAME-HASH.s</code>, depending on whether or not you
+builtwith the <code>--release</code> flag. If I run the above command on a crate with the
+name<code>project</code> I'll get something like the following:</p>
+<pre><code>$ find . -name &quot;*.s&quot; -type f./target/release/deps/project-1693e028130a9fa3.s
+</code></pre>
+<p>Keep in mind that there may be several of these outputs. If you are confused,
+which is the latest, you can try <code>cargo clean</code> and building fresh. By default,
+the names are going to look pretty weird in the output due to mangling!
+<strong>Mangling</strong> ensures that names for identifiers are unique across the process of
+compilation. You can try feeding the resulting assembly into
+<a href="https://github.com/luser/rustfilt">rustfilt</a> to get cleaner names:</p>
+<pre><code>find . -name &quot;*.s&quot; -type f | xargs cat | rustfilt
+</code></pre>
+<p>Ok, this is great if you have a project going, but maybe you have some transient
+code in the <a href="https://play.rust-lang.org/">Rust playground</a> and want to know what
+the assembly is there. You can emit assembly there, too! If you click on the
+ellipses next to the <code>Run</code> button, you'll get a menu that has several options.
+Select <code>ASM</code> for assembly output in another tab. There isn't much control over
+compilation options with the Rust playground approach besides picking stable,
+beta, or nightly. A more fully-featured web version for picking apart assembly
+is <a href="https://godbolt.org/">godbolt</a>, describes itself as a &quot;compiler explorer&quot;
+and provides a <em>lot</em> of features to aid you in exploration over the above
+bare-bones approaches. Advantage of using godbolt include:</p>
+<ul>
+<li>Viewing highlighted segments of our source code and where they line up to the assembly</li>
+<li>Access to a bevy of compilers from a wide variety of languages, even  selecting which version of Rust you want to use</li>
+<li>Passing arbitrary flags to influence how the generated output is produced</li>
+<li>Diffing changes in assembly between source code assembly</li>
+<li>Looking up the documentation for instructions on the fly</li>
+</ul>
+<p>You now know three ways to emit assembly, whether it's on your machine, the Rust
+playground, or <code>godbolt</code>! To the uninitiated, this can be overwhelming, but
+opening the hood can be liberating and allow us to start exploring the various
+instructions and how they all tie together.</p>
+<p>To reiterate, you don't always have to look at assembly to guide performance
+optimization. Benchmarks are crucial at guiding us towards real-world results.
+Try to make it a habit to look at assembly when you're curious about what's
+going on under the hood. If you start optimizing, it can be interesting to
+compare how assembly changes as you make high-level changes. If things seem to
+speed up, try to explore how the assembly itself has changed!</p>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
