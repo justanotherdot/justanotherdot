@@ -103,7 +103,7 @@ bare-bones approaches. Advantage of using godbolt include:
 * Looking up the documentation for instructions on the fly
 
 You now know three ways to emit assembly, whether it's on your machine, the Rust
-playground, or `godbolt`! To the uninitiated, this can be overwhelming, but
+playground, or godbolt! To the uninitiated, this can be overwhelming, but
 opening the hood can be liberating and allow us to start exploring the various
 instructions and how they all tie together.
 
