@@ -11,7 +11,7 @@
     {{#posts}}
     <item>
       <title>{{title}}</title>
-      <author>spencer.ryanjames@gmail.com (Ryan James Spencer)</author>
+      <author>Ryan James Spencer</author>
       <link>{{domain}}{{url}}</link>
       <guid>{{domain}}{{url}}</guid>
       <pubDate>{{date_rfc822}}</pubDate>
