@@ -71,7 +71,7 @@ builtwith the `--release` flag. If I run the above command on a crate with the
 name`project` I'll get something like the following:
 
 ```
-find . -name "*.s" -type f./target/release/deps/project-1693e028130a9fa3.s
+find . -name "*.s" -type f ./target/release/deps/project-1693e028130a9fa3.s
 ```
 
 Keep in mind that there may be several of these outputs. If you are confused,
