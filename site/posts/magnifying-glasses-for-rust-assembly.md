@@ -71,7 +71,7 @@ builtwith the `--release` flag. If I run the above command on a crate with the
 name`project` I'll get something like the following:
 
 ```
-$ find . -name "*.s" -type f./target/release/deps/project-1693e028130a9fa3.s
+find . -name "*.s" -type f./target/release/deps/project-1693e028130a9fa3.s
 ```
 
 Keep in mind that there may be several of these outputs. If you are confused,
@@ -113,3 +113,34 @@ Try to make it a habit to look at assembly when you're curious about what's
 going on under the hood. If you start optimizing, it can be interesting to
 compare how assembly changes as you make high-level changes. If things seem to
 speed up, try to explore how the assembly itself has changed!
+
+
+_**Update May 4 2020, 2:12PM**_
+
+`u/ibeforeyou` on
+[Reddit](https://www.reddit.com/r/rust/comments/gd1wtd/magnifying_glasses_for_rust_assembly/fpf4grv/)
+mentioned [`cargo-asm`](https://github.com/gnzlbg/cargo-asm) to help alleviate a
+lot of the pain of dumping out the raw assembly above with `cargo`. By default,
+it will produce Intel syntax, and it can even overlay the rust code over the
+lines of assembly. The twist is that you need to give a path to the assembly you
+want to see dumped. If you want to see function `foo` of the crate `crate_name`,
+you could specify the path:
+
+```
+cargo asm --rust crate_name::foo
+```
+
+I did have to shuffle around the flags to get it to emit AT&T syntax for me, in
+the end, this ended up working:
+
+```
+cargo asm --rust --asm-style att crate_name::foo
+```
+
+Running `cargo asm` dumps all the available paths that you can list, which is
+pretty neat if you're confused about which path to put down. What I like about
+this is you can jam it into a [feedback
+loop](https://www.justanotherdot.com/posts/a-love-letter-to-feedback-loops.html)
+using something like `cargo-watch` or `entr`. This way you can make changes on
+an individual function and watch how the benchmarks and assembly change without
+having to invoke commands manually!
