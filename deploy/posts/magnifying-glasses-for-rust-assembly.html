@@ -115,7 +115,7 @@ under <code>target/debug/deps/CRATE_NAME-HASH.s</code>
 or<code>target/release/deps/CRATE_NAME-HASH.s</code>, depending on whether or not you
 builtwith the <code>--release</code> flag. If I run the above command on a crate with the
 name<code>project</code> I'll get something like the following:</p>
-<pre><code>$ find . -name &quot;*.s&quot; -type f./target/release/deps/project-1693e028130a9fa3.s
+<pre><code>find . -name &quot;*.s&quot; -type f./target/release/deps/project-1693e028130a9fa3.s
 </code></pre>
 <p>Keep in mind that there may be several of these outputs. If you are confused,
 which is the latest, you can try <code>cargo clean</code> and building fresh. By default,
@@ -152,6 +152,28 @@ Try to make it a habit to look at assembly when you're curious about what's
 going on under the hood. If you start optimizing, it can be interesting to
 compare how assembly changes as you make high-level changes. If things seem to
 speed up, try to explore how the assembly itself has changed!</p>
+<p><em><strong>Update May 4 2020, 2:12PM</strong></em></p>
+<p><code>u/ibeforeyou</code> on
+<a href="https://www.reddit.com/r/rust/comments/gd1wtd/magnifying_glasses_for_rust_assembly/fpf4grv/">Reddit</a>
+mentioned <a href="https://github.com/gnzlbg/cargo-asm"><code>cargo-asm</code></a> to help alleviate a
+lot of the pain of dumping out the raw assembly above with <code>cargo</code>. By default,
+it will produce Intel syntax, and it can even overlay the rust code over the
+lines of assembly. The twist is that you need to give a path to the assembly you
+want to see dumped. If you want to see function <code>foo</code> of the crate <code>crate_name</code>,
+you could specify the path:</p>
+<pre><code>cargo asm --rust crate_name::foo
+</code></pre>
+<p>I did have to shuffle around the flags to get it to emit AT&amp;T syntax for me, in
+the end, this ended up working:</p>
+<pre><code>cargo asm --rust --asm-style att crate_name::foo
+</code></pre>
+<p>Running <code>cargo asm</code> dumps all the available paths that you can list, which is
+pretty neat if you're confused about which path to put down. What I like about
+this is you can jam it into a <a href="https://www.justanotherdot.com/posts/a-love-letter-to-feedback-loops.html">feedback
+loop</a>
+using something like <code>cargo-watch</code> or <code>entr</code>. This way you can make changes on
+an individual function and watch how the benchmarks and assembly change without
+having to invoke commands manually!</p>
 
             </div>
             <hr>
