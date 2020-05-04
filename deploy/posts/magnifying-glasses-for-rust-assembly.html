@@ -115,7 +115,7 @@ under <code>target/debug/deps/CRATE_NAME-HASH.s</code>
 or<code>target/release/deps/CRATE_NAME-HASH.s</code>, depending on whether or not you
 builtwith the <code>--release</code> flag. If I run the above command on a crate with the
 name<code>project</code> I'll get something like the following:</p>
-<pre><code>find . -name &quot;*.s&quot; -type f./target/release/deps/project-1693e028130a9fa3.s
+<pre><code>find . -name &quot;*.s&quot; -type f ./target/release/deps/project-1693e028130a9fa3.s
 </code></pre>
 <p>Keep in mind that there may be several of these outputs. If you are confused,
 which is the latest, you can try <code>cargo clean</code> and building fresh. By default,
