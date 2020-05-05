@@ -91,14 +91,16 @@ values, and so on. Benchmarks and analyzing assembly can go hand in hand, but
 how do you even get at the assembly in the first place?</p>
 <p>If you want to look at Rust's assembly in your project using just <code>cargo</code>, there
 are two ways. You can call</p>
-<pre><code>cargo rustc --release -- --emit asm &lt;ARGS&gt;
+<pre><code>$ cargo rustc --release -- --emit asm &lt;ARGS&gt;
 </code></pre>
 <p><code>--release</code> is optional here. The primary argument that's needed is <code>--emit asm</code>. <code>ARGS</code> is the list of arguments you want to pass to <code>rustc</code> that might
 influence compilation. By default, <code>rustc</code> generates AT&amp;T syntax. Still, you can
 change to Intel syntax if that's what you prefer by passing <code>-C llvm-args=--x86-asm-syntax=intel</code>, which may not matter to you if this is your
 first foray into analyzing assembly, but it can be fun to see as an experiment!</p>
 <p>If you want a good starting point for flags, try using:</p>
-<pre><code>-C target-cpu=native -C opt-level=3
+<pre><code>&lt;snip&gt;
+-C target-cpu=native -C opt-level=3
+&lt;snip&gt;
 </code></pre>
 <p>These two codegen options instruct the compiler to emit code specifically for
 the processor it guesses you are running the compiler on as well as using all
@@ -108,14 +110,15 @@ necessarily mean efficient code.</strong> A short set of instructions may end up
 more cycles than the more verbose alternative.</p>
 <p>If, instead, you want to call the standard <code>cargo build</code>, you can pass all these
 arguments with the <code>RUSTFLAGS</code> environment variable. For example:</p>
-<pre><code>RUSTFLAGS=&quot;--emit asm -C opt-level=3 -C target-cpu=native&quot; cargo build --release
+<pre><code>$ RUSTFLAGS=&quot;--emit asm -C opt-level=3 -C target-cpu=native&quot; cargo build --release
 </code></pre>
 <p>When the build finishes, the assembly will live in a file with the suffix of<code>.s</code>
 under <code>target/debug/deps/CRATE_NAME-HASH.s</code>
 or<code>target/release/deps/CRATE_NAME-HASH.s</code>, depending on whether or not you
 builtwith the <code>--release</code> flag. If I run the above command on a crate with the
 name<code>project</code> I'll get something like the following:</p>
-<pre><code>find . -name &quot;*.s&quot; -type f ./target/release/deps/project-1693e028130a9fa3.s
+<pre><code>$ find . -name &quot;*.s&quot; -type f
+./target/release/deps/project-1693e028130a9fa3.s
 </code></pre>
 <p>Keep in mind that there may be several of these outputs. If you are confused,
 which is the latest, you can try <code>cargo clean</code> and building fresh. By default,
@@ -123,7 +126,7 @@ the names are going to look pretty weird in the output due to mangling!
 <strong>Mangling</strong> ensures that names for identifiers are unique across the process of
 compilation. You can try feeding the resulting assembly into
 <a href="https://github.com/luser/rustfilt">rustfilt</a> to get cleaner names:</p>
-<pre><code>find . -name &quot;*.s&quot; -type f | xargs cat | rustfilt
+<pre><code>$ find . -name &quot;*.s&quot; -type f | xargs cat | rustfilt
 </code></pre>
 <p>Ok, this is great if you have a project going, but maybe you have some transient
 code in the <a href="https://play.rust-lang.org/">Rust playground</a> and want to know what
@@ -161,11 +164,11 @@ it will produce Intel syntax, and it can even overlay the rust code over the
 lines of assembly. The twist is that you need to give a path to the assembly you
 want to see dumped. If you want to see function <code>foo</code> of the crate <code>crate_name</code>,
 you could specify the path:</p>
-<pre><code>cargo asm --rust crate_name::foo
+<pre><code>$ cargo asm --rust crate_name::foo
 </code></pre>
 <p>I did have to shuffle around the flags to get it to emit AT&amp;T syntax for me, in
 the end, this ended up working:</p>
-<pre><code>cargo asm --rust --asm-style att crate_name::foo
+<pre><code>$ cargo asm --rust --asm-style att crate_name::foo
 </code></pre>
 <p>Running <code>cargo asm</code> dumps all the available paths that you can list, which is
 pretty neat if you're confused about which path to put down. What I like about

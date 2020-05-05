@@ -34,7 +34,7 @@ If you want to look at Rust's assembly in your project using just `cargo`, there
 are two ways. You can call
 
 ```
-cargo rustc --release -- --emit asm <ARGS>
+$ cargo rustc --release -- --emit asm <ARGS>
 ```
 
 `--release` is optional here. The primary argument that's needed is `--emit
@@ -47,7 +47,9 @@ first foray into analyzing assembly, but it can be fun to see as an experiment!
 If you want a good starting point for flags, try using:
 
 ```
+<snip>
 -C target-cpu=native -C opt-level=3
+<snip>
 ```
 
 These two codegen options instruct the compiler to emit code specifically for
@@ -61,7 +63,7 @@ If, instead, you want to call the standard `cargo build`, you can pass all these
 arguments with the `RUSTFLAGS` environment variable. For example:
 
 ```
-RUSTFLAGS="--emit asm -C opt-level=3 -C target-cpu=native" cargo build --release
+$ RUSTFLAGS="--emit asm -C opt-level=3 -C target-cpu=native" cargo build --release
 ```
 
 When the build finishes, the assembly will live in a file with the suffix of`.s`
@@ -71,7 +73,8 @@ builtwith the `--release` flag. If I run the above command on a crate with the
 name`project` I'll get something like the following:
 
 ```
-find . -name "*.s" -type f ./target/release/deps/project-1693e028130a9fa3.s
+$ find . -name "*.s" -type f
+./target/release/deps/project-1693e028130a9fa3.s
 ```
 
 Keep in mind that there may be several of these outputs. If you are confused,
@@ -82,7 +85,7 @@ compilation. You can try feeding the resulting assembly into
 [rustfilt](https://github.com/luser/rustfilt) to get cleaner names:
 
 ```
-find . -name "*.s" -type f | xargs cat | rustfilt
+$ find . -name "*.s" -type f | xargs cat | rustfilt
 ```
 
 Ok, this is great if you have a project going, but maybe you have some transient
@@ -127,14 +130,14 @@ want to see dumped. If you want to see function `foo` of the crate `crate_name`,
 you could specify the path:
 
 ```
-cargo asm --rust crate_name::foo
+$ cargo asm --rust crate_name::foo
 ```
 
 I did have to shuffle around the flags to get it to emit AT&T syntax for me, in
 the end, this ended up working:
 
 ```
-cargo asm --rust --asm-style att crate_name::foo
+$ cargo asm --rust --asm-style att crate_name::foo
 ```
 
 Running `cargo asm` dumps all the available paths that you can list, which is
