@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Benchmark It!">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/benchmark-it.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Performance is something users feel. Maybe you're in an organization that doesn't care about performance, and you think they should. Perhaps there are lofty claims that performance does matter, but loose arguments for one approach over another filled with baseless claims like &quot;X is fast!&quot;. The only way to get past this conjecture is with numbers, and we collect numbers with benchmarks.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Benchmark It!">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/benchmark-it.jpg">
+    <meta name="twitter:description" content="Performance is something users feel. Maybe you're in an organization that doesn't care about performance, and you think they should. Perhaps there are lofty claims that performance does matter, but loose arguments for one approach over another filled with baseless claims like &quot;X is fast!&quot;. The only way to get past this conjecture is with numbers, and we collect numbers with benchmarks.">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>Benchmark It! &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/benchmark-it.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/benchmark-it.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Benchmark It!</h1>
+              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">May  9 2020,  3:22PM</p>
+            <div class="content is-medium">
+              <p>Performance is something users <em>feel</em>. Maybe you're in an organization that
+doesn't care about performance, and you think they should. Perhaps there are
+lofty claims that performance <em>does</em> matter, but loose arguments for one
+approach over another filled with baseless claims like &quot;X is <em>fast</em>!&quot;. The only
+way to get past this conjecture is with numbers, and we collect numbers with
+benchmarks.</p>
+<p><strong>Benchmarking</strong> is the act of measuring latency or throughput of some component
+regardless of size. <strong>Profiling</strong> is a means to explore the constituent parts of
+where code spends its time. There is a dizzying array of variables we can tweak
+to impact the performance of user experience on modern platforms, but benchmarks
+should come first before we begin profiling. With benchmarks, we get
+reproducibility, enabling others to test our claims and verify our results for
+their use cases. As we generate measurements for targets, we can store the
+results away so we can visualize the data however we please or compare
+particular runs tied to specific code changes. In this sense, benchmarks provie
+us a historical context of performance.</p>
+<p><strong>Latency</strong> is the duration of time the component in question takes to complete.
+<strong>Throughput</strong>, on the other hand, is the amount of work completed in a window of
+time. <strong>You cannot trust the first number you get out of a single trial.</strong> Hence, we
+focus on arithmetic mean averages or medians from multiple measurements. A
+server might have an average latency of 123 milliseconds, or a JSON parser might
+boast an average of 2.6GiB processed per second.</p>
+<p>Cargo does have built-in support for benchmarking, and it works in a pinch but
+hides the influence of outliers on your results. This is handy if you want
+something you can quickly run and glance at to make improvements, but tests are
+<strong>reliable</strong> if they are low on noise.</p>
+<p>To gain this insight, I strongly recommend
+<a href="https://github.com/bheisler/criterion.rs">criterion.rs</a>. It does all the things
+<code>cargo-bench</code> does, along with providing additional statistical metrics to help
+us determine if a benchmark is worth trusting.</p>
+<p>By default, criterion takes one-hundred measurements. It then tries to find a
+line that fits these measurements using linear regression. How well this line
+fits the data is designated by the metric <strong>R^2</strong>. The <strong>slope</strong> of this line,
+along with the <strong>mean</strong> and <strong>median</strong>, offer ways of viewing &quot;center&quot; for the
+data. If there are no outliers, then slope, mean, and median should be similar.
+<strong>Standard deviation</strong> is the dispersal of values around the mean, and <strong>MAD or
+Median Absolute Deviation</strong> is the same for the median. A high standard
+deviation or MAD might indicate a higher than expected level of noise.
+Similarly, if the R^2 is low, then the difference between timings is high. To
+get reliable tests, we want each iteration to be the same. There is bound to be
+<em>some</em> noise and differences between runs, but we are trying to find the values
+we are confident aren't merely aberrations.</p>
+<p>You can add it to a project by adding the dependency to your Cargo.toml:</p>
+<pre><code>[dev-dependencies]
+criterion = &quot;0.3&quot;
+</code></pre>
+<p>Then, in the same file we can add the benchmark:</p>
+<pre><code>[[bench]]
+name = &quot;benchmark_it&quot;
+harness = false
+</code></pre>
+<p>benchmarks live in distinct files under the <code>benches</code> directory in the root of
+your project, named the same as the name we gave in the manifest:</p>
+<pre><code>$ fd benchmark_it
+benches/benchmark_it.rs
+</code></pre>
+<p>Imagine our crate is called <code>crate</code> and it exposes a public function named
+<code>function</code> that we want to measure, the most basic benchmark looks something
+like the following:</p>
+<pre><code>use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use crate::function;
+
+pub fn criterion_benchmark(c: &amp;mut Criterion) {
+    c.bench_function(&quot;benchmark_function&quot;, |b| b.iter(|| function(black_box(20))));
+}
+
+criterion_group!(benches, criterion_benchmark);
+criterion_main!(benches);
+</code></pre>
+<p>and you can run this benchmark with <code>cargo bench</code>. After the tests run you get
+output on the command line. If you have gnuplot installed you can also view
+an HTML report generated at <code>target/criterion/report/index.html</code> you can open in
+a browser. If you want access to the raw data, you can find that dumped as
+CSVs under <code>target/criterion/benchmark_function/{base,change,new}/raw.csv</code>. As
+you run the benchmarks, the base gets replaced with the last latest run, and the
+latest run is compared to visualize improvements or regressions.</p>
+<p>Criterion's reports include explanations in reports, along with <a href="https://bheisler.github.io/criterion.rs/book/index.html">fantastic
+documentation</a>
+outlining how the test harness works and how the statistics are calculated,
+including diagnostics in the output about when different outliers are detected.</p>
+<p>To further reduce noise, you want to run on a machine that matches your target
+environment as much as possible, which depends on your domain in question. If
+you are running a server on a specific configuration, test the code on that
+hardware with that configuration. If you are building a CLI tool used by
+developers, it might make sense to have many benchmarks from commodity hardware
+that developers are using, such as laptops with little to nothing else running
+on the system. We might also want to benchmark on the fastest, quality hardware
+we can find to determine limits of what you could hope to attain given empirical
+results.</p>
+<p>Benchmarks can explain performance under various loads. Input now comes into the
+picture. If you are a data-regulation compliant company, and I hope you are
+self-compliant if not, then generating data that has the same characteristics
+and cardinality of what you tend to expect is vital to feed into your benchmarks
+as expected &quot;normal load&quot; under the system. You also want to try to record
+pathological cases where the system is exceptionally slow under particular
+input. This isn't to say these pathological cases need to be your primary target
+for the profiling and optimization that comes later. You might want to improve
+the life of 99% of your users rather than worrying about an edge case that
+happens 0.001% of the time. However, pathological cases still give us insight
+into the limits of the component under measurement.</p>
+<p>Independent of where you store your benchmarks, having them recorded for every
+commit, or possibly every master commit, can let you easily compare two changes
+using something like Andrew Gallant's tool
+<a href="https://github.com/BurntSushi/cargo-benchcmp">cargo-benchcmp</a>. If you have
+different hardware to test, you can script checking out changes, running the
+benchmarks, and comparing the results. When making comparisons, make sure to
+minimize variables of change across the various measurements! You don't want one
+to have programs running in the background while the other was on a totally
+silent system, for example.</p>
+<p>Andy Gavin talks about how they <a href="https://www.youtube.com/watch?v=izxXGuVL21o&amp;feature=youtu.be&amp;t=513">benchmarked the various display
+modes</a> for
+the Sony Playstation during the making of Crash Bandicoot. He remarks how if he
+had not done this and taken the recommended mode at face value, it would have
+been subpar for their situation! This is precisely the kind of speculation that
+measurements help dispel. <strong>Performance matters and numbers help make
+performance tangible.</strong> Write benchmarks that work for <em>your</em> data and <em>your</em>
+setup! Arm yourself to the teeth with numbers and ensure they are <em>valid</em>
+numbers to be confident in your fight against lofty claims. <em>Valid</em> measurements
+are useful to the community, whether it's your local team or the open-source
+community as a whole. Write more benchmarks!</p>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
