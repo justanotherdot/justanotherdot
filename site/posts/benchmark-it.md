@@ -142,7 +142,7 @@ into the limits of the component under measurement.
 Independent of where you store your benchmarks, having them recorded for every
 commit, or possibly every master commit, can let you easily compare two changes
 using something like Andrew Gallant's tool
-[cargo-benchcmp](https://github.com/BurntSushi/cargo-benchcmp). If you have
+[cargo-critcmp](https://github.com/BurntSushi/critcmp). If you have
 different hardware to test, you can script checking out changes, running the
 benchmarks, and comparing the results. When making comparisons, make sure to
 minimize variables of change across the various measurements! You don't want one
