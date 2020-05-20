@@ -240,7 +240,7 @@ such as in <code>let</code> bindings and function arguments.</p>
 <h3>Quirks</h3>
 <p>These quirks are more around ergonomic uses of patterns rather than any
 dealbreakers for writing production-grade code. You can happily skip this
-section if you don't mind</p>
+section if you are still processing the information from above.</p>
 <p>First up, nested or-patterns or in other locations, such as function arguments,
 are unstable and require the <code>#![feature(or_patterns)]</code> attribute. Another way
 around the nested or-patterns is to use the <code>matches!</code> macro in a guard:</p>
@@ -271,8 +271,8 @@ fn main() {
 enabled with <code>#![feature(exclusive_range_pattern)]</code>. As it stands, you can
 only express inclusive ranges:</p>
 <pre><code>fn main() {
-    let std::i32::MIN..std::i32::MAX = 12; // works.
-    //let std::i32::MIN..=std::i32::MAX = 12; // refuses to compile.
+    let std::i32::MIN..=std::i32::MAX = 12; // works.
+    //let std::i32::MIN..std::i32::MAX = 12; // refuses to compile.
 }
 </code></pre>
 <p>And lastly, bindings after <code>@</code> aren't supported unless you turn them on with
