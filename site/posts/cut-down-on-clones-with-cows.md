@@ -3,7 +3,7 @@ title: Cut Down On Clones With Cows
 author: Ryan James Spencer
 date: 2020-04-29T08:59:34.654261155+00:00
 tags:
-  -
+  - rust
 summary: >-
   At the start of a program, it is straightforward to `clone` data all over the
   place to get things working, and, soon enough, the program is overrun by them.
