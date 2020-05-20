@@ -282,7 +282,7 @@ such as in `let` bindings and function arguments.
 
 These quirks are more around ergonomic uses of patterns rather than any
 dealbreakers for writing production-grade code. You can happily skip this
-section if you don't mind
+section if you are still processing the information from above.
 
 First up, nested or-patterns or in other locations, such as function arguments,
 are unstable and require the `#![feature(or_patterns)]` attribute. Another way
@@ -320,8 +320,8 @@ only express inclusive ranges:
 
 ```
 fn main() {
-    let std::i32::MIN..std::i32::MAX = 12; // works.
-    //let std::i32::MIN..=std::i32::MAX = 12; // refuses to compile.
+    let std::i32::MIN..=std::i32::MAX = 12; // works.
+    //let std::i32::MIN..std::i32::MAX = 12; // refuses to compile.
 }
 ```
 
