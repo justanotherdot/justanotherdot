@@ -86,8 +86,7 @@ pub fn main() {
 
     // Slices.
     let z = vec![1, 2, 3];
-    match *z {
-        // we need * to dereference Vec to a slice.
+    match *z { // we need * to dereference Vec to a slice.
         [a, b] => println!("{} + {} = {}", a, b, a + b),
         [a, b, c] => println!("{} + {} * {} = {}", a, b, c, a + b * c),
         _ => println!("any other unmatched vector"),
