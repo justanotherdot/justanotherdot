@@ -41,7 +41,63 @@ Pattern matching gives us a way to describe the shape of data using constructors
 to match on and what to do if the value matches. This analogy isn't perfect, but
 I like to think of patterns as mirrors with outlines; if the reflection matches
 the outline of a constructor, we go down that path of logic, possibly with some
-new values drawn out of the data.</p>
+new values drawn out of the data. Here are some common patterns for
+constructors:</p>
+<pre><code>pub struct S {
+    field: i64,
+}
+
+pub enum E {
+    FirstVariant,
+    SecondVariant,
+}
+
+pub fn main() {
+    // Tuples.
+    let a = (&quot;Fizz&quot;, &quot;Buzz&quot;);
+    match a {
+        (p, q) =&gt; println!(&quot;{}&quot;, format!(&quot;{}{}&quot;, p, q)),
+    }
+
+    // Numeric literals.
+    let b = 123;
+    match b {
+        std::i32::MIN..=99 =&gt; println!(&quot;under one-hundred&quot;),
+        100 =&gt; println!(&quot;exactly one-hundred&quot;),
+        101..=std::i32::MAX =&gt; println!(&quot;above one-hundred&quot;),
+    }
+
+    // Strings.
+    let c = &quot;A string.&quot;;
+    match c {
+        &quot;A string.&quot; =&gt; println!(&quot;it's _the_ string.&quot;),
+        _ =&gt; println!(&quot;some other string.&quot;),
+    }
+
+    // Enums.
+    let x = E::SecondVariant;
+    match x {
+        E::FirstVariant =&gt; println!(&quot;first variant of E&quot;),
+        E::SecondVariant =&gt; println!(&quot;second variant of E&quot;),
+    }
+
+    // Structs.
+    let y = S { field: 100 };
+    match y {
+        S { field } =&gt; println!(&quot;field is: {}&quot;, field),
+    }
+
+    // Slices.
+    let z = vec![1, 2, 3];
+    match *z {
+        // we need * to dereference Vec to a slice.
+        [a, b] =&gt; println!(&quot;{} + {} = {}&quot;, a, b, a + b),
+        [a, b, c] =&gt; println!(&quot;{} + {} * {} = {}&quot;, a, b, c, a + b * c),
+        _ =&gt; println!(&quot;any other unmatched vector&quot;),
+    }
+}
+</code></pre>
+<p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=483dd9713719d848f7e221047961e8c8">Playground</a></p>
 <p><em>Where can we put patterns?</em></p>
 <p><code>match</code> is the traditional way of doing pattern matching but not the only way.
 Matches work top-to-bottom, and they ensure that every case is handled, known as
