@@ -36,7 +36,66 @@ Pattern matching gives us a way to describe the shape of data using constructors
 to match on and what to do if the value matches. This analogy isn't perfect, but
 I like to think of patterns as mirrors with outlines; if the reflection matches
 the outline of a constructor, we go down that path of logic, possibly with some
-new values drawn out of the data.
+new values drawn out of the data. Here are some common patterns for
+constructors:
+
+```
+pub struct S {
+    field: i64,
+}
+
+pub enum E {
+    FirstVariant,
+    SecondVariant,
+}
+
+pub fn main() {
+    // Tuples.
+    let a = ("Fizz", "Buzz");
+    match a {
+        (p, q) => println!("{}", format!("{}{}", p, q)),
+    }
+
+    // Numeric literals.
+    let b = 123;
+    match b {
+        std::i32::MIN..=99 => println!("under one-hundred"),
+        100 => println!("exactly one-hundred"),
+        101..=std::i32::MAX => println!("above one-hundred"),
+    }
+
+    // Strings.
+    let c = "A string.";
+    match c {
+        "A string." => println!("it's _the_ string."),
+        _ => println!("some other string."),
+    }
+
+    // Enums.
+    let x = E::SecondVariant;
+    match x {
+        E::FirstVariant => println!("first variant of E"),
+        E::SecondVariant => println!("second variant of E"),
+    }
+
+    // Structs.
+    let y = S { field: 100 };
+    match y {
+        S { field } => println!("field is: {}", field),
+    }
+
+    // Slices.
+    let z = vec![1, 2, 3];
+    match *z {
+        // we need * to dereference Vec to a slice.
+        [a, b] => println!("{} + {} = {}", a, b, a + b),
+        [a, b, c] => println!("{} + {} * {} = {}", a, b, c, a + b * c),
+        _ => println!("any other unmatched vector"),
+    }
+}
+```
+
+[Playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=483dd9713719d848f7e221047961e8c8)
 
 _Where can we put patterns?_
 
