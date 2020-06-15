@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="An Opinionated Guide To Structuring Rust Projects">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/an-opinionated-guide-to-structuring-rust-projects.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="An Opinionated Guide To Structuring Rust Projects">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/an-opinionated-guide-to-structuring-rust-projects.jpg">
+    <meta name="twitter:description" content="">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>An Opinionated Guide To Structuring Rust Projects &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/an-opinionated-guide-to-structuring-rust-projects.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/an-opinionated-guide-to-structuring-rust-projects.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">An Opinionated Guide To Structuring Rust Projects</h1>
+              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Ryan James Spencer</h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">June 12 2020,  8:49PM</p>
+            <div class="content is-medium">
+              <p>Cargo's initial project layout is good for bootstrapping a project but as time
+goes on there is a growing need to automate chores, wrestle with compile times,
+and increase discoverability for maintainers and contributors. I've previously
+written about <a href="https://www.justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html">how I personally orchestrate chores on a Rust
+project</a>
+but this article will focus on the latter two points.</p>
+<p>The highest leverage act you can do with structuring a Rust project is to break
+it into independent crates. Chunks of logic that have shown stability over a
+window of time are immediate candidates for splitting into a crate, as well as
+semantic boundaries between concepts in a given codebase. For example, you may
+want to keep sets of types distinct from one crate to the next in the same
+project or you might want to enforce that driver logic should be as minimal as
+possible with only some glue tying together other core logic libraries. Keeping
+things cleanly separated means clustered concepts are easier to locate while we
+can aggressively cache crates that don't change much. In terms of naming I
+prefer each crate to be in kebab-case and to use the projects name as the prefix
+for the sub crate. If our project name was &quot;foo&quot; then each crate would be
+prefaced with &quot;foo-*&quot;. You can tie all of these crates into a workspace for a
+central place to build the entirety of the project. If our project had three
+crates in it, we could put a simple <code>Cargo.toml</code> with the contents:</p>
+<pre><code>[workspace]
+members = [
+  &quot;foo-core&quot;,
+  &quot;foo-cli&quot;,
+  &quot;foo-benchmark&quot;,
+]
+</code></pre>
+<p>The general advice for build times is to first use something like <code>cargo check</code>
+and move to <code>cargo test</code> and finally some form of <code>cargo build</code> with or without
+options. A way to drive down build times is to keep building all the time as you
+make changes. I prefer to run multiple loops with various subcommands specified
+while I code. You can get around locking issues on the same <code>.cargo</code> and
+<code>target</code> directories by changing these with <code>CARGO_HOME</code> and <code>CARGO_TARGET_DIR</code>
+respectively. This means you can spin up several <code>watchex</code>, <code>cargo-watch</code>, or
+<code>entr</code> loops as shell jobs or in separate terminals. To give an example I will
+sometimes do <code>cargo watch</code>, which does <code>cargo check</code> by default, and then will
+specify <code>CARGO_HOME=/tmp CARG_TARGET_DIR=/tmp/target cargo watch -x test</code> to get
+test information as it shows up.</p>
+<p>If you're using a CI and can afford it, pushing jobs off to a remote server to
+build at the same is yet another extension to this &quot;build all the time&quot;
+mentality. When you're happy with your changes you are closer to merging. If you
+pair this with something like <code>sccache</code> for caching crates across projects, you
+can see some nice gains on compile times across several build bots or, if you
+run a similar environment to your build bots, you can even share crates from
+both local development machine and build bots at the same time. Once <code>sccache</code>
+is installed, you can export <code>RUSTC_WRAPPER=$(which sccache)</code> and check if it's
+running across builds with <code>sccache -s</code>. I'm unsure what gains you'd see over
+<code>cargo</code> on a single machine as I've yet to dive into the core of how <code>sccache</code>
+works under the hood but it's harmless to run for a try.</p>
+<p>You have the option to be disciplined and keep all crates on the same version to
+make downstream consumption easier, such that if you want to install <code>foo</code> and
+<code>foo-bar</code> you could know that version <code>2.0.0</code> is valid for both crates. You can
+also setup the installation as a transitive thing from some 'central' crate that
+could always install the &quot;right&quot; version of <code>foo-bar</code> given some build feature
+flag. You may want more flexibility in what version of <code>foo-bar</code> you use,
+however, and as long as <code>foo</code> doesn't also depend on <code>foo-bar</code> you shouldn't
+have to do any juggling.</p>
+<p>I've left some stray tricks for last in the possibility that they may help your
+specific case. You can try linking with <code>lld</code> or <code>gold</code> instead of the standard
+linker. You can do this with <code>RUSTFLAGS=&quot;-C link-arg=-fuse-ld=lld&quot;</code> to use <code>lld</code>
+at least on linux but I don't always see speedups from this. Setting
+<code>CARGO_BUILD_JOBS</code> to a number higher than the number of capabilities (cores)
+you have on your system is likely to <em>increase</em> compile times, but you could
+split your test, check, and build jobs across lower number of cores, such as two
+cores for <code>test</code> and another two for <code>check</code> on a four-core machine. If you are
+truly desparate you can try gimmicks like building to a less intense target.
+I've written a shell script that will build all possible target <code>rustc</code> can
+attempt to cross compile and report build times in the event that they succeed.
+You can find the gist
+<a href="https://gist.github.com/justanotherdot/ca1f163754e9a90f6c6b9dfb25a0598f">here</a>
+and can invoke it with <code>x-compile-test</code>. You can also narrow down which targets
+you want to use with a regex by specifying <code>FILTER=x86_64 x-compile-test</code>.</p>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
