@@ -17,14 +17,14 @@
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:description" content="">
+    <meta property="og:description" content="Cargo's initial project layout is good for bootstrapping a project but as time goes on there is a growing need to automate chores, wrestle with compile times, and increase discoverability for maintainers and contributors.">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@_justanotherdot">
     <meta name="twitter:creator" content="@_justanotherdot">
     <meta name="twitter:title" content="An Opinionated Guide To Structuring Rust Projects">
     <meta name="twitter:image" content="https://justanotherdot.com/assets/images/an-opinionated-guide-to-structuring-rust-projects.jpg">
-    <meta name="twitter:description" content="">
+    <meta name="twitter:description" content="Cargo's initial project layout is good for bootstrapping a project but as time goes on there is a growing need to automate chores, wrestle with compile times, and increase discoverability for maintainers and contributors.">
     <!-- OPEN GRAPH END -->
 
     <link rel="shortcut icon" href="/favicon.ico">
@@ -90,11 +90,12 @@ project or you might want to enforce that driver logic should be as minimal as
 possible with only some glue tying together other core logic libraries. Keeping
 things cleanly separated means clustered concepts are easier to locate while we
 can aggressively cache crates that don't change much. In terms of naming I
-prefer each crate to be in kebab-case and to use the projects name as the prefix
-for the sub crate. If our project name was &quot;foo&quot; then each crate would be
+prefer each crate to be in kebab-case and to use the project's name as the
+prefix for the sub crate. If our project name was &quot;foo&quot; then each crate would be
 prefaced with &quot;foo-*&quot;. You can tie all of these crates into a workspace for a
 central place to build the entirety of the project. If our project had three
-crates in it, we could put a simple <code>Cargo.toml</code> with the contents:</p>
+crates in it, we could put a <code>Cargo.toml</code> at the root of our project with the
+contents:</p>
 <pre><code>[workspace]
 members = [
   &quot;foo-core&quot;,
@@ -111,8 +112,8 @@ while I code. You can get around locking issues on the same <code>.cargo</code> 
 respectively. This means you can spin up several <code>watchex</code>, <code>cargo-watch</code>, or
 <code>entr</code> loops as shell jobs or in separate terminals. To give an example I will
 sometimes do <code>cargo watch</code>, which does <code>cargo check</code> by default, and then will
-specify <code>CARGO_HOME=/tmp CARG_TARGET_DIR=/tmp/target cargo watch -x test</code> to get
-test information as it shows up.</p>
+specify <code>CARGO_HOME=/tmp CARGO_TARGET_DIR=/tmp/target cargo watch -x test</code> to
+get test information as it shows up.</p>
 <p>If you're using a CI and can afford it, pushing jobs off to a remote server to
 build at the same is yet another extension to this &quot;build all the time&quot;
 mentality. When you're happy with your changes you are closer to merging. If you
@@ -141,9 +142,9 @@ you have on your system is likely to <em>increase</em> compile times, but you co
 split your test, check, and build jobs across lower number of cores, such as two
 cores for <code>test</code> and another two for <code>check</code> on a four-core machine. If you are
 truly desparate you can try gimmicks like building to a less intense target.
-I've written a shell script that will build all possible target <code>rustc</code> can
-attempt to cross compile and report build times in the event that they succeed.
-You can find the gist
+I've written a shell script that will build all possible cross-compile targets
+<code>rustc</code> can attempt and report build times in the event that they succeed. You
+can find the gist
 <a href="https://gist.github.com/justanotherdot/ca1f163754e9a90f6c6b9dfb25a0598f">here</a>
 and can invoke it with <code>x-compile-test</code>. You can also narrow down which targets
 you want to use with a regex by specifying <code>FILTER=x86_64 x-compile-test</code>.</p>

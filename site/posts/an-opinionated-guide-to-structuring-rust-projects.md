@@ -5,6 +5,9 @@ date: 2020-06-12T10:49:59.563002270+00:00
 tags:
   - rust
 summary: >-
+  Cargo's initial project layout is good for bootstrapping a project but as time
+  goes on there is a growing need to automate chores, wrestle with compile times,
+  and increase discoverability for maintainers and contributors.
 ---
 
 Cargo's initial project layout is good for bootstrapping a project but as time
@@ -23,11 +26,12 @@ project or you might want to enforce that driver logic should be as minimal as
 possible with only some glue tying together other core logic libraries. Keeping
 things cleanly separated means clustered concepts are easier to locate while we
 can aggressively cache crates that don't change much. In terms of naming I
-prefer each crate to be in kebab-case and to use the projects name as the prefix
-for the sub crate. If our project name was "foo" then each crate would be
+prefer each crate to be in kebab-case and to use the project's name as the
+prefix for the sub crate. If our project name was "foo" then each crate would be
 prefaced with "foo-*". You can tie all of these crates into a workspace for a
 central place to build the entirety of the project. If our project had three
-crates in it, we could put a simple `Cargo.toml` with the contents:
+crates in it, we could put a `Cargo.toml` at the root of our project with the
+contents:
 
 ```
 [workspace]
@@ -47,8 +51,8 @@ while I code. You can get around locking issues on the same `.cargo` and
 respectively. This means you can spin up several `watchex`, `cargo-watch`, or
 `entr` loops as shell jobs or in separate terminals. To give an example I will
 sometimes do `cargo watch`, which does `cargo check` by default, and then will
-specify `CARGO_HOME=/tmp CARG_TARGET_DIR=/tmp/target cargo watch -x test` to get
-test information as it shows up.
+specify `CARGO_HOME=/tmp CARGO_TARGET_DIR=/tmp/target cargo watch -x test` to
+get test information as it shows up.
 
 If you're using a CI and can afford it, pushing jobs off to a remote server to
 build at the same is yet another extension to this "build all the time"
@@ -80,9 +84,9 @@ you have on your system is likely to _increase_ compile times, but you could
 split your test, check, and build jobs across lower number of cores, such as two
 cores for `test` and another two for `check` on a four-core machine. If you are
 truly desparate you can try gimmicks like building to a less intense target.
-I've written a shell script that will build all possible target `rustc` can
-attempt to cross compile and report build times in the event that they succeed.
-You can find the gist
+I've written a shell script that will build all possible cross-compile targets
+`rustc` can attempt and report build times in the event that they succeed. You
+can find the gist
 [here](https://gist.github.com/justanotherdot/ca1f163754e9a90f6c6b9dfb25a0598f)
 and can invoke it with `x-compile-test`. You can also narrow down which targets
 you want to use with a regex by specifying `FILTER=x86_64 x-compile-test`.
