@@ -8,8 +8,8 @@ tags:
   - git
 summary: >-
   Find out how to search through your git history to find first instances of any
-  sort of behavior or characteristics. With git and a hacked-together program
-  you can do this quickly and automatically.
+  sort of behavior or characteristic with your code using git and a
+  hacked-together program or script.
 ---
 
 A problem has happened due to some offending code landing on your main,
@@ -17,12 +17,13 @@ production branch. You use `git` and your best bet is to keep rolling back
 commits until the system finds itself in a steady state. You come late into this
 picture and you're unsure how far back you need to go.
 
-Firstly, you ought to be using something that alleviates the need for cranking
-out an entire CI pipeline in order to produce a deploy. I've talked a bit about
-this in the past on my [screencasts about setting up a
-CI](https://www.youtube.com/playlist?list=PLG8S6YrJRoYI3CIUqvGX4NBSaMWZxe9in).
-If you have something like this, rolling back a fair few number of releases is
-probably trivial and easy enough to attempt.
+Firstly, you ought to be using something that alleviates the need for running
+through out an entire CI pipeline in order to produce a deploy. I've talked a
+bit about this in the past on my [screencasts about setting up a
+CI](https://www.youtube.com/playlist?list=PLG8S6YrJRoYI3CIUqvGX4NBSaMWZxe9in)
+regarding the distinction between a deployment and a release. If you have
+something like this, rolling back a fair few number of releases is probably
+trivial to attempt.
 
 However, if you don't have this in place or you really do need to roll through
 an entire CI pipeline, then you can still using something like `git bisect` to
@@ -32,7 +33,7 @@ find the first offending commit.
 framework for running a `git bisect` is the following:
 
 1. `git bisect start FROM_COMMIT TO_COMMIT`
-2. test the commit, determine if it is good or bad, and tell `git` with `git bisect good` or `git bisect bad`
+2. Test the commit, determine if it is good or bad, and tell `git` with `git bisect good` or `git bisect bad`. You can also skip commits with `git bisect skip`.
 
 The trick to finding the first offending commit isn't to run the same steps your
 CI pipeline would; you should have all those builds available for review and
@@ -43,7 +44,7 @@ decision to making a choice for whether or not the commit is `good` or `bad` in
 light of what you are trying to find.
 
 You can alleviate the tedium of (2) by using `git bisect run` and supplying a
-script. If the script fails or you ever want to abandon your search midway, you
+program. If the script fails or you ever want to abandon your search midway, you
 can always run `git bisect reset` and start over again. There are some tricks to
 how you can craft the exit codes from the script you write for `git bisect run`
 that really make this process a lot faster. To give a sense of the range of use
@@ -64,14 +65,17 @@ target/debug/program > /tmp/program.out
 ```
 
 You'll need to place this script somewhere outside of the current git repository
-as it will mess up checkouts between commits. Another pitfall that can hurt is
-how you structure your git history; if you use merge styled commits, as is the
-default for GitHub, then you will probably not care if the commits in between
-the range fail but only if the primary, merge commits fail. You can do one of
-two things: output the list of all merge commits that match a particular
+as it will mess up checkouts between commits, and, as always, ensure it is
+executable. Another pitfall that can hurt is how you structure your git history;
+if you use merge styled commits, as is the default for GitHub, then you will
+probably not care if the commits in between the merge commits fail. You can do
+one of two things: output the list of all merge commits that match a particular
 pattern, e.g., the way GitHub does it, or you could also, if your history is
 clean enough, use `git show --no-patch --format="%P" <commit hash>` to determine
-if a commit has more than one parent.
+if a commit has more than one parent; you'll see more than one hash noted in the
+output. You can find quick version I hacked together filtering out commits with
+the GitHub styled subject lines you can tweak at [this
+gist](https://gist.github.com/justanotherdot/d587f5bea0f6937ef7f7bda53f23ac56).
 
 In the above example I show testing against a snapshot given some program
 output, but really the predicate could be *anything*. Using `git bisect` to
@@ -91,4 +95,9 @@ Granted, a system may be so complex in it's operation that there is no way for
 you to locally verify the offending commit. Mitigating or "stopping the
 bleeding" is something that needs to happen quick. With that said, `git bisect`
 might be a better tool for analysis later, when the pressure is low and you can
-better craft a test or predicate to find where the fault first occurred.
+better craft a test or predicate to find where the fault first occurred, but if
+you haven't spent a lot of time with release engineering or you are in a place
+where it could use some improvements, running `git bisect` in this matter might
+help save you precious time, and even if you do have good release engineering in
+place, it might help save you a pulling out a lot of hair finding the place
+where code has effectively broken down.

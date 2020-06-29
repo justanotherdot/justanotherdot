@@ -10,6 +10,98 @@
     <language>en-us</language>
     
     <item>
+      <title>Discovering Problematic Commits With Git Bisect</title>
+      <author>Ryan James Spencer</author>
+      <link>https://justanotherdot.com/posts/discovering-problematic-commits-with-git-bisect.html</link>
+      <guid>https://justanotherdot.com/posts/discovering-problematic-commits-with-git-bisect.html</guid>
+      <pubDate>Tue, 30 Jun 2020 08:50:46 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>A problem has happened due to some offending code landing on your main,
+production branch. You use <code>git</code> and your best bet is to keep rolling back
+commits until the system finds itself in a steady state. You come late into this
+picture and you're unsure how far back you need to go.</p>
+<p>Firstly, you ought to be using something that alleviates the need for running
+through out an entire CI pipeline in order to produce a deploy. I've talked a
+bit about this in the past on my <a href="https://www.youtube.com/playlist?list=PLG8S6YrJRoYI3CIUqvGX4NBSaMWZxe9in">screencasts about setting up a
+CI</a>
+regarding the distinction between a deployment and a release. If you have
+something like this, rolling back a fair few number of releases is probably
+trivial to attempt.</p>
+<p>However, if you don't have this in place or you really do need to roll through
+an entire CI pipeline, then you can still using something like <code>git bisect</code> to
+find the first offending commit.</p>
+<p><code>git bisect</code> runs a binary search across a span of commits. The general
+framework for running a <code>git bisect</code> is the following:</p>
+<ol>
+<li><code>git bisect start FROM_COMMIT TO_COMMIT</code></li>
+<li>Test the commit, determine if it is good or bad, and tell <code>git</code> with <code>git bisect good</code> or <code>git bisect bad</code>. You can also skip commits with <code>git bisect skip</code>.</li>
+</ol>
+<p>The trick to finding the first offending commit isn't to run the same steps your
+CI pipeline would; you should have all those builds available for review and
+they will tell you whether or not a build truly succeeded, unless you can't
+trust your CI and, in that case, you have other issues on your hand. Crafting
+your own test and running it each time in (2) will help guide you in the
+decision to making a choice for whether or not the commit is <code>good</code> or <code>bad</code> in
+light of what you are trying to find.</p>
+<p>You can alleviate the tedium of (2) by using <code>git bisect run</code> and supplying a
+program. If the script fails or you ever want to abandon your search midway, you
+can always run <code>git bisect reset</code> and start over again. There are some tricks to
+how you can craft the exit codes from the script you write for <code>git bisect run</code>
+that really make this process a lot faster. To give a sense of the range of use
+for <code>git bisect</code> as a general search tool, let's call our test script
+<code>predicate</code>.</p>
+<pre><code class="language-bash">#!/bin/sh -eux
+
+# NB.
+# exiting with 125 tells `git bisect run` to skip this commit.
+# exiting with 0 means the commit is `good'.
+# exiting with 1 means the commit is `bad'.
+
+cargo build || exit 125 # skip failed builds.
+target/debug/program &gt; /tmp/program.out
+[ ! diff /tmp/program.out /tmp/program.snapshot ] &amp;&amp; exit 1
+</code></pre>
+<p>You'll need to place this script somewhere outside of the current git repository
+as it will mess up checkouts between commits, and, as always, ensure it is
+executable. Another pitfall that can hurt is how you structure your git history;
+if you use merge styled commits, as is the default for GitHub, then you will
+probably not care if the commits in between the merge commits fail. You can do
+one of two things: output the list of all merge commits that match a particular
+pattern, e.g., the way GitHub does it, or you could also, if your history is
+clean enough, use <code>git show --no-patch --format=&quot;%P&quot; &lt;commit hash&gt;</code> to determine
+if a commit has more than one parent; you'll see more than one hash noted in the
+output. You can find quick version I hacked together filtering out commits with
+the GitHub styled subject lines you can tweak at <a href="https://gist.github.com/justanotherdot/d587f5bea0f6937ef7f7bda53f23ac56">this
+gist</a>.</p>
+<p>In the above example I show testing against a snapshot given some program
+output, but really the predicate could be <em>anything</em>. Using <code>git bisect</code> to
+drive things like textual search has better alternatives like the &quot;pickaxe&quot; with
+<code>-S</code> in <code>git log</code>, but if you want to find the first commit where something
+happened and it isn't part of the data that git saves, such as program behavior,
+then <code>git bisect</code> will let you find it far faster. I've also used this in the
+past to whip up quick, minimal tests that I can inject after the checkout and
+run some test suite against. <code>git bisect run</code> takes any binary, too, meaning you
+don't <em>have</em> to use a shell script like I have in the example above. The real
+aim is not to think of the <code>predicate</code> script or program as something that has
+to be about failures; you can easily use it to discover first instances of any
+kind of particular behavior a program may exhibit, as long as it is reproducible
+locally.</p>
+<p>Granted, a system may be so complex in it's operation that there is no way for
+you to locally verify the offending commit. Mitigating or &quot;stopping the
+bleeding&quot; is something that needs to happen quick. With that said, <code>git bisect</code>
+might be a better tool for analysis later, when the pressure is low and you can
+better craft a test or predicate to find where the fault first occurred, but if
+you haven't spent a lot of time with release engineering or you are in a place
+where it could use some improvements, running <code>git bisect</code> in this matter might
+help save you precious time, and even if you do have good release engineering in
+place, it might help save you a pulling out a lot of hair finding the place
+where code has effectively broken down.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>An Opinionated Guide To Structuring Rust Projects</title>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/an-opinionated-guide-to-structuring-rust-projects.html</link>
