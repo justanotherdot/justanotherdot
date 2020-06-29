@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Feature Flag Cleanly With Blocks">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/feature-flag-cleanly-with-blocks.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="If you're tired of polluting your code with one-off functions and identifiers, then you can turn to blocks in Rust to simplify the mayhem. While you can use blocks to feature flag code, the same pattern applies to general refactoring, making your code easier to read and maintain.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Feature Flag Cleanly With Blocks">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/feature-flag-cleanly-with-blocks.jpg">
+    <meta name="twitter:description" content="If you're tired of polluting your code with one-off functions and identifiers, then you can turn to blocks in Rust to simplify the mayhem. While you can use blocks to feature flag code, the same pattern applies to general refactoring, making your code easier to read and maintain.">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>Feature Flag Cleanly With Blocks &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/feature-flag-cleanly-with-blocks.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/feature-flag-cleanly-with-blocks.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Feature Flag Cleanly With Blocks</h1>
+              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">June 29 2020,  7:45PM</p>
+            <div class="content is-medium">
+              <p>I recently had to feature flag some code in JavaScript and felt myself wishing I
+had Rust's expression-based blocks. In the JavaScript code, I didn't want to
+break out the logic into its own function or module as I the code was a proof of
+concept and deciding on an interface early on would distract me. In languages
+that aren't expression and block oriented, you have one of two choices:</p>
+<ol>
+<li>Use an immediately invoked function</li>
+<li>Have 'unset' or 'default' variables on the outside of some scope and a scope that
+potentially assigns to the variables</li>
+</ol>
+<p>Here's an example of the two cases in JS:</p>
+<pre><code>// with an IIFE.
+const featureFlaggedItem = (() =&gt; {
+  if (!featureFlag) {
+    return {
+      // defaults without the flag.
+      // the steady state of the system.
+    };
+  }
+
+  // feature flagged code.
+})();
+</code></pre>
+<pre><code>// or with an assignment, relying on side effect.
+let featureFlaggedItem = {
+  // defaults without the flag.
+  // the steady state of the system.
+};
+if (featureFlag) {
+  featureFlaggedItem = {
+    // featureFlagContent
+  };
+}
+</code></pre>
+<p>The problem with the side effect approach is that we lose the nice benefit of
+having <code>featureFlaggedItem</code> as <code>const</code> as well as keeping things nice and tidy
+for easier deletion later on. I personally refuse to use the second approach.
+Rust let's you easily write the above code as following:</p>
+<pre><code>let feature_flagged_item = {
+  if (!featureFlag) {
+    return {
+      // defaults without the flag.
+      // the steady state of the system.
+    };
+  }
+
+  // feature flagged code.
+};
+
+// or ...
+
+let feature_flagged_item = if (featureFlag) {
+  // feature flagged code.
+else {
+  return {
+    // defaults without the flag.
+    // the steady state of the system.
+  };
+};
+</code></pre>
+<p>But this is wildly useful for a lot of things beyond one-off changes. Maybe you
+need a one-off value for a function argument but you don't want to immediately
+invoke a closure or define a function to call. With blocks you can tuck all
+sorts of code into places with or without assignment. If you have a lot of
+&quot;identifier&quot; pollution going on in a given scope, say with a lot of temporary
+variables, you can tuck them under the rug with blocks. I tend to have a lot of
+assignments that break up code like a newspaper article but there is some
+dispute around shadowing. I am pro shadowing in Rust as I feel it bars a class
+of bugs, but you can understandably avoid shadowing if you so care; <a href="https://github.com/rust-lang/rust-clippy/blob/master/clippy_lints/src/shadow.rs">using
+<code>clippy</code>s lint on the
+matter</a>,
+or ensuring the temporary shadowed variable(s) are only present for the inner,
+temporary, scope.</p>
+<p>The best part is that when the &quot;one-off&quot; value becomes less &quot;one-off&quot;, you can
+easily take the block and dump the contents straight into a function and it will
+work as-is, with or without the superfluous curly braces! Splitting up the
+decisions around what is done to build up the value versus the surface area of
+the value (its interface) is a great way to guarantee the interface is what you
+really want it to be rather than what it had to be in order to figure out its
+implementation. In general it's best to split up work in such a way that you can
+focus on each piece in isolation without the other pieces distracting you.</p>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

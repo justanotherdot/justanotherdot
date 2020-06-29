@@ -1,24 +1,24 @@
 ---
 title: Feature Flag Cleanly With Blocks
 author: Ryan James Spencer
-date:
+date: 2020-06-29T09:45:44.592349850+00:00
 tags:
   - rust
 summary: >-
   If you're tired of polluting your code with one-off functions and identifiers,
-  then you can turn to blocks in Rust to simplify the mayhem. I explore how to
-  feature flag code using blocks as well as how to use the same pattern to make
-  your code easier to read and maintain.
+  then you can turn to blocks in Rust to simplify the mayhem. While you can use
+  blocks to feature flag code, the same pattern applies to general refactoring,
+  making your code easier to read and maintain.
 ---
 
-I recently had to feature flag some code in JavaScript and felt myself reeling
-for blocks in Rust. In the JavaScript code, I didn't want to break out the logic
-into it's own function or module as I didn't want to dedicate to an interface up
-front as the code was a proof of concept. In languages that aren't expression
-and block oriented, you have one of two choices:
+I recently had to feature flag some code in JavaScript and felt myself wishing I
+had Rust's expression-based blocks. In the JavaScript code, I didn't want to
+break out the logic into its own function or module as I the code was a proof of
+concept and deciding on an interface early on would distract me. In languages
+that aren't expression and block oriented, you have one of two choices:
 
 1. Use an immediately invoked function
-2. Have 'unset' variables on the outside of some scope and a scope that
+2. Have 'unset' or 'default' variables on the outside of some scope and a scope that
    potentially assigns to the variables
 
 Here's an example of the two cases in JS:
@@ -85,18 +85,19 @@ invoke a closure or define a function to call. With blocks you can tuck all
 sorts of code into places with or without assignment. If you have a lot of
 "identifier" pollution going on in a given scope, say with a lot of temporary
 variables, you can tuck them under the rug with blocks. I tend to have a lot of
-assignments that break up code like a newspaper but there is some contestation
-around shadowing. I am pro shadowing in Rust as I feel it bars a class of bugs,
-but you can understandably avoid shadowing if you so care, [using `clippy`s lint
-on the
+assignments that break up code like a newspaper article but there is some
+dispute around shadowing. I am pro shadowing in Rust as I feel it bars a class
+of bugs, but you can understandably avoid shadowing if you so care; [using
+`clippy`s lint on the
 matter](https://github.com/rust-lang/rust-clippy/blob/master/clippy_lints/src/shadow.rs),
-or you can ensure the temporary shadowed variable(s) is only present for the
-inner, temporary, scope, if it bothers you.
+or ensuring the temporary shadowed variable(s) are only present for the inner,
+temporary, scope.
 
 The best part is that when the "one-off" value becomes less "one-off", you can
 easily take the block and dump the contents straight into a function and it will
-work as-is, with or without the superfluous curly braces. Splitting up the
+work as-is, with or without the superfluous curly braces! Splitting up the
 decisions around what is done to build up the value versus the surface area of
-the value is a great way to ensure the interface is what you really want it to
-be, rather than constantly shifting it in tandem while you work out the details
-of the internals.
+the value (its interface) is a great way to guarantee the interface is what you
+really want it to be rather than what it had to be in order to figure out its
+implementation. In general it's best to split up work in such a way that you can
+focus on each piece in isolation without the other pieces distracting you.
