@@ -13,7 +13,7 @@ summary: >-
 
 I recently had to feature flag some code in JavaScript and felt myself wishing I
 had Rust's expression-based blocks. In the JavaScript code, I didn't want to
-break out the logic into its own function or module as I the code was a proof of
+break out the logic into its own function or module as the code was a proof of
 concept and deciding on an interface early on would distract me. In languages
 that aren't expression and block oriented, you have one of two choices:
 
