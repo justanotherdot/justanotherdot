@@ -14,7 +14,7 @@ cat <<EOF > "site/posts/${SLUG}.md"
 ---
 title: $TITLE
 author: Ryan James Spencer
-date:
+date: $(tok)
 tags:
   -
 summary: >-
