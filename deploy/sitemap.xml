@@ -13,6 +13,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/feature-flag-cleanly-with-blocks.html</loc>
+    <lastmod>2020-06-29T09:45:44.592349850+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/an-opinionated-guide-to-structuring-rust-projects.html</loc>
     <lastmod>2020-06-12T10:49:59.563002270+00:00</lastmod>
     <priority>0.95</priority>
