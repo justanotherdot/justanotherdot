@@ -111,7 +111,7 @@ There's a lot of meta things Ben does I think are applicable to a wide range of
 projects.
 
 If it's not obvious, I like that Ben breaks the CPU into separate parts or
-units*.* This way Ben can focus on one thing at a time, building up earlier
+units. This way Ben can focus on one thing at a time, building up earlier
 tools and units for re-use later, freeing up his ability to think on different
 problems without having to hold the whole of the CPUs design in his head at
 once.
