@@ -7,6 +7,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/what-makes-up-a-cpu.html</loc>
+    <lastmod>2020-07-07T23:23:00.767692476+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/discovering-problematic-commits-with-git-bisect.html</loc>
     <lastmod>2020-06-29T22:50:46.918821022+00:00</lastmod>
     <priority>0.95</priority>
