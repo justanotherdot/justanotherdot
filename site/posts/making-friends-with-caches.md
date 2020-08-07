@@ -3,8 +3,11 @@ title: Making Friends With Caches
 author: Ryan James Spencer
 date: 2020-07-30T22:34:10.614030851+00:00
 tags:
-  -
+  - rust
 summary: >-
+  Caches use a principle called "locality of reference" to guide how they're
+  constructed. We look into what thse means and how it can be used to improve
+  your programs.
 ---
 
 If you lived in a village with only one mode of transport, say, a single car per family, then there would be resources that take longer to get at then others. On a computer, the same is true, where the village is the CPU, and the resources are things where data lives or is communicated over, such as a disk drive or a network socket. Things in your own home are quick to fetch; these would be the registers of a CPU. Some things are still quick for you to fetch but you don't keep directly inside your home. Perhaps you have a few of these sheds so you can fit various things, like your garage and a work shed. When the shed and garage don't suffice and you need new supplies, you travel to the store to purchase supplies, bringing them home with you to put in the shed or garage or whatever outdoor storage you own.
