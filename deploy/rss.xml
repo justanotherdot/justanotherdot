@@ -10,6 +10,85 @@
     <language>en-us</language>
     
     <item>
+      <title>Profiling Doesn't Always Have To Be Fancy</title>
+      <author>Ryan James Spencer</author>
+      <link>https://justanotherdot.com/posts/profiling-doesnt-always-have-to-be-fancy.html</link>
+      <guid>https://justanotherdot.com/posts/profiling-doesnt-always-have-to-be-fancy.html</guid>
+      <pubDate>Fri, 14 Aug 2020 09:30:07 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Not all profiling experiences are alike. Some are filled with friction around the tooling. Others are around doubt about whether or not intermediate layers are inflating or shifting numbers in unfair ways. Perhaps you work in a security or data-compliance critical environment and all you want is numbers on what is running in production without having to breach agreements by downloading live data to your work environment. Benchmarks are fantastic for tracking numbers of common or pathological cases over time, but they may still be unrealistic in comparison to the undiscovered cases in prod. When I find that I can't easily wedge in a profile, I get a bit sad and then turn to crude solutions.</p>
+<p>Admittedly, performance counters with tools like <code>perf</code> can far better track the performance of resource usage rather than wall times. A wall time may include all the time taken during a context switch out to other running processes, for example, but wall times are important because they are the latency humans feel when they use a user interface to a system or tool.</p>
+<p>The simplest way to crudely examine timings is to do what benchmark tooling does; record the wall time before and after the code runs. Benchmarks can track different measures of &quot;center&quot; and calculate statistics around outliers and deviations from these markers of center, but ultimately they take two times and output the difference. I want to reduce friction as much as possible, and as such I'll write this as a macro to do the code generation around the value and still return the value. <a href="https://doc.rust-lang.org/src/std/macros.rs.html#285-305">This is exactly what <code>dbg</code> does</a>.</p>
+<pre><code class="language-rust">macro_rules! time {
+    ($val:expr) =&gt; {
+        let beg = std::time::Instant::now();
+        match $val {
+            tmp =&gt; {
+                let end = std::time::Instant::now();
+                let time = (end - beg);
+                println!(
+                    &quot;[{}:{}] `{}' took {:?}&quot;,
+                    std::file!(),
+                    std::line!(),
+                    std::stringify!($val),
+                    time
+                );
+                tmp
+            }
+        }
+    };
+}
+</code></pre>
+<p>We print out the timings given the file number, line number, expression under timing, and time taken, just like <code>dbg</code> does. You'll note that I am using the <code>Debug</code> format specifier for the time itself and not converting the time into a canonical format such as nanoseconds. I do this because the formatting is usually clearer this way; if we always returned milliseconds but the code under inspection took only a handful of nanoseconds, I'd have to go back and change the code again, or if the code is taking several seconds, then telling me the nanoseconds will require me to do the math in my head to convert.</p>
+<p>Times like this are handy for things such as router endpoints. This same stopwatch style is what is also used for distributed tracing libraries. A library will start a clock on function entry, and on exit calculate the result, create a &quot;span&quot;, and add it to a list of spans. Normally spans are identified by some unique trace id and have parent/child identifiers allowing you to shove all the spans up to an aggregator and let them figure out how to stitch the values together, saving you the cost of doing it on the application.</p>
+<p>With this macro, we can  go from this code:</p>
+<pre><code class="language-rust">use std::time::Instant;
+
+#[get(&quot;/resource&quot;)]
+fn index() -&gt; Result&lt;Json&lt;Resource&gt;, HttpError&gt; {
+    let beg = Instant::now();
+    let rsrc = resource().map(|x| Json(x));
+    let end = Instant::now();
+    // or, dump as json to logger, stdout, etc. for aggregation...
+    eprintln!(&quot;/resource took {} ms&quot;, (beg - end).as_millis());
+    rsrc
+}
+</code></pre>
+<p>to this code:</p>
+<pre><code class="language-rust">#[get(&quot;/resource&quot;)]
+fn index() -&gt; Result&lt;Json&lt;Resource&gt;, HttpError&gt; {
+    time!(resource().map(|x| Json(x)))
+}
+</code></pre>
+<p>If you wanted to you could change the macro to dump structured logs rather than free text, or you could push metrics out to a provider under a name. Regardless of where you aggregate the values for inspection, making this like <code>dbg</code> means we are being unobtrusive with our code, allowing us to put in timings and take them out when ready, which is especially handy when you are trying to check the time of a particular chunk of code while developing.</p>
+<p>To be complete to the <code>dbg</code> implementation, maybe you want to pass several things separated by commas to the <code>time</code> macro in the same way you can pass multiple things to <code>dbg</code>. Taking a note from the source code of the dbg macro we can see what to add <a href="https://doc.rust-lang.org/src/std/macros.rs.html#302-304">near the end</a>:</p>
+<pre><code class="language-rust">macro_rules! time {
+    ($val:expr) =&gt; {
+        {
+            let beg = std::time::Instant::now();
+            match $val {
+                tmp =&gt; {
+                    let end = std::time::Instant::now();
+                    let time = (end - beg);
+                    println!(&quot;[{}:{}] `{}' took {:?}&quot;, std::file!(), std::line!(), std::stringify!($val), time);
+                    tmp
+                }
+            }
+        }
+    };
+    ($($val:expr),+ $(,)?) =&gt; {
+        ($(time!($val)),+,)
+    };
+}
+</code></pre>
+<p>This change uses the repeat pattern matches of macros to consistently repeat a pattern for as many times as it is mentioned. what this pattern says is &quot;there may be several (thus the + sign) comma separated expressions, followed finally by an optional (thus the ? sign) comma&quot;. then, when you use the plus sign in the body, it will repeat the same number of times as the pattern was found. The body says &quot;do the time macro on each captured value for as many times the patterns were captured and put them all in a tuple that fits them, followed by a comma just in case there are is only one value passed and this pattern fires&quot;, at least that's how I read that last comma.</p>
+<p>You can push this idea further if you want by <a href="https://gist.github.com/justanotherdot/fe4bf2024d2c13e3eace4f8d6730c3d1">writing a benchmark macro</a> that did the timing across runs, perhaps including mean average and standard devation and maybe even warmups. The point is not to get lost in recreating a benchmark or profiling suite inside of macros but to find ways to unobtrusively provide results in such a way that you can quickly get relative sizes between elements in a system or program. Also, be aware that timings can blow out if you are timing the code that also has timing code in it. Ideally you time independent segments of a function.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Making Friends With Caches</title>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/making-friends-with-caches.html</link>
