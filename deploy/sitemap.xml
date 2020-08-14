@@ -7,6 +7,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/an-architecture-agnostic-intro-to-assembly.html</loc>
+    <lastmod>2020-08-14T06:20:36.957169552+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/avoid-build-cache-bloat-by-sweeping-away-artifacts.html</loc>
     <lastmod>2020-08-14T01:08:21.711142397+00:00</lastmod>
     <priority>0.95</priority>
