@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Avoid Build Cache Bloat By Sweeping Away Artifacts">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/avoid-build-cache-bloat-by-sweeping-away-artifacts.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="With regular pruning, Rust build artifacts can become a nuisance for CI pipelines and developer workstations. With a little bit of shell scripting and the aid of a cargo subcommand, we can automate away the toil of cleaning up the various projects we hack at.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Avoid Build Cache Bloat By Sweeping Away Artifacts">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/avoid-build-cache-bloat-by-sweeping-away-artifacts.jpg">
+    <meta name="twitter:description" content="With regular pruning, Rust build artifacts can become a nuisance for CI pipelines and developer workstations. With a little bit of shell scripting and the aid of a cargo subcommand, we can automate away the toil of cleaning up the various projects we hack at.">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <title>Avoid Build Cache Bloat By Sweeping Away Artifacts &#8226; Ryan James Spencer</title>
+    <style>
+      .social-icon {
+        stroke: currentColor;
+        fill: none;
+        position: relative;
+        top: 2px;
+        color: #000;
+        width: 24px;
+        height: 24px;
+      }
+    </style>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <section style="background-image:url(../assets/images/avoid-build-cache-bloat-by-sweeping-away-artifacts.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/avoid-build-cache-bloat-by-sweeping-away-artifacts.jpg" class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns">
+            <div class="column is-one-quarter"></div>
+            <div class="column">
+              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Avoid Build Cache Bloat By Sweeping Away Artifacts</h1>
+              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>
+            </div>
+            <div class="column is-one-quarter"></div>
+          </div>
+        <div>
+      <div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-one-quarter"></div>
+          <div class="column is-half">
+            <p class="has-text-weight-bold">August 14 2020, 11:08AM</p>
+            <div class="content is-medium">
+              <p>Incremental builds can get huge in Rust and there is no builtin way for them to get pruned over time. This can be particularly important for developers or build bots working with a limited sized disk drive. I have seen some build caches on projects I work on in production into the range of several gigabytes and this is the size <em>after</em> compression!</p>
+<p>The easiest way to keep these projects clean is to <a href="https://github.com/holmgr/cargo-sweep">instrument <code>cargo-sweep</code> to run regularly</a>. You can dump the command into a crontab to run at regular periods. For build bots it can pay to pull down a shared cache or caches and clean them at regular intervals, either as part of preexisting steps or as dedicated steps.</p>
+<p>We can tell the crontab to run a script and stuff our logic in the script; this way we don't have to change the crontab if we want to change the behavior. Our script will run <code>cargo sweep</code> recursively across all our projects, pruning objects older than thirty days.</p>
+<pre><code class="language-bash">#/bin/sh -eux
+if ! cargo sweep &gt;/dev/null 2&gt;&amp;1 ; then
+  cargo install cargo-sweep
+fi
+export PATH=&quot;$PATH:$HOME/.cargo/bin&quot;
+cd &quot;$HOME&quot;
+cargo sweep -r -t 30
+</code></pre>
+<p>You can write to a crontab with a one-liner. This  will make our script run every hour every day. You can adjust the period based on the expression given. If you are unfamiliar with crontab expressions, you can play with crontab expressions to produce human readable output, <a href="https://crontab.guru/">such as this site</a>.</p>
+<pre><code class="language-bash"># Assuming you've named the above script `clean-build-artifacts`
+# and have put it under /usr/local/bin/
+echo '0 */1 * * * /usr/local/bin/clean-build-artifacts' | sudo crontab -u $(whomami) -
+</code></pre>
+<p>we could replicate the same behavior that <code>cargo sweep</code> does with a shell script, but we would need to replicate a lot of the behavior that it offers. By default <code>cargo clean</code> is a sledgehammer that will remove <em>everything.</em> This may, in fact, be what you want; perhaps every thirty days you want to build everything fresh again. This can be particularly handy if you are using scheduled CI builds to check for broken windows across your pipelines and you want the sanity that comes with a fresh build.</p>
+<p>Which leads me into another use for <code>cargo sweep</code> that isn't time based: sweeping toolchains. You could additionally add a cronjob to sweep toolchains every month or so, like this:</p>
+<pre><code class="language-bash">#/bin/sh -eux
+if ! cargo sweep &gt;/dev/null 2&gt;&amp;1 ; then
+  cargo install cargo-sweep
+fi
+export PATH=&quot;$PATH:$HOME/.cargo/bin&quot;
+cd &quot;$HOME&quot;
+for project in $(find . -name &quot;Cargo.toml&quot; -type f | grep -vE &quot;(registry|.rustup|.cargo|target)&quot; | xargs dirname); do
+  cd &quot;$project&quot;
+  current_toolchain=$(rustup toolchain list | grep &quot;override&quot; | awk '{print $1}')
+  if [ &quot;$current_toolchain&quot; ]; then
+    cargo sweep --toolchains=&quot;$current_toolchain&quot;
+  else
+    rustup toolchain list | grep &quot;default&quot; | awk '{print $1}' | xargs -I{} cargo sweep --toolchains=&quot;{}&quot;
+  fi
+done
+</code></pre>
+<p>What does this script do? We have the same preamble as before that installs <code>cargo-sweep</code> if it's not present on the system and sets the correct <code>PATH</code> environment variable, just in case. We change into our <code>HOME</code> directory and then look for all the projects that are only present for our projects. Then, we go into each project and try to see if there is an override for the toolchain, usually caused by the presence of a <code>rust-toolchain</code> file, and if there is none, we will clean the default toolchain, instead. When this script is done, all the projects will be cleaned of build artifacts created by unsupported or non-default compilers. Running this on a project of mine of mine that includes a <code>rust-toolchain</code> gives me:</p>
+<pre><code class="language-bash">&lt;snip&gt;
+[INFO] Cleaned 761.8599634170532 MiB
+</code></pre>
+<p>which is a pretty hefty savings all things considered! I can name the above script <code>clean-build-artifacts-toolchains</code> and install the script to run monthly by running:</p>
+<pre><code class="language-bash">echo '0 0 1 * * /usr/local/bin/clean-build-artifacts-toolchains' | sudo crontab -u $(whomami) -
+</code></pre>
+<p>This script will run on the first of every month. The best part of dumping these sorts of things into scripts is that they can easily be reused by name, rather than lots of copy-pasting. In particular, we can now take these scripts and have a job run it over our build caches like we mentioned before as a step in a pipeline or even as a dedicated monthly schedule build that will clean out old cruft that we are unlikely to need again. Reducing the size of your build caches means the total time taken to pull down the cache and unpack it is less, speeding up overall build times.</p>
+
+            </div>
+            <hr>
+            <!-- MOBILE NEWSLETTER BEGIN -->
+            <div class="columns is-centered">
+              <div class="column is-10">
+                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
+                <div>
+                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+                </div>
+              </div>
+            </div>
+            <!-- MOBILE NEWSLETTER END -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
