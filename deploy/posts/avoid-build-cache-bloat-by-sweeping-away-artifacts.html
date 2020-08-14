@@ -73,7 +73,7 @@
         <div class="columns">
           <div class="column is-one-quarter"></div>
           <div class="column is-half">
-            <p class="has-text-weight-bold">August 14 2020, 11:08AM</p>
+            <!--<p class="has-text-weight-bold">August 14 2020, 11:08AM</p>-->
             <div class="content is-medium">
               <p>Incremental builds can get huge in Rust and there is no builtin way for them to get pruned over time. This can be particularly important for developers or build bots working with a limited sized disk drive. I have seen some build caches on projects I work on in production into the range of several gigabytes and this is the size <em>after</em> compression!</p>
 <p>The easiest way to keep these projects clean is to <a href="https://github.com/holmgr/cargo-sweep">instrument <code>cargo-sweep</code> to run regularly</a>. You can dump the command into a crontab to run at regular periods. For build bots it can pay to pull down a shared cache or caches and clean them at regular intervals, either as part of preexisting steps or as dedicated steps.</p>
