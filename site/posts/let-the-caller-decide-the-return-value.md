@@ -68,7 +68,7 @@ fn main() {
 }
 ```
 
-[playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=50bf8b2c01c6ac5fa709f7613434c9e3).
+[playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=71b87a2671cc5723b5b164842ff61e85).
 
 The beauty of this approach is that context can dictate which function will run. Note that I've included two approaches to showing the same thing; one using the trait's associated function syntax and the other as part of the type annotation on a `let`. I could have just as easily wrapped this function and specified concrete types on the function signature to get the same result.
 
