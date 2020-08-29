@@ -82,7 +82,7 @@ simple way to use methods and combinators to do exactly what you want.</p>
 collection in hand, you can write a simple method that operates on the type
 named something like <code>as_foo</code> where foo is the name of the variant or field name
 you are after. There's a clippy lint that says <code>as_*</code> functions should always
-take references should I've followed the lint in the following example but it
+take references so I've followed the lint in the following example but it
 doesn't really matter what you name the method and it's fine to have the method
 take ownership of the value, too, if that makes sense for your use case. When
 you define a method you can use it either with the basic method syntax
@@ -90,7 +90,7 @@ you define a method you can use it either with the basic method syntax
 <code>Type::as_foo(value)</code>. Then we can use either method in tandem with the
 <code>filter_map</code> or <code>flat_map</code> methods of an iterator. I personally prefer the more
 terse way of passing the associated function instead of the closure, which is
-somtime referred to as &quot;point free&quot; style where the arguments, or points, are
+sometimes referred to as &quot;point free&quot; style where the arguments, or points, are
 not mentioned:</p>
 <pre><code>#[derive(Debug, Clone, PartialEq)]
 enum E {
@@ -100,9 +100,6 @@ enum E {
 
 impl E {
     pub fn as_x(&amp;self) -&gt; Option&lt;i32&gt; {
-        // might need to rearrange this
-        // if a variant is added that
-        // does not include x.
         Some(match self {
             E::A { x } =&gt; *x,
             E::B { x } =&gt; *x,
@@ -118,26 +115,26 @@ impl E {
 }
 
 pub fn main() {
-    // method access off type.
+    // Method access off type.
     let a = E::A { x: 1 };
     let b = E::B { x: 2 };
     assert_eq!(a.as_x(), Some(1));
     assert_eq!(b.as_x(), Some(2));
 
-    // associated function on impl.
+    // Associated function on impl.
     let a = E::A { x: 1 };
     let b = E::B { x: 2 };
     assert_eq!(E::as_x(&amp;a), Some(1));
     assert_eq!(E::as_x(&amp;b), Some(2));
 
-    // in a collection.
+    // In a collection.
     let a = E::A { x: 1 };
     let b = E::B { x: 2 };
     let as_and_bs = vec![a, b];
     let xs = as_and_bs.iter().filter_map(E::as_x).collect::&lt;Vec&lt;i32&gt;&gt;();
     assert_eq!(xs, vec![1, 2]);
 
-    // selecting a field as a dummy pattern match.
+    // Selecting a field as a dummy pattern match.
     let b = E::B { x: 2 };
     let xs = Some(&amp;b).and_then(E::as_b);
     assert_eq!(xs, Some(&amp;E::B { x: 2 }));
