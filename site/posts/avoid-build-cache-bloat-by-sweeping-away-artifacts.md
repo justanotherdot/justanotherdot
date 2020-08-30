@@ -3,7 +3,7 @@ title: Avoid Build Cache Bloat By Sweeping Away Artifacts
 author: Ryan James Spencer
 date: 2020-08-14T01:08:21.711142397+00:00
 tags:
-  -
+  - rust
 summary: >-
   With regular pruning, Rust build artifacts can become a nuisance for CI
   pipelines and developer workstations. With a little bit of shell scripting and
