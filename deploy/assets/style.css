@@ -1,11 +1,4 @@
 @font-face {
-  font-family: 'Iosevka Web';
-  src: url('../assets/fonts/iosevka-regular.ttf');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
   font-family: 'Iosevka Term';
   src: url('../assets/fonts/iosevka-term-regular.ttf');
   font-weight: normal;
@@ -35,23 +28,22 @@
 
 * {
   background: rgb(258, 258, 258);
-  /*color: rgb(31, 31, 31);*/
   color: rgb(54, 54, 54);
   font-weight: 400;
-  font-family: 'FiraSans';
+  font-family: 'FiraSans', sans-serif;
   font-size: 16px;
   font-height: 1.25rem;
 }
 
 h1,.title {
   font-weight: 600;
-  font-family: 'FiraSans SemiBold';
+  font-family: 'FiraSans SemiBold', sans-serif;
   font-size: 2rem;
 }
 
 .newsletter > h2 {
   font-weight: 600;
-  font-family: 'FiraSans Light';
+  font-family: 'FiraSans Light', sans-serif;
   font-size: 1.25rem;
   margin-top: 16px;
   margin-bottom: 16px;
@@ -79,16 +71,12 @@ pre {
 
 pre,pre > code {
   background: rgb(258, 258, 258);
-  /*color: rgb(31, 31, 31);*/
   color: rgb(54, 54, 54);
-  font-family: 'Iosevka Term';
+  font-family: 'Iosevka Term', monospace;
 }
 
 a {
   text-decoration: none;
-  /*background: linear-gradient(45deg, rgb(82, 229, 209), rgb(77, 245, 222));*/
-  /*-webkit-background-clip: text;*/
-  /*-webkit-text-fill-color: transparent;*/
   color: rgb(82, 229, 209);
 }
 
@@ -198,7 +186,6 @@ li > span {
   }
 }
 
-/* mobile */
 @media screen and (max-width: 1024px) {
   .newsletter {
     display: flex;
