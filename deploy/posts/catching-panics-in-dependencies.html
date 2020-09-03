@@ -46,11 +46,13 @@
     <div class="layout">
       <div class="buffer"></div>
       <div class="container">
-        <h1>Catching panics in dependencies</h1>
-        <!--<hr>-->
-        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
-      <div>
-        <p>Having crates panic on you feels random because the specific conditions that
+        <div class="header">
+          <h1>Catching panics in dependencies</h1>
+          <h4>Ryan James Spencer</h4>
+          <hr style="width: 100%">
+        </div>
+        <div>
+          <p>Having crates panic on you feels random because the specific conditions that
 trigger the panic may not seem clear. Having external crates bring down your
 program is a pain, but there is currently no static analysis tool to help us
 easily find panics in external crates. You can get pretty close with fuzzing,
@@ -202,18 +204,18 @@ a &quot;corpus&quot; of data that has failed that it can try again on future run
 find it helpful to have the regressions as unit tests so there is a fast way to
 verify earlier failures aren't still happening.</p>
 
-      </div>
-      <!-- NEWSLETTER BEGIN -->
-      <div class="centered">
-        <hr>
-        <div class="newsletter">
-          <h2>Join the Newsletter</h2>
-          <div>
-            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- NEWSLETTER END -->
+        <!-- NEWSLETTER END -->
       </div>
       <div class="buffer"></div>
     </div>

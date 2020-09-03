@@ -46,11 +46,13 @@
     <div class="layout">
       <div class="buffer"></div>
       <div class="container">
-        <h1>How To Return An Iterator From a Function</h1>
-        <!--<hr>-->
-        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
-      <div>
-        <p>Iterators are handy ways to describe the potential for looping over data but
+        <div class="header">
+          <h1>How To Return An Iterator From a Function</h1>
+          <h4>Ryan James Spencer</h4>
+          <hr style="width: 100%">
+        </div>
+        <div>
+          <p>Iterators are handy ways to describe the potential for looping over data but
 without eagerly evaluating it. In other words, we can describe the shape of
 looping over things but we only do work when we call something like <code>collect</code>.
 The compiler can do several optimizations around iterators and each <code>collect</code>
@@ -111,18 +113,18 @@ fall back to the <code>Box</code> approach when that starts to fail or become in
 slow to compile. With time this restriction may go away as work on the compiler
 continues.</p>
 
-      </div>
-      <!-- NEWSLETTER BEGIN -->
-      <div class="centered">
-        <hr>
-        <div class="newsletter">
-          <h2>Join the Newsletter</h2>
-          <div>
-            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- NEWSLETTER END -->
+        <!-- NEWSLETTER END -->
       </div>
       <div class="buffer"></div>
     </div>

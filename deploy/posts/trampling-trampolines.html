@@ -46,11 +46,13 @@
     <div class="layout">
       <div class="buffer"></div>
       <div class="container">
-        <h1>Trampling Trampolines</h1>
-        <!--<hr>-->
-        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
-      <div>
-        <h2>Continuation Passing Style</h2>
+        <div class="header">
+          <h1>Trampling Trampolines</h1>
+          <h4>Ryan James Spencer</h4>
+          <hr style="width: 100%">
+        </div>
+        <div>
+          <h2>Continuation Passing Style</h2>
 <p>or CPS for short, is a way to ‘continue’ a function call by calling into another function. The simplest example would be:</p>
 <pre><code>function cps(x, return) {
   return(x);
@@ -138,18 +140,18 @@ let hof = trampoline(higherOrderFunc);
 <p>In mathematics it is just as important to reason about the types of objects we are dealing with as it is to reason about their values. The same is no different in programming. Even though you may say “I hack in a dynamically typed language, I don’t need to think about types”, the inverse is actually the truth! Hacking in a dynamically typed environment means juggling these notions around in your head rather than allowing the type checker make sense of the form of things for you.</p>
 <p><em>food for thought:</em> What we’ve done by tagging these values is upgrade a <code>union</code> type into a <code>discriminated union</code>. A <code>discriminated unions</code> is also sometimes known as a <code>sum</code> type. The power of passing around sum types is that we can reason about the cases in our code: recursion itself is similar to mathematical induction, and both are forms of breaking down data whereas their duals, co-recursion and co-induction, build up data. This is an important notion because it means that when we write things recursively in this form with inductive-like types (e.g. sums) we can ‘pattern match’ on their values and know something about each case. In the above examples we knew that <code>cont</code> always contained a function that took no arguments and returned another <code>cont</code> or <code>stop</code> tagged object. When we finally got a <code>stop</code> we knew we had our final result we could return, and since there were only two values we could be sure that those were the only two cases worth exploring (show exhaustivity checking as well as case analysis). As is common with FP, some languages give you the power of actually statically checking this; ensuring that you’ve considered all cases, whereas in others you’ll be left to discipline or libraries to replicate this, just like trampolines.</p>
 
-      </div>
-      <!-- NEWSLETTER BEGIN -->
-      <div class="centered">
-        <hr>
-        <div class="newsletter">
-          <h2>Join the Newsletter</h2>
-          <div>
-            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- NEWSLETTER END -->
+        <!-- NEWSLETTER END -->
       </div>
       <div class="buffer"></div>
     </div>

@@ -44,6 +44,12 @@ a {
   color: rgb(82, 229, 209);
 }
 
+img {
+  width: 70%;
+  display: block;
+  margin: 0 auto;
+}
+
 .social-icon {
   stroke: currentColor;
   fill: none;
@@ -56,10 +62,23 @@ a {
 
 .layout {
   display: flex;
+  border: 1px solid coral;
 }
 
 .container {
-  /*border: 1px solid red;*/
+  display: flex;
+  flex-direction: column;
+  border: 1px solid teal;
+}
+
+.container-third {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid teal;
+  width: 33vw;
+}
+
+.header {
   display: flex;
   flex-direction: column;
 }
@@ -82,4 +101,10 @@ a {
 
 .centered > hr {
   width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+  .mobile {
+    display: none;
+  }
 }

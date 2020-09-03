@@ -46,11 +46,13 @@
     <div class="layout">
       <div class="buffer"></div>
       <div class="container">
-        <h1>Why Are There Two Types of Strings In Rust?</h1>
-        <!--<hr>-->
-        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
-      <div>
-        <p>Understanding the distinction between <code>str</code> and <code>String</code> can be painful if you
+        <div class="header">
+          <h1>Why Are There Two Types of Strings In Rust?</h1>
+          <h4>Ryan James Spencer</h4>
+          <hr style="width: 100%">
+        </div>
+        <div>
+          <p>Understanding the distinction between <code>str</code> and <code>String</code> can be painful if you
 need to get something done in Rust <em>now</em>. Rust doesn't sugar coat a lot of the
 ugliness and complexity of string handling from developers like other languages
 do and therefore helps in avoiding critical mistakes in the future.</p>
@@ -106,18 +108,18 @@ and another dictating the length. In this sense casting between a slice and back
 is cheap in the sense that we do not copy any data besides creating a fat
 pointer which is possibly reused it when we borrow.</p>
 
-      </div>
-      <!-- NEWSLETTER BEGIN -->
-      <div class="centered">
-        <hr>
-        <div class="newsletter">
-          <h2>Join the Newsletter</h2>
-          <div>
-            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- NEWSLETTER END -->
+        <!-- NEWSLETTER END -->
       </div>
       <div class="buffer"></div>
     </div>

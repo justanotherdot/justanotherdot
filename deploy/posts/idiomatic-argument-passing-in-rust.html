@@ -46,11 +46,13 @@
     <div class="layout">
       <div class="buffer"></div>
       <div class="container">
-        <h1>Idiomatic Argument Passing in Rust</h1>
-        <!--<hr>-->
-        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
-      <div>
-        <p>If you're coming from a language that supports automatically taking references
+        <div class="header">
+          <h1>Idiomatic Argument Passing in Rust</h1>
+          <h4>Ryan James Spencer</h4>
+          <hr style="width: 100%">
+        </div>
+        <div>
+          <p>If you're coming from a language that supports automatically taking references
 to arguments you may wonder why Rust can't do the same. Rust is all about giving
 developers a better control of the memory layout of the data in their programs.
 Since Rust has the notion of ownership, we don't have to worry about large
@@ -125,18 +127,18 @@ borrow. Lastly, if you know the caller won't need the argument anymore or if it
 wants to return an owned type in exchange of the passed in argument(s), the
 function ought to take ownership.</p>
 
-      </div>
-      <!-- NEWSLETTER BEGIN -->
-      <div class="centered">
-        <hr>
-        <div class="newsletter">
-          <h2>Join the Newsletter</h2>
-          <div>
-            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- NEWSLETTER END -->
+        <!-- NEWSLETTER END -->
       </div>
       <div class="buffer"></div>
     </div>

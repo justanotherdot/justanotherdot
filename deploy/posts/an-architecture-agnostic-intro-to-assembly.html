@@ -46,11 +46,13 @@
     <div class="layout">
       <div class="buffer"></div>
       <div class="container">
-        <h1>An Architecture Agnostic Intro To Assembly</h1>
-        <!--<hr>-->
-        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
-      <div>
-        <p>Assembly is the last &quot;human readable&quot; frontier before reaching the representation of a program that a machine consumes. Times have certainly changed; the PDP-11 had only <em>16 instructions</em> in total, whereas the <a href="https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf">Intel x86_64 and x86 manual is well over 2000 pages</a>. You may not ever need to write assembly yourself, but if you ever want to understand what comes out of a compiler, you'll need to know how assembly works. Due to the staggering complexity of modern processors, learning assembly for different architectures could take forever to grok in their entirety. Alas, there's no need to know every nuance of each platform's assembly language; there's enough generalities between Instruction Set Architectures, or ISAs, to lead you to more research on a case-by-case basis.</p>
+        <div class="header">
+          <h1>An Architecture Agnostic Intro To Assembly</h1>
+          <h4>Ryan James Spencer</h4>
+          <hr style="width: 100%">
+        </div>
+        <div>
+          <p>Assembly is the last &quot;human readable&quot; frontier before reaching the representation of a program that a machine consumes. Times have certainly changed; the PDP-11 had only <em>16 instructions</em> in total, whereas the <a href="https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf">Intel x86_64 and x86 manual is well over 2000 pages</a>. You may not ever need to write assembly yourself, but if you ever want to understand what comes out of a compiler, you'll need to know how assembly works. Due to the staggering complexity of modern processors, learning assembly for different architectures could take forever to grok in their entirety. Alas, there's no need to know every nuance of each platform's assembly language; there's enough generalities between Instruction Set Architectures, or ISAs, to lead you to more research on a case-by-case basis.</p>
 <p>No matter the ISA, the instructions they offer tend to fall into three primary groups.</p>
 <p>Some terminology first:</p>
 <ul>
@@ -85,18 +87,18 @@
 <h2>Where to next?</h2>
 <p>You know the basic classes of instructions, now it's time to start dumping out assembly and sifting through it! It will seem like nonsense at first and you will need to explore specific terminology and conventions, but following small examples first can give you a sense of direction. If you need a guide on how to dump assembly for your Rust programs or Rust examples, <a href="https://www.justanotherdot.com/posts/magnifying-glasses-for-rust-assembly.html">you can read my article on the subject</a>. Like any kind of programming it takes time and practice, but with experience you'll slowly get comfortable looking at and deciphering assembly. Picking apart assembly is yet another part of your performance toolkit. For me, when I encounter something I don't understand, I try to put it into a classification above to better know what to expect the instruction to do. As I mentioned, I would recommend generating small examples and watching the output. When you feel comfortable that you understand what is going on, try another small example. When you've got a good understanding of small examples ,try something bigger. Usually when I look at assembly for a program, I am looking one function at a time. It can still be daunting if lots of other functions have been inlined into the code, but you can always break pieces of logic up, granted the generated assembly code doesn't change, if it helps you better understand.</p>
 
-      </div>
-      <!-- NEWSLETTER BEGIN -->
-      <div class="centered">
-        <hr>
-        <div class="newsletter">
-          <h2>Join the Newsletter</h2>
-          <div>
-            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- NEWSLETTER END -->
+        <!-- NEWSLETTER END -->
       </div>
       <div class="buffer"></div>
     </div>

@@ -46,11 +46,13 @@
     <div class="layout">
       <div class="buffer"></div>
       <div class="container">
-        <h1>Avoid Build Cache Bloat By Sweeping Away Artifacts</h1>
-        <!--<hr>-->
-        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
-      <div>
-        <p>Incremental builds can get huge in Rust and there is no builtin way for them to get pruned over time. This can be particularly important for developers or build bots working with a limited sized disk drive. I have seen some build caches on projects I work on in production into the range of several gigabytes and this is the size <em>after</em> compression!</p>
+        <div class="header">
+          <h1>Avoid Build Cache Bloat By Sweeping Away Artifacts</h1>
+          <h4>Ryan James Spencer</h4>
+          <hr style="width: 100%">
+        </div>
+        <div>
+          <p>Incremental builds can get huge in Rust and there is no builtin way for them to get pruned over time. This can be particularly important for developers or build bots working with a limited sized disk drive. I have seen some build caches on projects I work on in production into the range of several gigabytes and this is the size <em>after</em> compression!</p>
 <p>The easiest way to keep these projects clean is to <a href="https://github.com/holmgr/cargo-sweep">instrument <code>cargo-sweep</code> to run regularly</a>. You can dump the command into a crontab to run at regular periods. For build bots it can pay to pull down a shared cache or caches and clean them at regular intervals, either as part of preexisting steps or as dedicated steps.</p>
 <p>We can tell the crontab to run a script and stuff our logic in the script; this way we don't have to change the crontab if we want to change the behavior. Our script will run <code>cargo sweep</code> recursively across all our projects, pruning objects older than thirty days.</p>
 <pre><code class="language-bash">#/bin/sh -eux
@@ -93,18 +95,18 @@ done
 </code></pre>
 <p>This script will run on the first of every month. The best part of dumping these sorts of things into scripts is that they can easily be reused by name, rather than lots of copy-pasting. In particular, we can now take these scripts and have a job run it over our build caches like we mentioned before as a step in a pipeline or even as a dedicated monthly schedule build that will clean out old cruft that we are unlikely to need again. Reducing the size of your build caches means the total time taken to pull down the cache and unpack it is less, speeding up overall build times.</p>
 
-      </div>
-      <!-- NEWSLETTER BEGIN -->
-      <div class="centered">
-        <hr>
-        <div class="newsletter">
-          <h2>Join the Newsletter</h2>
-          <div>
-            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- NEWSLETTER END -->
+        <!-- NEWSLETTER END -->
       </div>
       <div class="buffer"></div>
     </div>

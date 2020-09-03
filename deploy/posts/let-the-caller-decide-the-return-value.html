@@ -46,11 +46,13 @@
     <div class="layout">
       <div class="buffer"></div>
       <div class="container">
-        <h1>Let The Caller Decide The Return Value!</h1>
-        <!--<hr>-->
-        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
-      <div>
-        <p>Changing function interfaces to get different return values is a chore and can weigh down refactoring sessions. There is a simpler way to &quot;slot in&quot; different functionality based on types and traits!</p>
+        <div class="header">
+          <h1>Let The Caller Decide The Return Value!</h1>
+          <h4>Ryan James Spencer</h4>
+          <hr style="width: 100%">
+        </div>
+        <div>
+          <p>Changing function interfaces to get different return values is a chore and can weigh down refactoring sessions. There is a simpler way to &quot;slot in&quot; different functionality based on types and traits!</p>
 <p>If you've used Rust long enough you are likely aware of the pattern with iterators where you can <code>collect</code> into different collections based on types. Iterators themselves don't have to keep around all of these definitions: they are implemented <a href="https://doc.rust-lang.org/std/iter/trait.FromIterator.html">via a trait named <code>FromIterator</code></a>. This trait uses a trick often returned to as &quot;return type polymorphism&quot; to accomplish its task; the trait is generic and only requires one method, <code>from_iter</code>, to be implemented. In fact, <code>collect</code> is just a <a href="https://doc.rust-lang.org/src/core/iter/traits/iterator.rs.html#1664-1672">thin wrapper around this function</a>!</p>
 <pre><code class="language-rust">fn collect&lt;B: FromIterator&lt;Self::Item&gt;&gt;(self) -&gt; B
     where Self: Sized,
@@ -111,18 +113,18 @@ fn main() {
 <li>Usually some final type annotation or type inference that will trigger the right implementation to be picked depending on context</li>
 </ul>
 
-      </div>
-      <!-- NEWSLETTER BEGIN -->
-      <div class="centered">
-        <hr>
-        <div class="newsletter">
-          <h2>Join the Newsletter</h2>
-          <div>
-            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- NEWSLETTER END -->
+        <!-- NEWSLETTER END -->
       </div>
       <div class="buffer"></div>
     </div>

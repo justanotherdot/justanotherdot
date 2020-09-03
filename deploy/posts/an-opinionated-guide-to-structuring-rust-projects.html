@@ -46,11 +46,13 @@
     <div class="layout">
       <div class="buffer"></div>
       <div class="container">
-        <h1>An Opinionated Guide To Structuring Rust Projects</h1>
-        <!--<hr>-->
-        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
-      <div>
-        <p>Cargo's initial project layout is good for bootstrapping a project but as time
+        <div class="header">
+          <h1>An Opinionated Guide To Structuring Rust Projects</h1>
+          <h4>Ryan James Spencer</h4>
+          <hr style="width: 100%">
+        </div>
+        <div>
+          <p>Cargo's initial project layout is good for bootstrapping a project but as time
 goes on there is a growing need to automate chores, wrestle with compile times,
 and increase discoverability for maintainers and contributors. I've previously
 written about <a href="https://www.justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html">how I personally orchestrate chores on a Rust
@@ -124,18 +126,18 @@ can find the gist
 and can invoke it with <code>x-compile-test</code>. You can also narrow down which targets
 you want to use with a regex by specifying <code>FILTER=x86_64 x-compile-test</code>.</p>
 
-      </div>
-      <!-- NEWSLETTER BEGIN -->
-      <div class="centered">
-        <hr>
-        <div class="newsletter">
-          <h2>Join the Newsletter</h2>
-          <div>
-            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
           </div>
         </div>
-      </div>
-      <!-- NEWSLETTER END -->
+        <!-- NEWSLETTER END -->
       </div>
       <div class="buffer"></div>
     </div>
