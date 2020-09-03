@@ -14,14 +14,21 @@
 
 @font-face {
   font-family: 'FiraSans';
-  src: url('../assets/FiraSans-Regular.ttf');
+  src: url('../assets/fonts/FiraSans-Regular.ttf');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'FiraSans SemiBold';
-  src: url('../assets/FiraSans-SemiBold.ttf');
+  src: url('../assets/fonts/FiraSans-SemiBold.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FiraSans Light';
+  src: url('../assets/fonts/FiraSans-Light.ttf');
   font-weight: normal;
   font-style: normal;
 }
@@ -41,6 +48,18 @@
     font-weight: 600;
     font-family: 'FiraSans SemiBold';
     font-size: 2rem;
+  }
+
+  .newsletter > h2 {
+    font-weight: 600;
+    font-family: 'FiraSans Light';
+    font-size: 1.25rem;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  hr {
+    background-color: rgb(54, 54, 54);
   }
 
   .subtitle {
@@ -121,7 +140,7 @@
   }
 
   .container-three-fifths {
-    width: 60%;
+    width: 50%;
   }
 
   .container-half {
