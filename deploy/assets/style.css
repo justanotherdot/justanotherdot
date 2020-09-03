@@ -75,6 +75,7 @@
   pre {
     padding: 25px;
     border: 1px solid black;
+    overflow-y: hidden;
   }
 
   pre,pre > code {
@@ -93,7 +94,7 @@
   }
 
   img {
-    width: 70%;
+    width: 85%;
     display: block;
     margin: 0 auto;
   }
