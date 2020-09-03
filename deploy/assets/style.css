@@ -1,11 +1,3 @@
-
-@font-face {
-  font-family: 'Iosevka Web';
-  src: url('../assets/fonts/iosevka-regular.ttf');
-  font-weight: normal;
-  font-style: normal;
-}
-
 @font-face {
   font-family: 'Iosevka Term';
   src: url('../assets/fonts/iosevka-term-regular.ttf');
@@ -13,98 +5,151 @@
   font-style: normal;
 }
 
-* {
-  background: rgb(258, 258, 258);
-  color: rgb(31, 31, 31);
-  font-family: 'Iosevka Web';
-  font-weight: 400;
+@font-face {
+  font-family: 'FiraSans';
+  src: url('../assets/FiraSans-Regular.ttf');
+  font-weight: normal;
+  font-style: normal;
 }
 
-button > div, button > span {
-  color: rgb(258, 258, 258);
-  background: transparent;
-}
-
-pre {
-  padding: 25px;
-  border: 1px solid black;
-}
-
-pre,pre > code {
-  background: rgb(258, 258, 258);
-  color: rgb(31, 31, 31);
-  font-family: 'Iosevka Term';
-}
-
-a {
-  text-decoration: none;
-  /*background: linear-gradient(45deg, rgb(82, 229, 209), rgb(77, 245, 222));*/
-  /*-webkit-background-clip: text;*/
-  /*-webkit-text-fill-color: transparent;*/
-  color: rgb(82, 229, 209);
-}
-
-img {
-  width: 70%;
-  display: block;
-  margin: 0 auto;
-}
-
-.social-icon {
-  stroke: currentColor;
-  fill: none;
-  position: relative;
-  top: 2px;
-  color: #000;
-  width: 24px;
-  height: 24px;
-}
-
-.layout {
-  display: flex;
-  border: 1px solid coral;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid teal;
-}
-
-.container-third {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid teal;
-  width: 33vw;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-}
-
-.buffer {
-  /*border: 1px solid blue;*/
-  width: 2500px;
-}
-
-.newsletter {
-  width: 500px;
-}
-
-.centered {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.centered > hr {
-  width: 100%;
+@font-face {
+  font-family: 'FiraSans SemiBold';
+  src: url('../assets/FiraSans-SemiBold.ttf');
+  font-weight: normal;
+  font-style: normal;
 }
 
 @media screen and (min-width: 600px) {
-  .mobile {
-    display: none;
+  * {
+    background: rgb(258, 258, 258);
+    /*color: rgb(31, 31, 31);*/
+    color: rgb(54, 54, 54);
+    font-weight: 400;
+    font-family: 'FiraSans';
+    font-size: 16px;
+    font-height: 1.25rem;
   }
+
+  h1,.title {
+    font-weight: 600;
+    font-family: 'FiraSans SemiBold';
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    font-color: rgb(74, 74, 74);
+  }
+
+  button > div, button > span {
+    color: rgb(258, 258, 258);
+    background: transparent;
+  }
+
+  pre {
+    padding: 25px;
+    border: 1px solid black;
+  }
+
+  pre,pre > code {
+    background: rgb(258, 258, 258);
+    /*color: rgb(31, 31, 31);*/
+    color: rgb(54, 54, 54);
+    font-family: 'Iosevka Term';
+  }
+
+  a {
+    text-decoration: none;
+    /*background: linear-gradient(45deg, rgb(82, 229, 209), rgb(77, 245, 222));*/
+    /*-webkit-background-clip: text;*/
+    /*-webkit-text-fill-color: transparent;*/
+    color: rgb(82, 229, 209);
+  }
+
+  img {
+    width: 70%;
+    display: block;
+    margin: 0 auto;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  .social-icon {
+    stroke: currentColor;
+    fill: none;
+    position: relative;
+    top: 2px;
+    color: rgb(54, 54, 54);
+    width: 24px;
+    height: 24px;
+    padding: 12px;
+  }
+
+  .layout {
+    display: flex;
+    padding: 1rem 1.5rem;
+  }
+
+  li > span {
+    font-size: .75rem;
+  }
+
+  ul {
+    margin-top: 2.75em;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container-third {
+    width: 33vw;
+  }
+
+  .container-three-fifths {
+    width: 60%;
+  }
+
+  .container-half {
+    width: 50%;
+  }
+
+  .container-quarter {
+    width: 25%;
+  }
+
+  .container-fifth {
+    width: 20%;
+  }
+
+  .container-fill {
+    flex-basis: full;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .newsletter {
+    width: 500px;
+  }
+
+  .centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .centered > hr {
+    width: 100%;
+  }
+}
+
+/* mobile */
+@media screen and (max-width: 600px) {
 }
