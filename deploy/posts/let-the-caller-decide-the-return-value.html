@@ -28,19 +28,8 @@
     <!-- OPEN GRAPH END -->
 
     <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
     <title>Let The Caller Decide The Return Value! &#8226; Ryan James Spencer</title>
-    <style>
-      .social-icon {
-        stroke: currentColor;
-        fill: none;
-        position: relative;
-        top: 2px;
-        color: #000;
-        width: 24px;
-        height: 24px;
-      }
-    </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
@@ -54,28 +43,15 @@
 
   </head>
   <body>
-    <section style="background-image:url(../assets/images/let-the-caller-decide-the-return-value.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/let-the-caller-decide-the-return-value.jpg" class="hero is-fullheight">
-      <div class="hero-body">
-        <div class="container">
-          <div class="columns">
-            <div class="column is-one-quarter"></div>
-            <div class="column">
-              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Let The Caller Decide The Return Value!</h1>
-              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>
-            </div>
-            <div class="column is-one-quarter"></div>
-          </div>
-        <div>
-      <div>
-    </section>
-    <section class="section">
-      <div class="container">
-        <div class="columns">
-          <div class="column is-one-quarter"></div>
-          <div class="column is-half">
-            <!--<p class="has-text-weight-bold">August 17 2020,  8:46AM</p>-->
-            <div class="content is-medium">
-              <p>Changing function interfaces to get different return values is a chore and can weigh down refactoring sessions. There is a simpler way to &quot;slot in&quot; different functionality based on types and traits!</p>
+    <div class="layout">
+      <div class="container container-quarter"></div>
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Let The Caller Decide The Return Value!</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          <p>Changing function interfaces to get different return values is a chore and can weigh down refactoring sessions. There is a simpler way to &quot;slot in&quot; different functionality based on types and traits!</p>
 <p>If you've used Rust long enough you are likely aware of the pattern with iterators where you can <code>collect</code> into different collections based on types. Iterators themselves don't have to keep around all of these definitions: they are implemented <a href="https://doc.rust-lang.org/std/iter/trait.FromIterator.html">via a trait named <code>FromIterator</code></a>. This trait uses a trick often returned to as &quot;return type polymorphism&quot; to accomplish its task; the trait is generic and only requires one method, <code>from_iter</code>, to be implemented. In fact, <code>collect</code> is just a <a href="https://doc.rust-lang.org/src/core/iter/traits/iterator.rs.html#1664-1672">thin wrapper around this function</a>!</p>
 <pre><code class="language-rust">fn collect&lt;B: FromIterator&lt;Self::Item&gt;&gt;(self) -&gt; B
     where Self: Sized,
@@ -129,28 +105,27 @@ fn main() {
 <p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=71b87a2671cc5723b5b164842ff61e85">playground</a>.</p>
 <p>The beauty of this approach is that context can dictate which function will run. Note that I've included two approaches to showing the same thing; one using the trait's associated function syntax and the other as part of the type annotation on a <code>let</code>. I could have just as easily wrapped this function and specified concrete types on the function signature to get the same result.</p>
 <p>In this example users of the trait can decide if the file ought to be returned &quot;raw&quot;, wrapped for buffered access, or put in a cursor for seeking around the file's contents. This works because we have defined the trait generically, and therefore are really defining implementations for several different traits that all have the same minimal requirements. In this specific case we cannot write a generic implementation for <code>Open</code> for all <code>T</code> because there's no way for us to write a function that could return all possible <code>T</code>. That said, this trick still works even if you are not specifying the return type as part of the function calls, so long as you specify which trait implementation you want to select.</p>
-<p>In order to use return type polymopshim you need:</p>
+<p>In order to use return type polymorphism you need:</p>
 <ul>
 <li>A generic trait, usually with a function or functions that use the generic type in the return value</li>
 <li>Implementations of the concrete versions of the return type</li>
 <li>Usually some final type annotation or type inference that will trigger the right implementation to be picked depending on context</li>
 </ul>
 
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
             </div>
-            <hr>
-            <!-- MOBILE NEWSLETTER BEGIN -->
-            <div class="columns is-centered">
-              <div class="column is-10">
-                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
-                <div>
-                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
-                </div>
-              </div>
-            </div>
-            <!-- MOBILE NEWSLETTER END -->
           </div>
         </div>
+        <!-- NEWSLETTER END -->
       </div>
-    </section>
+      <div class="container container-quarter"></div>
+    </div>
   </body>
 </html>

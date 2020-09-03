@@ -28,19 +28,8 @@
     <!-- OPEN GRAPH END -->
 
     <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
     <title>Avoid Build Cache Bloat By Sweeping Away Artifacts &#8226; Ryan James Spencer</title>
-    <style>
-      .social-icon {
-        stroke: currentColor;
-        fill: none;
-        position: relative;
-        top: 2px;
-        color: #000;
-        width: 24px;
-        height: 24px;
-      }
-    </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
@@ -54,28 +43,15 @@
 
   </head>
   <body>
-    <section style="background-image:url(../assets/images/avoid-build-cache-bloat-by-sweeping-away-artifacts.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/avoid-build-cache-bloat-by-sweeping-away-artifacts.jpg" class="hero is-fullheight">
-      <div class="hero-body">
-        <div class="container">
-          <div class="columns">
-            <div class="column is-one-quarter"></div>
-            <div class="column">
-              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Avoid Build Cache Bloat By Sweeping Away Artifacts</h1>
-              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>
-            </div>
-            <div class="column is-one-quarter"></div>
-          </div>
-        <div>
-      <div>
-    </section>
-    <section class="section">
-      <div class="container">
-        <div class="columns">
-          <div class="column is-one-quarter"></div>
-          <div class="column is-half">
-            <!--<p class="has-text-weight-bold">August 14 2020, 11:08AM</p>-->
-            <div class="content is-medium">
-              <p>Incremental builds can get huge in Rust and there is no builtin way for them to get pruned over time. This can be particularly important for developers or build bots working with a limited sized disk drive. I have seen some build caches on projects I work on in production into the range of several gigabytes and this is the size <em>after</em> compression!</p>
+    <div class="layout">
+      <div class="container container-quarter"></div>
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Avoid Build Cache Bloat By Sweeping Away Artifacts</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          <p>Incremental builds can get huge in Rust and there is no builtin way for them to get pruned over time. This can be particularly important for developers or build bots working with a limited sized disk drive. I have seen some build caches on projects I work on in production into the range of several gigabytes and this is the size <em>after</em> compression!</p>
 <p>The easiest way to keep these projects clean is to <a href="https://github.com/holmgr/cargo-sweep">instrument <code>cargo-sweep</code> to run regularly</a>. You can dump the command into a crontab to run at regular periods. For build bots it can pay to pull down a shared cache or caches and clean them at regular intervals, either as part of preexisting steps or as dedicated steps.</p>
 <p>We can tell the crontab to run a script and stuff our logic in the script; this way we don't have to change the crontab if we want to change the behavior. Our script will run <code>cargo sweep</code> recursively across all our projects, pruning objects older than thirty days.</p>
 <pre><code class="language-bash">#/bin/sh -eux
@@ -118,21 +94,20 @@ done
 </code></pre>
 <p>This script will run on the first of every month. The best part of dumping these sorts of things into scripts is that they can easily be reused by name, rather than lots of copy-pasting. In particular, we can now take these scripts and have a job run it over our build caches like we mentioned before as a step in a pipeline or even as a dedicated monthly schedule build that will clean out old cruft that we are unlikely to need again. Reducing the size of your build caches means the total time taken to pull down the cache and unpack it is less, speeding up overall build times.</p>
 
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
             </div>
-            <hr>
-            <!-- MOBILE NEWSLETTER BEGIN -->
-            <div class="columns is-centered">
-              <div class="column is-10">
-                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
-                <div>
-                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
-                </div>
-              </div>
-            </div>
-            <!-- MOBILE NEWSLETTER END -->
           </div>
         </div>
+        <!-- NEWSLETTER END -->
       </div>
-    </section>
+      <div class="container container-quarter"></div>
+    </div>
   </body>
 </html>

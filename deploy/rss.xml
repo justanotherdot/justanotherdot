@@ -71,7 +71,7 @@ fn main() {
 <p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=71b87a2671cc5723b5b164842ff61e85">playground</a>.</p>
 <p>The beauty of this approach is that context can dictate which function will run. Note that I've included two approaches to showing the same thing; one using the trait's associated function syntax and the other as part of the type annotation on a <code>let</code>. I could have just as easily wrapped this function and specified concrete types on the function signature to get the same result.</p>
 <p>In this example users of the trait can decide if the file ought to be returned &quot;raw&quot;, wrapped for buffered access, or put in a cursor for seeking around the file's contents. This works because we have defined the trait generically, and therefore are really defining implementations for several different traits that all have the same minimal requirements. In this specific case we cannot write a generic implementation for <code>Open</code> for all <code>T</code> because there's no way for us to write a function that could return all possible <code>T</code>. That said, this trick still works even if you are not specifying the return type as part of the function calls, so long as you specify which trait implementation you want to select.</p>
-<p>In order to use return type polymopshim you need:</p>
+<p>In order to use return type polymorphism you need:</p>
 <ul>
 <li>A generic trait, usually with a function or functions that use the generic type in the return value</li>
 <li>Implementations of the concrete versions of the return type</li>

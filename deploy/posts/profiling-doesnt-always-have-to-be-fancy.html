@@ -28,19 +28,8 @@
     <!-- OPEN GRAPH END -->
 
     <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
     <title>Profiling Doesn't Always Have To Be Fancy &#8226; Ryan James Spencer</title>
-    <style>
-      .social-icon {
-        stroke: currentColor;
-        fill: none;
-        position: relative;
-        top: 2px;
-        color: #000;
-        width: 24px;
-        height: 24px;
-      }
-    </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
@@ -54,28 +43,15 @@
 
   </head>
   <body>
-    <section style="background-image:url(../assets/images/profiling-doesnt-always-have-to-be-fancy.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/profiling-doesnt-always-have-to-be-fancy.jpg" class="hero is-fullheight">
-      <div class="hero-body">
-        <div class="container">
-          <div class="columns">
-            <div class="column is-one-quarter"></div>
-            <div class="column">
-              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Profiling Doesn't Always Have To Be Fancy</h1>
-              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>
-            </div>
-            <div class="column is-one-quarter"></div>
-          </div>
-        <div>
-      <div>
-    </section>
-    <section class="section">
-      <div class="container">
-        <div class="columns">
-          <div class="column is-one-quarter"></div>
-          <div class="column is-half">
-            <!--<p class="has-text-weight-bold">August 14 2020,  9:30AM</p>-->
-            <div class="content is-medium">
-              <p>Not all profiling experiences are alike. Some are filled with friction around the tooling. Others are around doubt about whether or not intermediate layers are inflating or shifting numbers in unfair ways. Perhaps you work in a security or data-compliance critical environment and all you want is numbers on what is running in production without having to breach agreements by downloading live data to your work environment. Benchmarks are fantastic for tracking numbers of common or pathological cases over time, but they may still be unrealistic in comparison to the undiscovered cases in prod. When I find that I can't easily wedge in a profile, I get a bit sad and then turn to crude solutions.</p>
+    <div class="layout">
+      <div class="container container-quarter"></div>
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Profiling Doesn't Always Have To Be Fancy</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          <p>Not all profiling experiences are alike. Some are filled with friction around the tooling. Others are around doubt about whether or not intermediate layers are inflating or shifting numbers in unfair ways. Perhaps you work in a security or data-compliance critical environment and all you want is numbers on what is running in production without having to breach agreements by downloading live data to your work environment. Benchmarks are fantastic for tracking numbers of common or pathological cases over time, but they may still be unrealistic in comparison to the undiscovered cases in prod. When I find that I can't easily wedge in a profile, I get a bit sad and then turn to crude solutions.</p>
 <p>Admittedly, performance counters with tools like <code>perf</code> can far better track the performance of resource usage rather than wall times. A wall time may include all the time taken during a context switch out to other running processes, for example, but wall times are important because they are the latency humans feel when they use a user interface to a system or tool.</p>
 <p>The simplest way to crudely examine timings is to do what benchmark tooling does; record the wall time before and after the code runs. Benchmarks can track different measures of &quot;center&quot; and calculate statistics around outliers and deviations from these markers of center, but ultimately they take two times and output the difference. I want to reduce friction as much as possible, and as such I'll write this as a macro to do the code generation around the value and still return the value. <a href="https://doc.rust-lang.org/src/std/macros.rs.html#285-305">This is exactly what <code>dbg</code> does</a>.</p>
 <pre><code class="language-rust">macro_rules! time {
@@ -143,21 +119,20 @@ fn index() -&gt; Result&lt;Json&lt;Resource&gt;, HttpError&gt; {
 <p>This change uses the repeat pattern matches of macros to consistently repeat a pattern for as many times as it is mentioned. what this pattern says is &quot;there may be several (thus the + sign) comma separated expressions, followed finally by an optional (thus the ? sign) comma&quot;. then, when you use the plus sign in the body, it will repeat the same number of times as the pattern was found. The body says &quot;do the time macro on each captured value for as many times the patterns were captured and put them all in a tuple that fits them, followed by a comma just in case there are is only one value passed and this pattern fires&quot;, at least that's how I read that last comma.</p>
 <p>You can push this idea further if you want by <a href="https://gist.github.com/justanotherdot/fe4bf2024d2c13e3eace4f8d6730c3d1">writing a benchmark macro</a> that did the timing across runs, perhaps including mean average and standard devation and maybe even warmups. The point is not to get lost in recreating a benchmark or profiling suite inside of macros but to find ways to unobtrusively provide results in such a way that you can quickly get relative sizes between elements in a system or program. Also, be aware that timings can blow out if you are timing the code that also has timing code in it. Ideally you time independent segments of a function.</p>
 
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
             </div>
-            <hr>
-            <!-- MOBILE NEWSLETTER BEGIN -->
-            <div class="columns is-centered">
-              <div class="column is-10">
-                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
-                <div>
-                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
-                </div>
-              </div>
-            </div>
-            <!-- MOBILE NEWSLETTER END -->
           </div>
         </div>
+        <!-- NEWSLETTER END -->
       </div>
-    </section>
+      <div class="container container-quarter"></div>
+    </div>
   </body>
 </html>
