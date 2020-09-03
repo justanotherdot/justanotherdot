@@ -80,6 +80,11 @@ a {
   color: rgb(82, 229, 209);
 }
 
+a:hover {
+  text-decoration: none;
+  color: rgb(62, 209, 189);
+}
+
 img {
   width: 85%;
   display: block;
