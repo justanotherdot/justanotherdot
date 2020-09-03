@@ -1,4 +1,11 @@
 @font-face {
+  font-family: 'Iosevka Web';
+  src: url('../assets/fonts/iosevka-regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Iosevka Term';
   src: url('../assets/fonts/iosevka-term-regular.ttf');
   font-weight: normal;
@@ -89,15 +96,19 @@
 
   .layout {
     display: flex;
-    padding: 1rem 1.5rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .content {
+    margin-top: 15px;
+  }
+
+  h1,h2,h3,h4,h5 {
+    margin: 0;
   }
 
   li > span {
     font-size: .75rem;
-  }
-
-  ul {
-    margin-top: 2.75em;
   }
 
   .container {

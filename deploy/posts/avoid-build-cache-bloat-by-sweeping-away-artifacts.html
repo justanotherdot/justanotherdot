@@ -48,10 +48,9 @@
       <div class="container container-three-fifths">
         <div class="header">
           <h1>Avoid Build Cache Bloat By Sweeping Away Artifacts</h1>
-          <h3>Ryan James Spencer</h3>
-          <hr style="width: 100%">
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
         </div>
-        <div>
+        <div class="content">
           <p>Incremental builds can get huge in Rust and there is no builtin way for them to get pruned over time. This can be particularly important for developers or build bots working with a limited sized disk drive. I have seen some build caches on projects I work on in production into the range of several gigabytes and this is the size <em>after</em> compression!</p>
 <p>The easiest way to keep these projects clean is to <a href="https://github.com/holmgr/cargo-sweep">instrument <code>cargo-sweep</code> to run regularly</a>. You can dump the command into a crontab to run at regular periods. For build bots it can pay to pull down a shared cache or caches and clean them at regular intervals, either as part of preexisting steps or as dedicated steps.</p>
 <p>We can tell the crontab to run a script and stuff our logic in the script; this way we don't have to change the crontab if we want to change the behavior. Our script will run <code>cargo sweep</code> recursively across all our projects, pruning objects older than thirty days.</p>
