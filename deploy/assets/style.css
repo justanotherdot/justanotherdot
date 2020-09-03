@@ -1,0 +1,85 @@
+
+@font-face {
+  font-family: 'Iosevka Web';
+  src: url('../assets/fonts/iosevka-regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Iosevka Term';
+  src: url('../assets/fonts/iosevka-term-regular.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  background: rgb(258, 258, 258);
+  color: rgb(31, 31, 31);
+  font-family: 'Iosevka Web';
+  font-weight: 400;
+}
+
+button > div, button > span {
+  color: rgb(258, 258, 258);
+  background: transparent;
+}
+
+pre {
+  padding: 25px;
+  border: 1px solid black;
+}
+
+pre,pre > code {
+  background: rgb(258, 258, 258);
+  color: rgb(31, 31, 31);
+  font-family: 'Iosevka Term';
+}
+
+a {
+  text-decoration: none;
+  /*background: linear-gradient(45deg, rgb(82, 229, 209), rgb(77, 245, 222));*/
+  /*-webkit-background-clip: text;*/
+  /*-webkit-text-fill-color: transparent;*/
+  color: rgb(82, 229, 209);
+}
+
+.social-icon {
+  stroke: currentColor;
+  fill: none;
+  position: relative;
+  top: 2px;
+  color: #000;
+  width: 24px;
+  height: 24px;
+}
+
+.layout {
+  display: flex;
+}
+
+.container {
+  /*border: 1px solid red;*/
+  display: flex;
+  flex-direction: column;
+}
+
+.buffer {
+  /*border: 1px solid blue;*/
+  width: 2500px;
+}
+
+.newsletter {
+  width: 500px;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.centered > hr {
+  width: 100%;
+}

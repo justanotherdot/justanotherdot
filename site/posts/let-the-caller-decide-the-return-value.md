@@ -74,7 +74,7 @@ The beauty of this approach is that context can dictate which function will run.
 
 In this example users of the trait can decide if the file ought to be returned "raw", wrapped for buffered access, or put in a cursor for seeking around the file's contents. This works because we have defined the trait generically, and therefore are really defining implementations for several different traits that all have the same minimal requirements. In this specific case we cannot write a generic implementation for `Open` for all `T` because there's no way for us to write a function that could return all possible `T`. That said, this trick still works even if you are not specifying the return type as part of the function calls, so long as you specify which trait implementation you want to select.
 
-In order to use return type polymopshim you need:
+In order to use return type polymorphism you need:
 
 - A generic trait, usually with a function or functions that use the generic type in the return value
 - Implementations of the concrete versions of the return type

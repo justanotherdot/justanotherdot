@@ -28,19 +28,8 @@
     <!-- OPEN GRAPH END -->
 
     <link rel="shortcut icon" href="/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="../assets/bulma.min.css" />
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
     <title>Making Friends With Caches &#8226; Ryan James Spencer</title>
-    <style>
-      .social-icon {
-        stroke: currentColor;
-        fill: none;
-        position: relative;
-        top: 2px;
-        color: #000;
-        width: 24px;
-        height: 24px;
-      }
-    </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
@@ -54,28 +43,14 @@
 
   </head>
   <body>
-    <section style="background-image:url(../assets/images/making-friends-with-caches.jpg);background-size:cover;" data-src="https://justanotherdot.com/assets/images/making-friends-with-caches.jpg" class="hero is-fullheight">
-      <div class="hero-body">
-        <div class="container">
-          <div class="columns">
-            <div class="column is-one-quarter"></div>
-            <div class="column">
-              <h1 class="title has-text-white-bis" style="text-shadow: 0px 4px 24px #000000">Making Friends With Caches</h1>
-              <h2 class="subtitle has-text-white-bis" style="text-shadow: 0px 4px 24px #000000"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>
-            </div>
-            <div class="column is-one-quarter"></div>
-          </div>
-        <div>
-      <div>
-    </section>
-    <section class="section">
+    <div class="layout">
+      <div class="buffer"></div>
       <div class="container">
-        <div class="columns">
-          <div class="column is-one-quarter"></div>
-          <div class="column is-half">
-            <!--<p class="has-text-weight-bold">July 31 2020,  8:34AM</p>-->
-            <div class="content is-medium">
-              <p>If you lived in a village with only one mode of transport, say, a single car per family, then there would be resources that take longer to get at then others. On a computer, the same is true, where the village is the CPU, and the resources are things where data lives or is communicated over, such as a disk drive or a network socket. Things in your own home are quick to fetch; these would be the registers of a CPU. Some things are still quick for you to fetch but you don't keep directly inside your home. Perhaps you have a few of these sheds so you can fit various things, like your garage and a work shed. When the shed and garage don't suffice and you need new supplies, you travel to the store to purchase supplies, bringing them home with you to put in the shed or garage or whatever outdoor storage you own.</p>
+        <h1>Making Friends With Caches</h1>
+        <!--<hr>-->
+        <!--<h2 class="subtitle has-text-white-bis"><a href="/" class="has-text-white-bis">Ryan James Spencer</a></h2>-->
+      <div>
+        <p>If you lived in a village with only one mode of transport, say, a single car per family, then there would be resources that take longer to get at then others. On a computer, the same is true, where the village is the CPU, and the resources are things where data lives or is communicated over, such as a disk drive or a network socket. Things in your own home are quick to fetch; these would be the registers of a CPU. Some things are still quick for you to fetch but you don't keep directly inside your home. Perhaps you have a few of these sheds so you can fit various things, like your garage and a work shed. When the shed and garage don't suffice and you need new supplies, you travel to the store to purchase supplies, bringing them home with you to put in the shed or garage or whatever outdoor storage you own.</p>
 <p>All of this indirectly describes a computer <strong>memory hierarchy</strong> and the idea behind the hierarchy is that things at the top are <em>generally</em> faster to access while things on the bottom are slow. For some reason it's always drawn like a food pyramid.</p>
 <figure>
   <img
@@ -152,21 +127,20 @@ PERF_COUNT_HW_CACHE_MISSES
 <li>Caching is a part of the performance principle of being lazy. <strong>If you have to do work, do as little of it as possible.</strong></li>
 </ul>
 
-            </div>
-            <hr>
-            <!-- MOBILE NEWSLETTER BEGIN -->
-            <div class="columns is-centered">
-              <div class="column is-10">
-                <h2 class="has-text-weight-semibold is-size-5 is-5 has-text-centered">Join the Newsletter</h2>
-                <div>
-                  <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
-                </div>
-              </div>
-            </div>
-            <!-- MOBILE NEWSLETTER END -->
+      </div>
+      <!-- NEWSLETTER BEGIN -->
+      <div class="centered">
+        <hr>
+        <div class="newsletter">
+          <h2>Join the Newsletter</h2>
+          <div>
+            <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
           </div>
         </div>
       </div>
-    </section>
+      <!-- NEWSLETTER END -->
+      </div>
+      <div class="buffer"></div>
+    </div>
   </body>
 </html>
