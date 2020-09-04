@@ -348,7 +348,7 @@ template {
   display: none;
 }
 
-/* personal. */
+/* personalpersonal. */
 
 @font-face {
   font-family: 'Iosevka Term';
@@ -384,13 +384,15 @@ template {
   font-weight: 400;
   font-family: 'FiraSans', sans-serif;
   font-size: 16px;
-  font-height: 1.25rem;
+  line-height: 1.5;
 }
 
 h1,.title {
   font-weight: 600;
   font-family: 'FiraSans SemiBold', sans-serif;
   font-size: 2rem;
+  line-height: 1.15;
+  color: rgb(74, 74, 74);
 }
 
 .newsletter > h2 {
@@ -407,7 +409,8 @@ hr {
 
 .subtitle {
   font-size: 1.25rem;
-  font-color: rgb(74, 74, 74);
+  line-height: 1.15;
+  color: rgb(74, 74, 74);
 }
 
 button > div, button > span {
@@ -447,7 +450,6 @@ a:hover, a:hover > * {
 }
 
 img {
-  width: 85%;
   display: block;
   margin: 0 auto;
 }
@@ -510,17 +512,21 @@ li > span {
 }
 
 @media screen and (min-width: 1024px) {
+  img {
+    max-width: 510px;
+  }
+
   .layout {
     display: flex;
     padding: 2rem 1.5rem;
   }
 
   .container-half {
-    width: 605px;
+    max-width: 605px;
   }
 
   .container-half-desktop {
-    width: 605px;
+    max-width: 605px;
   }
 
   .content-fill {
@@ -533,6 +539,10 @@ li > span {
 }
 
 @media screen and (max-width: 1024px) {
+  img {
+    width: 100%;
+  }
+
   .newsletter {
     display: flex;
     flex-direction: column;
