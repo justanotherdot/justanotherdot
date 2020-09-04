@@ -352,7 +352,7 @@ template {
 
 @font-face {
   font-family: 'Iosevka Term';
-  src: url('../assets/fonts/iosevka-term-regular.ttf');
+  src: url('../assets/fonts/iosevka-term-regular.woff2');
   font-weight: normal;
   font-style: normal;
   font-display: fallback;
@@ -360,7 +360,7 @@ template {
 
 @font-face {
   font-family: 'FiraSans';
-  src: url('../assets/fonts/FiraSans-Regular.ttf');
+  src: url('../assets/fonts/FiraSans-Regular.woff2');
   font-weight: normal;
   font-style: normal;
   font-display: fallback;
@@ -368,7 +368,7 @@ template {
 
 @font-face {
   font-family: 'FiraSans SemiBold';
-  src: url('../assets/fonts/FiraSans-SemiBold.ttf');
+  src: url('../assets/fonts/FiraSans-SemiBold.woff2');
   font-weight: normal;
   font-style: normal;
   font-display: fallback;
@@ -376,7 +376,7 @@ template {
 
 @font-face {
   font-family: 'FiraSans Light';
-  src: url('../assets/fonts/FiraSans-Light.ttf');
+  src: url('../assets/fonts/FiraSans-Light.woff2');
   font-weight: normal;
   font-style: normal;
   font-display: fallback;
