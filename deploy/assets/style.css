@@ -355,6 +355,7 @@ template {
   src: url('../assets/fonts/iosevka-term-regular.ttf');
   font-weight: normal;
   font-style: normal;
+  font-display: fallback;
 }
 
 @font-face {
@@ -362,6 +363,7 @@ template {
   src: url('../assets/fonts/FiraSans-Regular.ttf');
   font-weight: normal;
   font-style: normal;
+  font-display: fallback;
 }
 
 @font-face {
@@ -369,6 +371,7 @@ template {
   src: url('../assets/fonts/FiraSans-SemiBold.ttf');
   font-weight: normal;
   font-style: normal;
+  font-display: fallback;
 }
 
 @font-face {
@@ -376,6 +379,7 @@ template {
   src: url('../assets/fonts/FiraSans-Light.ttf');
   font-weight: normal;
   font-style: normal;
+  font-display: fallback;
 }
 
 * {
