@@ -75,12 +75,21 @@ pre,pre > code {
   font-family: 'Iosevka Term', monospace;
 }
 
-a {
+a > code {
+  font-family: 'Iosevka Term', monospace;
+  color: rgb(84, 51, 204);
+}
+
+a:hover > code {
+  font-family: 'Iosevka Term', monospace;
+}
+
+a, a > * {
   text-decoration: none;
   color: rgb(84, 51, 204);
 }
 
-a:hover {
+a:hover, a:hover > * {
   text-decoration: none;
   color: rgb(34, 11, 154);
 }
@@ -154,32 +163,12 @@ li > span {
     padding: 2rem 1.5rem;
   }
 
-  .container-third {
-    width: 33vw;
-  }
-
-  .container-three-fifths {
-    width: 50%;
-  }
-
   .container-half {
-    width: 50%;
+    width: 605px;
   }
 
   .container-half-desktop {
-    width: 50%;
-  }
-
-  .container-quarter {
-    width: 25%;
-  }
-
-  .container-quarter-desktop {
-    width: 25%;
-  }
-
-  .container-fifth {
-    width: 20%;
+    width: 605px;
   }
 
   .content-fill {
