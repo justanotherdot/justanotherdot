@@ -83,7 +83,14 @@
     title="A diagram depicting a program.">
   </img>
 </figure>
-<p>if the intent is to <em>change</em> a value through a reference, you can only have one reference at a time, but if the intent is purely to <em>view</em> a referent, the value being referenced, then you can have as many references as you like. we call these <strong>mutable</strong> and <strong>immutable</strong> references respectively. Containment isn’t always required for references, though; sometimes the use of a reference can be elastic, meaning that the compiler understands the use is only for a given period of time and no longer.</p>
+<p>if the intent is to <em>change</em> a value through a reference, you can only have one reference at a time, but if the intent is purely to <em>view</em> a referent, the value being referenced, then you can have as many references as you like. we call these <strong>mutable</strong> and <strong>immutable</strong> references respectively. Containment isn’t always required for references, though; sometimes the use of a reference can be elastic, meaning that the compiler understands the use is only for a given period of time and no longer. This elasticity comes from a property of references you may hear called <strong>non-lexical lifetimes</strong>, meaning the space of the reference isn't tied to the space where the binding happened.</p>
+<figure>
+  <img
+    src="/assets/images/think-spatially-to-grok-lifetimes-11.jpg"
+    alt="A diagram depicting a program."
+    title="A diagram depicting a program.">
+  </img>
+</figure>
 <p>the most obvious definition of space is with blocks using curly brackets, but functions, data types, and loops all define space. functions hide away space like a fold on a piece of paper. data structures may define space like a shed containing the original value(s). loops define space by compressing several spaces into what looks like the space of one. closures are portable spaces that <em>capture</em> or <em>close over</em> values and references to values. As we saw before, each space tends to also provide ways for values to be bound to names.</p>
 <figure>
   <img

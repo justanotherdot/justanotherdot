@@ -52,7 +52,15 @@ When a value is left behind in a space and we can no longer reach it, we say tha
   </img>
 </figure>
 
-if the intent is to *change* a value through a reference, you can only have one reference at a time, but if the intent is purely to *view* a referent, the value being referenced, then you can have as many references as you like. we call these **mutable** and **immutable** references respectively. Containment isn’t always required for references, though; sometimes the use of a reference can be elastic, meaning that the compiler understands the use is only for a given period of time and no longer.
+if the intent is to *change* a value through a reference, you can only have one reference at a time, but if the intent is purely to *view* a referent, the value being referenced, then you can have as many references as you like. we call these **mutable** and **immutable** references respectively. Containment isn’t always required for references, though; sometimes the use of a reference can be elastic, meaning that the compiler understands the use is only for a given period of time and no longer. This elasticity comes from a property of references you may hear called **non-lexical lifetimes**, AKA **NLL**, meaning the space of the reference isn't tied to the space where the binding happened.
+
+<figure>
+  <img
+    src="/assets/images/think-spatially-to-grok-lifetimes-11.jpg"
+    alt="A diagram depicting a program."
+    title="A diagram depicting a program.">
+  </img>
+</figure>
 
 the most obvious definition of space is with blocks using curly brackets, but functions, data types, and loops all define space. functions hide away space like a fold on a piece of paper. data structures may define space like a shed containing the original value(s). loops define space by compressing several spaces into what looks like the space of one. closures are portable spaces that *capture* or *close over* values and references to values. As we saw before, each space tends to also provide ways for values to be bound to names.
 
@@ -74,7 +82,7 @@ the space of the entire program is not the same space of the `main` function. we
   </img>
 </figure>
 
-otherwise, these labels are placeholders which are *generic* names of spaces that will get filled in based on the context of where they are mentioned. because spaces are like spans describing where a value lives, along with some sense of time, as the program executes line-by-line, we call these labels **lifetimes**. we say that original values are **owned** as the name owns the value it was bound to. since values have owners, we say that a reuse of a value through a reference is a **borrow** since the value will be given back.
+otherwise, these labels are placeholders which are *generic* names of spaces that will get filled in based on the context of where they are mentioned. because spaces are like spans describing where a value lives, along with some sense of time, as the program executes, we call these labels **lifetimes**. we say that original values are **owned** as the name owns the value it was bound to. since values have owners, we say that a reuse of a value through a reference is a **borrow** since the value will be given back.
 
 Rust will assume that all references in function arguments point to the same space. this is known as **elision** as the labels of the spaces do not need mentioning and are removed (elided). however, sometimes you want to make it clear that each reference points to different spaces. we can declare these differences using explicit lifetime labels on the type or function in question that we tend to call **annotations**.
 
@@ -109,5 +117,5 @@ Rust will assume that all references in function arguments point to the same spa
   </img>
 </figure>
 
-lastly, you should generally make lots of small programs to learn the ins and outs of details and fundamentals and making minimally reproducible cases of borrows and moves is no different. Running `cargo new` is cheap, and so is going to the Rust playground when you want to scratch an itch about a question you have.
+lastly, you should generally make lots of small programs to learn the ins and outs of fundamentals, and making minimally reproducible cases of borrows and moves is no different. Running `cargo new` is cheap, and so is going to the Rust playground when you want to scratch an itch about a question you have.
 
