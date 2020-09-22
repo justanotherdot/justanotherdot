@@ -11,7 +11,7 @@ summary: >-
 ---
 
 Have you ever felt like you could use some sort of lifetime visualizer or
-debuger for tricky borrow checker issues in Rust? Has building up a mental model
+debugger for tricky borrow checker issues in Rust? Has building up a mental model
 for complex lifetime interactions and their rules felt like one of the hardest
 things about writing Rust? I am by no means impervious to particularly tricky
 borrow checking woes, but I have built up a way of thinking about lifetimes and
