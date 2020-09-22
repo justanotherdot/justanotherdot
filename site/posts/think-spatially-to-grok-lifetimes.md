@@ -62,7 +62,7 @@ if the intent is to *change* a value through a reference, you can only have one 
   </img>
 </figure>
 
-the most obvious definition of space is with blocks using curly brackets, but functions, data types, and loops all define space. functions hide away space like a fold on a piece of paper. data structures may define space like a shed containing the original value(s). loops define space by compressing several spaces into what looks like the space of one. closures are portable spaces that *capture* or *close over* values and references to values. As we saw before, each space tends to also provide ways for values to be bound to names.
+the most obvious definition of space is with blocks using curly brackets, but functions, data types, and loops all define space. functions hide away space like a fold on a piece of paper. loops define space by compressing several spaces into what looks like the space of one. closures and data structures are portable spaces that *capture* or *close over* values and references to values. As we saw before, each space tends to also provide ways for values to be bound to names.
 
 <figure>
   <img

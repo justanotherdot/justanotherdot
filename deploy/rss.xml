@@ -50,7 +50,7 @@
     title="A diagram depicting a program.">
   </img>
 </figure>
-<p>if the intent is to <em>change</em> a value through a reference, you can only have one reference at a time, but if the intent is purely to <em>view</em> a referent, the value being referenced, then you can have as many references as you like. we call these <strong>mutable</strong> and <strong>immutable</strong> references respectively. Containment isn’t always required for references, though; sometimes the use of a reference can be elastic, meaning that the compiler understands the use is only for a given period of time and no longer. This elasticity comes from a property of references you may hear called <strong>non-lexical lifetimes</strong>, meaning the space of the reference isn't tied to the space where the binding happened.</p>
+<p>if the intent is to <em>change</em> a value through a reference, you can only have one reference at a time, but if the intent is purely to <em>view</em> a referent, the value being referenced, then you can have as many references as you like. we call these <strong>mutable</strong> and <strong>immutable</strong> references respectively. Containment isn’t always required for references, though; sometimes the use of a reference can be elastic, meaning that the compiler understands the use is only for a given period of time and no longer. This elasticity comes from a property of references you may hear called <strong>non-lexical lifetimes</strong>, AKA <strong>NLL</strong>, meaning the space of the reference isn't tied to the space where the binding happened.</p>
 <figure>
   <img
     src="/assets/images/think-spatially-to-grok-lifetimes-11.jpg"
@@ -58,7 +58,7 @@
     title="A diagram depicting a program.">
   </img>
 </figure>
-<p>the most obvious definition of space is with blocks using curly brackets, but functions, data types, and loops all define space. functions hide away space like a fold on a piece of paper. data structures may define space like a shed containing the original value(s). loops define space by compressing several spaces into what looks like the space of one. closures are portable spaces that <em>capture</em> or <em>close over</em> values and references to values. As we saw before, each space tends to also provide ways for values to be bound to names.</p>
+<p>the most obvious definition of space is with blocks using curly brackets, but functions, data types, and loops all define space. functions hide away space like a fold on a piece of paper. loops define space by compressing several spaces into what looks like the space of one. closures and data structures are portable spaces that <em>capture</em> or <em>close over</em> values and references to values. As we saw before, each space tends to also provide ways for values to be bound to names.</p>
 <figure>
   <img
     src="/assets/images/think-spatially-to-grok-lifetimes-05.jpg"
@@ -74,7 +74,7 @@
     title="A diagram depicting a program.">
   </img>
 </figure>
-<p>otherwise, these labels are placeholders which are <em>generic</em> names of spaces that will get filled in based on the context of where they are mentioned. because spaces are like spans describing where a value lives, along with some sense of time, as the program executes line-by-line, we call these labels <strong>lifetimes</strong>. we say that original values are <strong>owned</strong> as the name owns the value it was bound to. since values have owners, we say that a reuse of a value through a reference is a <strong>borrow</strong> since the value will be given back.</p>
+<p>otherwise, these labels are placeholders which are <em>generic</em> names of spaces that will get filled in based on the context of where they are mentioned. because spaces are like spans describing where a value lives, along with some sense of time, as the program executes, we call these labels <strong>lifetimes</strong>. we say that original values are <strong>owned</strong> as the name owns the value it was bound to. since values have owners, we say that a reuse of a value through a reference is a <strong>borrow</strong> since the value will be given back.</p>
 <p>Rust will assume that all references in function arguments point to the same space. this is known as <strong>elision</strong> as the labels of the spaces do not need mentioning and are removed (elided). however, sometimes you want to make it clear that each reference points to different spaces. we can declare these differences using explicit lifetime labels on the type or function in question that we tend to call <strong>annotations</strong>.</p>
 <p><strong>when you run into a borrowing or a lifetime issue it can help to think <em>spatially</em>.</strong> consider how the spaces look unpacked across your code. this can be tricky, but you can practice by occasionally inlining code directly from a function or unrolling a loop to help visualize the spaces in question. as with this article, drawing out the spaces can help abstract away a lot of the other noise that code may supply.  Here are some examples of spaces inclined into larger spaces:</p>
 <figure>
@@ -105,7 +105,7 @@
     title="A diagram depicting a program.">
   </img>
 </figure>
-<p>lastly, you should generally make lots of small programs to learn the ins and outs of details and fundamentals and making minimally reproducible cases of borrows and moves is no different. Running <code>cargo new</code> is cheap, and so is going to the Rust playground when you want to scratch an itch about a question you have.</p>
+<p>lastly, you should generally make lots of small programs to learn the ins and outs of fundamentals, and making minimally reproducible cases of borrows and moves is no different. Running <code>cargo new</code> is cheap, and so is going to the Rust playground when you want to scratch an itch about a question you have.</p>
 
         ]]></content:encoded>
     </item>
