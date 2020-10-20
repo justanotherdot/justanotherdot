@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How do you cast generic values you're sure are numbers?">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/how-do-you-cast-generic-values-youre-sure-are-numbers.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Sometimes you may have collections whose generics aren't the same as the contents, by way of associated types; if you know the values are primitives, how do you go about casting the collections contents?">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="How do you cast generic values you're sure are numbers?">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/how-do-you-cast-generic-values-youre-sure-are-numbers.jpg">
+    <meta name="twitter:description" content="Sometimes you may have collections whose generics aren't the same as the contents, by way of associated types; if you know the values are primitives, how do you go about casting the collections contents?">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>How do you cast generic values you're sure are numbers? &#8226; Ryan James Spencer</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>How do you cast generic values you're sure are numbers?</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          <p>Imagine you have a generic collection that holds values, but the struct
+mentioned in the generic is not the actual values of the holder <em>(astute
+observers will realize this is a bit like <code>ArrowPrimitiveType</code> in <code>arrow</code>).</em>:</p>
+<pre><code>trait NumberLike {
+  type Native;
+}
+
+impl NumberLike for Int64 {
+  type Native = i64;
+}
+
+impl NumberLike for Float64 {
+  type Native = f64;
+}
+
+#[derive(Debug, Clone, PartialEq)]
+struct NumberLikeArray&lt;A: NumberLike&gt;(Vec&lt;A::Native&gt;);
+</code></pre>
+<p>Notice how the generic on our struct is different from the value stored, as specified by the trait.
+You might think you can use this associated type to do primitive casts, like this:</p>
+<pre><code>fn cast_vec&lt;A, B&gt;(xs: NumberLikeArray&lt;A&gt;) -&gt; NumberLikeArray&lt;B&gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+{
+  NumberLikeArray(xs.0.into_iter().map(|x| x as B::Native).collect())
+}
+</code></pre>
+<p>But this won't work, the compiler tells us:</p>
+<pre><code>error[E0605]: non-primitive cast: `&lt;A as NumberLike&gt;::Native` as `&lt;B as NumberLike&gt;::Native`
+  --&gt; src/lib.rs:24:44
+   |
+24 |   NumberLikeArray(xs.0.into_iter().map(|x| x as B::Native).collect())
+   |                                            ^^^^^^^^^^^^^^ an `as` expression can only be used to convert between primitive types or to coerce to a specific trait object
+</code></pre>
+<p>This error helpfully informs us that <code>as</code> only works on primitive types or
+specific trait objects on the right hand side of the keyword. With generics we
+reduce the amount of duplicated code we need to write, but we also lose less
+information about the values themselves. To gain back some information about
+the types, we can put bounds on the generic values which will tell us about
+whether or not there are associated types available to us
+or functions we can run on said types.</p>
+<p>The associated type for <code>NumberLike</code> could be anything, hence Rust won't let us
+compile this code because it can't be 100% sure that <code>x</code> is a primitive value
+or a specific trait object, nor can it confirm that <code>B::Native</code> is a primitive
+type. Rust isn't going to try to figure out that information from all the trait
+bounds it knows about during compilation, either. What we need is something
+that can allow us to convert values but expressed as a trait; what about
+<code>From</code>?</p>
+<pre><code>fn cast&lt;A, B&gt;(xs: NumberLikeArray&lt;A&gt;) -&gt; NumberLikeArray&lt;B&gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+  B::Native: From&lt;A::Native&gt;,
+{
+  NumberLikeArray(xs.0.into_iter().map(|x| x.into()).collect())
+}
+</code></pre>
+<p>but we're going to hit another wall with this the moment we try to use it;</p>
+<pre><code>fn main() {
+    let xs: NumberLikeArray&lt;Int64&gt; = NumberLikeArray(vec![12, 13, 14]);
+    let ys: NumberLikeArray&lt;Float64&gt; = cast(xs);
+    assert_eq!(ys.0, vec![12.0, 13.0, 14.0]);
+}
+</code></pre>
+<p>there is no implementation for <code>From&lt;i64&gt; for f64</code> or the other way around!</p>
+<pre><code>error[E0277]: the trait bound `f64: std::convert::From&lt;i64&gt;` is not satisfied
+  --&gt; src/main.rs:30:40
+   |
+19 | fn cast&lt;A, B&gt;(xs: NumberLikeArray&lt;A&gt;) -&gt; NumberLikeArray&lt;B&gt;
+   |    - required by a bound in this
+...
+23 |   B::Native: From&lt;A::Native&gt;,
+   |               required by this bound in `cast`
+...
+30 |     let ys: NumberLikeArray&lt;Float64&gt; = cast(xs);
+   |                                        ^^^^ the trait `std::convert::From&lt;i64&gt;` is not implemented for `f64`
+   |
+   = help: the following implementations were found:
+             &lt;f64 as std::convert::From&lt;f32&gt;&gt;
+             &lt;f64 as std::convert::From&lt;i16&gt;&gt;
+             &lt;f64 as std::convert::From&lt;i32&gt;&gt;
+             &lt;f64 as std::convert::From&lt;i8&gt;&gt;
+           and 3 others
+</code></pre>
+<p>This makes sense as <code>From</code> is really intended for cheap, infallible conversions
+between types, and <code>as</code> is quite a blunt tool. <code>as</code> can perform truncations and
+other changes to the data depending on the arguments. Converting from an <code>i64</code>
+to an <code>f64</code> may seem odd, but we may want the behavior that <code>as</code> supports in
+our program. You might reach to <code>impl From for f64</code> and <code>i64</code> respectively to
+make this happen:</p>
+<pre><code>impl From&lt;i64&gt; for f64 {
+    fn from(x: i64) -&gt; f64 {
+        x as f64
+    }
+}
+
+impl From&lt;i64&gt; for f64 {
+    fn from(x: i64) -&gt; f64 {
+        x as i64
+    }
+}
+</code></pre>
+<p>but alas another wall:</p>
+<pre><code>error[E0117]: only traits defined in the current crate can be implemented for arbitrary types
+  --&gt; src/main.rs:16:1
+   |
+16 | impl From&lt;i64&gt; for f64 {
+   | ^^^^^^^^^^
+   | |    |             |
+   | |    |             `f64` is not defined in the current crate
+   | |    `i64` is not defined in the current crate
+   | impl doesn't use only types from inside the current crate
+   |
+   = note: define and implement a trait or new type instead
+
+error[E0117]: only traits defined in the current crate can be implemented for arbitrary types
+  --&gt; src/main.rs:22:1
+   |
+22 | impl From&lt;f64&gt; for i64 {
+   | ^^^^^^^^^^
+   | |    |             |
+   | |    |             `i64` is not defined in the current crate
+   | |    `f64` is not defined in the current crate
+   | impl doesn't use only types from inside the current crate
+   |
+   = note: define and implement a trait or new type instead
+</code></pre>
+<p>Let's follow the advice the compiler has given us:</p>
+<pre><code>trait Cast&lt;A&gt; {
+    fn cast(self) -&gt; A;
+}
+
+impl Cast&lt;i64&gt; for f64 {
+    fn cast(self) -&gt; i64 {
+        self as i64
+    }
+}
+
+impl Cast&lt;f64&gt; for i64 {
+    fn cast(self) -&gt; f64 {
+        self as f64
+    }
+}
+</code></pre>
+<p>and we'll update our <code>cast</code> function:</p>
+<pre><code>fn cast&lt;A, B&gt;(xs: NumberArray&lt;A&gt;) -&gt; NumberArray&lt;B&gt;
+where
+    A: NumberLike,
+    B: NumberLike,
+    A::Native: Cast&lt;B::Native&gt;,
+{
+  NumberArray(xs.0.into_iter().map(|x| x.cast()).collect())
+}
+</code></pre>
+<p>We could have easily swapped the argument order of <code>Cast::cast</code> just like
+<code>From</code> and <code>Into</code>'s symmetry. The choice felt arbitrary here and I've picked to
+have things feel like they say &quot;A::Native supports casts into B::Native's&quot; and
+simply replace the <code>into</code> call we had earlier with <code>cast</code>. If we wanted to push
+this further, we could also describe <code>NumberLikeArray</code> with a <code>Cast::cast</code>
+implementation:</p>
+<pre><code>fn cast&lt;A, B&gt;(xs: NumberLikeArray&lt;A&gt;) -&gt; NumberLikeArray&lt;B&gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+  A::Native: Cast&lt;B::Native&gt;,
+{
+  NumberLikeArray(xs.0.into_iter().map(|x| x.cast()).collect())
+}
+
+impl&lt;A, B&gt; Cast&lt;NumberLikeArray&lt;B&gt;&gt; for NumberLikeArray&lt;A&gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+  A::Native: Cast&lt;B::Native&gt;,
+{
+    fn cast(self) -&gt; NumberLikeArray&lt;B&gt; {
+        cast(self)
+    }
+}
+</code></pre>
+<p>This shows a way of writing method implementations I sometimes like to do. When
+you define <code>Cast::cast</code> you get two functions for free: <code>Cast::cast(array)</code> and
+<code>array.cast()</code>. I also like to have the option of doing a qualified import via
+a module, s.t. someone could do <code>crate::convert::cast(array)</code> if they so
+desired. With the above approach, you get all three. Here's the <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=514a19b873cf4226f3ac7315550657ba">full
+listing</a>
+to explore on your own.</p>
+<p>The good news is, you don't have to do this 'from scratch' every time you start
+a project, and you don't need to spin up your own crate because the <code>num</code> crate
+already has a <code>NumCast</code> and <code>ToPrimitive</code> pair of buddy traits that do this.
+The one major difference is that <code>NumCast::from</code> produces an <code>Option</code> that
+we'll need to handle. We could flatmap this, causing items to go missing during
+the cast, or we could make it error on first cast, like this:</p>
+<pre><code>fn cast&lt;A, B&gt;(xs: NumberLikeArray&lt;A&gt;) -&gt; Option&lt;NumberLikeArray&lt;B&gt;&gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+  A::Native: NumCast,
+  B::Native: ToPrimitive + NumCast,
+{
+  Some(NumberLikeArray(xs.0.into_iter().map(|x| NumCast::from(x)).collect::&lt;Option&lt;Vec&lt;B::Native&gt;&gt;&gt;()?))
+}
+
+fn main() {
+    let xs: NumberLikeArray&lt;Int64&gt; = NumberLikeArray(vec![12, 13, 14]);
+    let ys: NumberLikeArray&lt;Float64&gt; = cast(xs).expect(&quot;could not cast array&quot;);
+    assert_eq!(ys.0, vec![12.0, 13.0, 14.0]);
+}
+</code></pre>
+<p>Using bounds to specify requirements on generics is a way of gaining back
+information about the types we abstract over. Instead of working over all A's
+and B's, we're specifically working over A's and B's that implement certain
+charecteristics, and we can leverage those characteristics to transform values,
+perform effects, or simply declare that some type has been marked or tagged, as
+is the case with <code>Eq</code> and others.</p>
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2>Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>
