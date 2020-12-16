@@ -1,0 +1,15 @@
+#!/bin/sh -eux
+
+# Overview:
+#   This is a build script that ensures all prior dependencies
+#   for posts are built and ready prior to generating the site.
+
+: ${COVER_IMAGE_PATH:?"Missing cover image"}
+
+BRANCH_NAME=$(git b | rg -o '^\* topic/([a-zA-Z-]+)' -r '$1')
+# Post name is `topic/${BRANCH_NAME}`
+cp "$COVER_IMAGE_PATH" images/${BRANCH_NAME}.jpg
+bin/process-images
+
+# TODO: rely on an artifact for faster builds.
+cargo run

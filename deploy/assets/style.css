@@ -399,6 +399,22 @@ h1,.title {
   color: rgb(74, 74, 74);
 }
 
+h2 {
+  font-weight: 600;
+  font-family: 'FiraSans SemiBold', sans-serif;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  color: rgb(74, 74, 74);
+}
+
+h3 {
+  font-weight: 600;
+  font-family: 'FiraSans SemiBold', sans-serif;
+  font-size: 1.17rem;
+  line-height: 1.15;
+  color: rgb(74, 74, 74);
+}
+
 .newsletter > h2 {
   font-weight: 600;
   font-family: 'FiraSans Light', sans-serif;
