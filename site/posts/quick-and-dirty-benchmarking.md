@@ -159,7 +159,7 @@ valgrind --tool=cachegrind "$COMMAND" --x1 2>&1 | rg '^=='
 valgrind --tool=cachegrind "$COMMAND" --x2 2>&1 | rg '^=='
 ```
 
-The `rg '^=='1` and stream redirection will make sure we only see output from
+The `rg '^=='` and stream redirection will make sure we only see output from
 valgrind and not our tools (unless our tools are emitting lines with two or more
 equal signs). Cachegrind has a `I ref` field which stands for instruction
 references recorded. valgrind runs your program in a sandbox where it can do
