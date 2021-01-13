@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Quick and Dirty Benchmarking">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/quick-and-dirty-benchmarking.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Benchmarking with more rigorous means can be great for reliability of the numbers, but sometimes you just want a quick and dirty way to track the immediate performance results of changes to your program's code and you want to do it quickly.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Quick and Dirty Benchmarking">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/quick-and-dirty-benchmarking.jpg">
+    <meta name="twitter:description" content="Benchmarking with more rigorous means can be great for reliability of the numbers, but sometimes you just want a quick and dirty way to track the immediate performance results of changes to your program's code and you want to do it quickly.">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Quick and Dirty Benchmarking &#8226; Ryan James Spencer</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-157540512-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-157540512-1');
+    </script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Quick and Dirty Benchmarking</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          <p>In the past I've advocated for the default use of criterion in Rust projects as
+the but it isn't always the fastest to run in a development loop for quick
+feedback on optimisations. First, let's make our release builds incremental by
+specifying the following in your project's <code>Cargo.toml</code> file.</p>
+<pre><code>[profile.release]
+incremental = true
+</code></pre>
+<p>Next, let's setup a baseline benchmark. I've made a template
+<a href="https://gist.github.com/justanotherdot/0b0051f96bdeb44c25ad58998910f6a1">here</a>
+you can dump into a pre-existing module or give it it's own module. We use
+<code>cargo watch</code> here but it could just as well be any other tool that does the
+same job, such as <code>entr</code>. This benchmarking suite is bundled only with nightly,
+as it comes from the <code>libtest</code> crate.</p>
+<p><code>cargo +nightly watch -x bench</code></p>
+<p>Remember, the aim here is to get a really fast local feedback loop and not to be
+producing rigorous, publishable results. We want to know if changes have general
+speedups or slowdowns without having to wait for excessive periods of time.
+Granted, the runtime of the the code the benchmark is executing plays a lot into
+this, regardless of choice of harness. To minimize, focus on reducing:</p>
+<ul>
+<li>
+<p>Number of iterations - as a rule of thumb, try to pick somewhere between 5 to
+100 iterations depending on the code under inspection. You want to have some
+confidence of an average between runs, but also not spend too long honing that
+average.</p>
+</li>
+<li>
+<p>Size of input - try to pick input sizes that are neither trivial nor massive,
+as you want to ensure the code is getting properly exercised but also reduce
+the time to completing a benchmark in general.</p>
+</li>
+</ul>
+<p>It's worth stressing again that this isn't about building rigorous benchmarks
+for comparisons to other projects but to build benchmarks that help you
+understand the general trend of whether or not your changes are making
+improvements or regressing.</p>
+<h3>Alternative Approaches</h3>
+<p>Sometimes a benchmark like the above may be a bit awkward given the way the code
+is laid out, and if you have a binary or can cake the logic into a binary, it
+may be alright to record the respective wall times across invocations with a
+process. From scratch, let's build out a tester binary for us to run. First,
+we'll put in <code>structopt</code> for easily switching between changes we want to
+experiment against. As <code>structopt</code> is a nice veneer over <code>clap</code>, there's really
+no advantage to either except it might help you get results faster.</p>
+<pre><code>#[derive(Debug, StructOpt)]
+#[structopt(name = &quot;cli&quot;, about = &quot;Benchmark harness for X.&quot;)]
+struct Opt {
+    #[structopt(parse(from_os_str))]
+    input: PathBuf,
+
+    #[structopt(long = &quot;x1&quot;)]
+    x1: bool,
+
+    #[structopt(long = &quot;x2&quot;)]
+    x2: bool,
+}
+
+&lt;snip&gt;
+
+fn main() {
+    let opt = Opt::from_args();
+    if opt.x1 {
+        example1(&amp;opt.input).expect(&quot;[cli] example1 failure&quot;);
+    } else if opt.x2 {
+        example2(&amp;opt.input).expect(&quot;[cli] example2 failure&quot;);
+    } else {
+        baseline(&amp;opt.input).expect(&quot;[cli] example failure&quot;);
+    }
+}
+</code></pre>
+<p>We use an input file above, but we could just as easily take input from
+anywhere, either embedded in the program or even from stdin, for example. We are
+going to run the program using <code>hyperfine</code> which wraps up <code>criterion</code> into a
+neat bundle and is infinitely useful for comparing wall time averages versus
+manually invoking <code>time</code> multiple times and performing the aggregations
+yourself:</p>
+<pre><code>; cargo build --release
+; hyperfine &quot;cli test.in&quot; &quot;cli --x1 test.in&quot; &quot;cli --x2 test.in&quot;
+</code></pre>
+<p>Which gives us some nice output <strong>and a summary</strong> of the fastest variant in
+relation to the others:</p>
+<pre><code>; hyperfine &quot;target/release/cli test.in&quot; &quot;target/release/cli --x1 test.c
+sv&quot; &quot;target/release/cli --x2 test.in&quot;
+Benchmark #1: target/release/cli test.in
+  Time (mean ± σ):       7.7 ms ±   0.5 ms    [User: 6.5 ms, System: 1.2 ms]
+  Range (min … max):     7.1 ms …  11.2 ms    385 runs
+
+Benchmark #2: target/release/cli --x1 test.in
+  Time (mean ± σ):      16.3 ms ±   0.7 ms    [User: 13.9 ms, System: 3.7 ms]
+  Range (min … max):    15.2 ms …  20.7 ms    171 runs
+
+Benchmark #3: target/release/cli --x2 test.in
+  Time (mean ± σ):      18.0 ms ±   2.3 ms    [User: 58.9 ms, System: 2.9 ms]
+  Range (min … max):    14.7 ms …  29.4 ms    155 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet PC without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+Summary
+  'target/release/cli test.in' ran
+    2.13 ± 0.17 times faster than 'target/release/cli --x1 test.in'
+    2.35 ± 0.34 times faster than 'target/release/cli --x2 test.in'
+</code></pre>
+<p>In my messy use of <code>hyperfine</code> above, it recommends it notes that it detected
+outliers and I might consider running this on a quieter system, which is a good
+suggestion and one that shouldn't simply be ignored, especially if the changes
+you are performing are producing rather minimal gains or reductions to
+performance.</p>
+<p>You don't need to rig up an explicit benchmark harness program for the purposes
+of this, either. I've had luck using on-hand binaries from previous builds and
+newer binaries simply renamed or at different locations on a filesystem to
+compare relative performance. If a build from three months ago felt a lot
+faster and I can easily do a build of the latest version off my main branch, I
+can chuck those into <code>hyperfine</code>, too.</p>
+<p>One last thing I'll recommend is that it can be handy to rig up profiling tools
+in scripts to get numbers across changes. For a variety of tooling, you are
+likely to get somewhat unstable numbers across runs on a target. If you want
+something rock-solid across runs, you might consider chucking <code>valgrind</code> into a
+script and comparing output across commands, such as the following:</p>
+<pre><code>#!/bin/sh -eux
+
+cargo build --release
+COMMAND=&quot;target/release/cli test.in&quot;
+
+valgrind --tool=cachegrind &quot;$COMMAND&quot; 2&gt;&amp;1 | rg '^=='
+valgrind --tool=cachegrind &quot;$COMMAND&quot; --x1 2&gt;&amp;1 | rg '^=='
+valgrind --tool=cachegrind &quot;$COMMAND&quot; --x2 2&gt;&amp;1 | rg '^=='
+</code></pre>
+<p>The <code>rg '^=='</code> and stream redirection will make sure we only see output from
+valgrind and not our tools (unless our tools are emitting lines with two or more
+equal signs). Cachegrind has a <code>I ref</code> field which stands for instruction
+references recorded. valgrind runs your program in a sandbox where it can do
+checking of various actions, hence numbers should not change depending on noisy
+neighbors. If you want something more direct from, say, PMC (performance
+monitoring counter), you could plug in <code>perf stat -ad</code>, or rig up a flamegraph
+to be generated and reloaded into a browser or preview tool each time you make a
+change.</p>
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Join the Newsletter</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>
