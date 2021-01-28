@@ -1,5 +1,5 @@
 ---
-title: Favor richer error types when using Result
+title: Cut Down Time Debugging With Rich Error Types
 author: Ryan James Spencer
 date: 2021-01-28T19:47:15.613719661+00:00
 tags:
@@ -36,7 +36,7 @@ struct Resource(i32);
 
 impl Drop for Resource {
     fn drop(&mut self) {
-        println!("goodbye from {}", self.0);
+        println!("cleaning up resource: {}", self.0);
     }
 }
 
@@ -55,7 +55,7 @@ impl Error {
 fn main() {
     let _x = Resource(0);
     println!("about to terminate the process");
-    std::process::exit(1); // "goodbye from 0" never prints.
+    std::process::exit(1); // "cleaning up resource: 0" never prints.
 }
 ```
 
@@ -79,7 +79,7 @@ struct Resource(i32);
 
 impl Drop for Resource {
     fn drop(&mut self) {
-        println!("goodbye from {}", self.0);
+        println!("cleaning up resource: {}", self.0);
     }
 }
 
@@ -109,7 +109,7 @@ struct Resource(i32);
 
 impl Drop for Resource {
     fn drop(&mut self) {
-        println!("goodbye from {}", self.0);
+        println!("cleaning up resource: {}", self.0);
     }
 }
 
