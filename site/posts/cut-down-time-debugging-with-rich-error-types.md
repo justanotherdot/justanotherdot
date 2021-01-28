@@ -149,6 +149,8 @@ fn main() {
 }
 ```
 
+[playground](https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=275ccf13e2ca30f6bdb0f96c8b58463f)
+
 In the above code we can propagate failures from various parts of our program
 and we don't have to lose that information that is useful for diagnostics. By
 using a method to map the error to an exit code, we decide to shed that

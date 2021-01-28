@@ -10,6 +10,152 @@
     <language>en-us</language>
     
     <item>
+      <title>Cut Down Time Debugging With Rich Error Types</title>
+      <author>Ryan James Spencer</author>
+      <link>https://justanotherdot.com/posts/cut-down-time-debugging-with-rich-error-types.html</link>
+      <guid>https://justanotherdot.com/posts/cut-down-time-debugging-with-rich-error-types.html</guid>
+      <pubDate>Fri, 29 Jan 2021 05:47:15 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Have you ever spent a considerable amount of time tracking down the meaning of
+an error flag or code after a program has crashed? In languages that don't let
+you break down values with pattern matching, booleans and error codes run
+rampant and require extra investigative effort on the part of the programmer.
+Diagnosing problems in programs doesn't have to be hard in Rust given we have
+<code>Result</code> to carry along lots of useful information for us.</p>
+<p>There was a recent video on why <a href="https://www.youtube.com/watch?v=zQC8T71Y8e4">std::process::exit is
+'evil'</a> demonstrating that by
+requesting normal or abnormal termination by the operating system through
+<code>std::process::exit</code> you could fail to do cleanup that the operating system may
+fail to do. I would say std::process::exit is quirky rather than evil here
+because it is doing exactly what you ask of it. The example is roughly like
+this:</p>
+<pre><code>#[derive(Debug)]
+struct Resource(i32);
+
+impl Drop for Resource {
+    fn drop(&amp;mut self) {
+        println!(&quot;cleaning up resource: {}&quot;, self.0);
+    }
+}
+
+enum Error {
+    Foo
+}
+
+impl Error {
+    pub fn exit_code(self) -&gt; i32 {
+        match self {
+            Error::Foo =&gt; 114,
+        }
+    }
+}
+
+fn main() {
+    let _x = Resource(0);
+    println!(&quot;about to terminate the process&quot;);
+    std::process::exit(1); // &quot;cleaning up resource: 0&quot; never prints.
+}
+</code></pre>
+<p>In the above code, the destructor for <code>Resource</code> never runs because the program
+is effectively terminated at the point that <code>std::process::exit</code> is called. It's
+a blunt tool, and can be used for both zero and non-zero exit codes, which in an
+operating system execution context can roughly relate to success or failure
+respectively. Exit codes allow both minimal diagnostic information and sometimes
+even a way to handle control flow, <a href="https://www.justanotherdot.com/posts/discovering-problematic-commits-with-git-bisect.html">as is the case with driving <code>git bisect</code>
+automatically</a>.</p>
+<p>Some resources definitely need cleanup on program failure and the solution is to
+wrap the main logic in another function, preferably one that returns <code>Result</code>,
+to ensure the resources go out of scope before calling <code>std::process::exit</code>. The
+solution given in the video has this function returning an exit code (an i32)
+for it's error:</p>
+<pre><code>#[derive(Debug)]
+struct Resource(i32);
+
+impl Drop for Resource {
+    fn drop(&amp;mut self) {
+        println!(&quot;cleaning up resource: {}&quot;, self.0);
+    }
+}
+
+fn run() -&gt; Result&lt;(), i32&gt; {
+    let _x = Resource(0);
+    Err(114)
+}
+
+fn main() {
+    let _x = Resource(0);
+    run().unwrap_or_else(|exit_code| {
+        println!(&quot;about to terminate the process&quot;);
+        std::process::exit(exit_code);
+    });
+}
+</code></pre>
+<p>Now we have destructors running on exit, but we have totally lost relevant
+<em>human readable</em> diagnostic information in the process. <strong>By using richer types
+for our errors we gain that information back</strong>:</p>
+<pre><code>use std::fmt::{Formatter, Display};
+
+#[derive(Debug)]
+struct Resource(i32);
+
+impl Drop for Resource {
+    fn drop(&amp;mut self) {
+        println!(&quot;cleaning up resource: {}&quot;, self.0);
+    }
+}
+
+enum Error {
+    MissingData
+}
+
+impl Display for Error {
+    fn fmt(&amp;self, f: &amp;mut Formatter) -&gt; Result&lt;(), std::fmt::Error&gt; {
+        match self {
+            Error::MissingData =&gt; write!(f, &quot;could not find any data&quot;),
+        }
+    }
+}
+
+impl Error {
+    pub fn exit_code(self) -&gt; i32 {
+        match self {
+            Error::MissingData =&gt; 114,
+        }
+    }
+}
+
+
+fn start() -&gt; Result&lt;(), Error&gt; {
+    let _x = Resource(0);
+    return Err(Error::MissingData);
+}
+
+fn main() {
+    let _x = Resource(0);
+    start().unwrap_or_else(|e| {
+        println!(&quot;about to terminate the process&quot;);
+        eprintln!(&quot;[program] {}&quot;, e);
+        std::process::exit(e.exit_code());
+    });
+}
+</code></pre>
+<p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=275ccf13e2ca30f6bdb0f96c8b58463f">playground</a></p>
+<p>In the above code we can propagate failures from various parts of our program
+and we don't have to lose that information that is useful for diagnostics. By
+using a method to map the error to an exit code, we decide to shed that
+information at the point when we call <code>std::process::exit</code>, allowing us
+to print out our error onto stderr or pattern match on it to do emit metrics,
+and so on. <strong>If you want to avoid the headache of tracking down bugs in production
+systems, keep information as semantically rich as possible for as long as
+possible</strong>. If you think of a program like a parser that builds up values from
+external input or stimuli, then you want to take advantage of that work for as
+long as possible and only discard it at the fringes.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Quick and Dirty Benchmarking</title>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/quick-and-dirty-benchmarking.html</link>
