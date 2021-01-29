@@ -161,3 +161,12 @@ systems, keep information as semantically rich as possible for as long as
 possible**. If you think of a program like a parser that builds up values from
 external input or stimuli, then you want to take advantage of that work for as
 long as possible and only discard it at the fringes.
+
+_Astute readers will note that what I've we've written above is the
+[`Termination`
+trait](https://doc.rust-lang.org/std/process/trait.Termination.html) that is
+[pending stabilization](https://github.com/rust-lang/rust/issues/43301) but I
+personally feel teaching others how to get similar results without having to
+rely on unstable features is a reasonable tradeoff. When
+std::process::Termination stabalizes I'll be sure to give this article a
+refresher._
