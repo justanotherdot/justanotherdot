@@ -1,7 +1,7 @@
 ---
-title: Increase The Rate Of Oxidation: Getting More Rust Into Your Life
+title: "Increase The Rate Of Oxidation: Getting More Rust Into Your Life"
 author: Ryan James Spencer
-date: 2021-01-14T21:45:31.267576425+00:00
+date: 2021-02-03T21:47:37.002931584+00:00
 tags:
   - rust
 summary: >-
@@ -73,12 +73,12 @@ worked for me coming to new languages or technologies:
   great way to store ad hoc solutions to questions you have. In fact, the [Rust
   playground](https://play.rust-lang.org/) will save its permalinks to gist
   files, but it can help to have everything all in a single place for yourself.
-  GitHub gists also support multifile gists meaning you can tuck in a
+  GitHub gists also support multi-file gists meaning you can tuck in a
   `Cargo.toml` manifest or other parts that may be relevant to the code. This is
   why I also suggest sometimes having a `lab` or `playground` repository for
   various snippets, too, but `cargo new` already bootstraps a git repo that it
   is easy to push up various experiments. If you are using GitHub, you can
-  automate the `gh` cli to also create a new repository, too, allowing you to
+  automate the `gh` CLI to also create a new repository, too, allowing you to
   automate the whole process without having to go to a browser.
 
 * **Read rust code from major projects** - If you want to start writing
