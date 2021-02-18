@@ -189,7 +189,7 @@ something by assigning the value to an invalid type, such as:
 
 ```
 main() {
-  let x: () = what_is_this();
+  let x: () = mystery();
 }
 ```
 
