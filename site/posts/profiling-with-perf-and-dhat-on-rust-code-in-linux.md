@@ -709,3 +709,6 @@ Using `perf` and a memory analysis tool like `dhat` can give you a pretty solid
 picture of what is going on in terms of hardware utilization. Obviously it's not
 the only profilers at your disposal, but discovering issues backed by numbers is
 crucial.
+
+If you want to have a look over the code examples and stages above, head over to
+the [repo](https://github.com/justanotherdot/perf-and-dhat-profiling-example).
