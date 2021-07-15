@@ -158,7 +158,8 @@ where
         .to_lowercase();
     assert!(
         std::path::Path::new(&format!("deploy/assets/images/{}", image)).exists(),
-        format!("could not find image: {}", image),
+        "could not find image: {}",
+        image
     );
     let snake_url = format!("/posts/{}", UNDERSCORE_RE.replace_all(&url, r"-"));
     let snake_image = UNDERSCORE_RE.replace_all(&image, r"-").to_string();
