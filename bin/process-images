@@ -21,7 +21,7 @@ for image in images/*; do
   fi
 
   echo "compressing images"
-  imagemin --plugin.mozjpeg.quality=80 "$copied_image" > "$copied_image.tmp"
+  yarn imagemin --plugin.mozjpeg.quality=80 "$copied_image" > "$copied_image.tmp"
   mv "$copied_image.tmp" "$copied_image"
   echo "  + compressed: $(basename $copied_image)"
 done
