@@ -74,7 +74,7 @@ changes we are looking to take, rather than blindly stabbing in the dark and
 seeing if things work or not. Often this blind approach can undo perfectly good
 performance gains from other work!
 
-#### Setup and prerequisites
+### Setup and prerequisites
 
 Unfortunately, `perf` is a linux-only tool. We will cover other profilers in
 other articles, and if you are using something like `dtrace` on a BSD, you can
@@ -121,7 +121,7 @@ machine you are on, and if you do know the specific architecture you are on it's
 better to put that in there, instead. You can list supported names with `rustc
 --print target-cpus`.
 
-#### Checking wall times
+### Checking wall times
 
 `time` is a trusty tool, but `hyperfine` takes the idea of the tool and augments
 it with the statistical finesses and reporting of the `criterion` benchmarking.
@@ -164,7 +164,7 @@ To describe the above output we see:
 In this case running in release mode led to a 20.87 (give or take 1.30) times
 improvement over non-release (debug).
 
-#### Describing key metrics with `perf stat`
+### Describing key metrics with `perf stat`
 
 `perf stat` gives you a summary of common hardware statistics. You almost always
 want to run it with `-d` and you can add more `d`s to increase the number of
@@ -266,7 +266,7 @@ improve! However, this output is failing to tell us _where_ we should be looking
 in our program to see this manifest itself. For this we'll use `perf record` to
 associate metrics to symbols in our program.
 
-#### Digging deeper with `perf record` and `perf report`
+### Digging deeper with `perf record` and `perf report`
 
 `perf record` takes samples of events over a given period of time, and lines
 them up with the specific instructions (and, therefore, symbols those
@@ -366,7 +366,7 @@ construction work? A principle of performance is to be lazy, and the best way to
 be lazy is to avoid doing work you don't need to do! Before we get to tweaking
 the code, let's analyze this outside of the terminal with flamegraphs.
 
-#### Making it more visual with flamegraphs
+### Making it more visual with flamegraphs
 
 `inferno` is a collection of flamegraph related tooling that Jon Gjenset built
 to produce different types of flamegraphs. The original flamegraph generation
@@ -417,7 +417,7 @@ specifics about allocations, and for that we'll turn to Nicholas Nethercoate's
 wonderful `dhat` Rust library, built out of the same tooling for `dhat` on
 valgrind.
 
-#### Allocation analysis
+### Allocation analysis
 
 We'll plug in the `dhat` stuff under a feature flag so we can easily turn it on
 later when we want, and leave it out of the way when we don't. I'll be
@@ -608,7 +608,7 @@ we should put in benchmarks to let others running our code confirm results for
 themselves (possibly documenting our process like how we've done in this
 article, too!).
 
-#### Benchmarks for reproduction
+### Benchmarks for reproduction
 
 We now know we want to remove our `deserialize` code and that means finding
 something we can recycle on every iteration of our loop. Reading through the

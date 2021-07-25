@@ -56,60 +56,85 @@ when talking over the network to the client? Is disk access a slog or are
 needless cycles being wasted doing duplicated work? We <em>want</em> our programs to
 utilize hardware, but we want to do it in a way that is taking full advantage of
 of the potential of the hardware in question.</p>
-<p>You've possibly heard of <code>perf</code>, a CPU profiler for linux, likely from the term
-flamegraph thrown around. <code>perf</code> isn't the only tool that can produce
-flamegraphs, but it is certainly the first I associated with learning about
-flamegraphs (the opposite of a flamegraph is an 'icicle', which is like a
-flamegraph but upside down, and usually colored blue).</p>
 <p><code>perf</code> works by using Performance Monitoring Counters or PMCs (also known as
 HMCs for Hardware Performance Counters). These counters track various metrics in
 hardware rather than in software, which can carry its own performance penalty.
 <code>perf</code> is generally a CPU oriented profiler, but it can track some non-CPU
-related metrics. Try giving <code>perf list</code> a try in your terminal and have a look.
-All the events listed can be explicitly tracked by passing <code>-e name</code> to the bulk
-of the <code>perf</code> subcommands. In this case <code>name</code> means any of the names listed in
-<code>perf list</code>, but it can also be exact counter names if you are working directly
-with a specific CPU architecture, but don't worry about this</p>
-<p>Here's what we'll cover in this post:</p>
+related metrics. Try giving <code>perf list</code> a try in your terminal and have a look
+at what's available your target machine. All the events listed can be explicitly
+tracked by passing <code>-e NAME</code> to the bulk of the <code>perf</code> subcommands. In this case
+<code>NAME</code> means any of the names listed in <code>perf list</code>, but it can also be exact
+counter names if you are working directly with a specific CPU architecture, but
+don't worry about this for now.</p>
+<p><strong>Here's what we'll cover in this post:</strong></p>
 <ul>
 <li>Why we want instrumentation to gain clarity on where to spend our efforts</li>
+<li>Problem description ( you are here )</li>
 <li>Establishing benchmarks to drive our understanding and comparison of improvements</li>
 <li>A quick intro to <code>perf</code>, and where it shines as a profiling tool</li>
 <li>Checking memory usage via <code>dhat</code> without having to use <code>valgrind</code></li>
 </ul>
-<p>Let's begin with the problem; we have a program that consumes a CSV, and processes
+<p>If you are the eager sort, <a href="https://github.com/justanotherdot/perf-and-dhat-profiling-example">have a look at the code up
+front</a>. The
+commits are broken up to allow easily following the below tutorial.</p>
+<h3>Problem Description</h3>
+<p>Let's begin with a problem; we have a program that consumes a CSV, and processes
 every row to aggregate some result. It's noticeably a bit sluggish, and gets
 slower the bigger the input.</p>
-<p>In this initial implementation, we deserialize every row into a HashMap of the
-headers (<code>String</code>s) to a designated value as a series of bytes. <code>ByteBuf</code>. We
-want to later parse the bytes into something we care about. We could likewise
-use <code>&amp;'a [u8]</code> but <code>ByteBuf</code> gives us the ability to own the resulting bytes,
-rather than parsing them immediately into unicode, which they may not be!</p>
+<p>In this initial implementation, we deserialize every row into a <code>HashMap</code> of the
+headers (<code>String</code>s) to a designated value as a series of bytes (<code>ByteBuf</code>). We
+want to later parse the bytes into something we care about. We want raw bytes to
+avoid parsing them immediately into unicode, which they may not be!</p>
 <p>The headers are <code>String</code>s rather than pre-encoding the struct names as the
 headers because we want this code to run on any sort of CSV we hand it,
 regardless of the number and name of the headers.</p>
 <p>The point of this example is to show that there may be multiple places where
 bottlenecks live, and of different types, each of which we'll use various forms
 of profiling or assertions to check.</p>
-<p>Astute readers might catch the main inefficiency while checking the code.</p>
-<ul>
-<li>
-<p>starting first with debug, then going to release</p>
-</li>
-<li>
-<p>addressing <code>--release</code> and related params</p>
+<p>Astute readers might catch the main inefficiency while checking the code, but
+the point here is to size up problems with actual data backing the necessary
+changes we are looking to take, rather than blindly stabbing in the dark and
+seeing if things work or not. Often this blind approach can undo perfectly good
+performance gains from other work!</p>
+<h3>Setup and prerequisites</h3>
+<p>Unfortunately, <code>perf</code> is a linux-only tool. We will cover other profilers in
+other articles, and if you are using something like <code>dtrace</code> on a BSD, you can
+similarly flume output into something like <code>flamegraph</code>, but this article will
+focus on <code>perf</code> exclusively. <code>perf</code> should come equipped with most linux
+distros. If it's not, you may have to do some googling on how to get it for your
+current machine.</p>
+<p>When running <code>perf</code> you'll see some output about changing settings for the
+purposes of security. If this is a local machine, you're likely safe to simply
+run <code>echo -1 | sudo tee /proc/sys/kernel/perf_event_paranoid</code>. This setting is
+to ensure that other unprivileged processes can't see what they're not supposed
+to see.</p>
+<p>As with any optimizing adventure, we need to always ensure we are actually
+running comparisons on release builds.</p>
+<pre><code>cargo build --release
+</code></pre>
+<p>Artifacts are generated under <code>target/release/*</code>.</p>
+<p>Next, we'll tweak a few common things in our cargo manifest (<code>Cargo.toml</code>):</p>
 <pre><code>[profile.release]
 incremental = true
 debug = true
 lto = &quot;fat&quot;
 </code></pre>
-<p>as well as compiling with <code>RUSTFLAGS=&quot;-C target-cpu=native&quot;</code></p>
-</li>
-<li>
-<p>hyperfine between debug and release for example</p>
-</li>
-</ul>
-<p><code>cargo install --force hyperfine</code></p>
+<p>Sometimes you may want to try <code>codegen-units = 1</code>, but it can aversely affect
+compile times and may not yield similar gains in performance. Ditty for <code>lto = &quot;fat&quot;</code>, which you can also try <code>lto = &quot;thin&quot;</code> alternatively (or just leave it
+off). As we'll see with our future steps, it pays to verify! You'll notice that
+<code>debug = true</code> is also noted; this is going to be necessary when we get to using
+<code>perf record</code>.</p>
+<p>Lastly, it helps to be running with <code>export RUSTFLAGS=&quot;-C target-cpu=native&quot;</code> to
+ensure that the compiler is choosing instructions that are more appropriate for
+the actual CPU you are using. <code>native</code> isn't a guarantee you will get the exact
+machine you are on, and if you do know the specific architecture you are on it's
+better to put that in there, instead. You can list supported names with <code>rustc --print target-cpus</code>.</p>
+<h3>Checking wall times</h3>
+<p><code>time</code> is a trusty tool, but <code>hyperfine</code> takes the idea of the tool and augments
+it with the statistical finesses and reporting of the <code>criterion</code> benchmarking.
+Let's install it if you don't have it:</p>
+<pre><code>cargo install --force hyperfine
+</code></pre>
 <p>It's worth showing the difference in performance between <code>--release</code> and debug
 if you've never done this. Here's a useful experiment, and a template for how to
 use the tool <code>hyperfine</code> to compare multiple targets of measurement at the same
@@ -130,12 +155,32 @@ Summary
   'target/release/perf-and-dhat-profiling-example test.csv' ran
    20.87 ± 1.30 times faster than 'target/debug/perf-and-dhat-profiling-example test.csv'
 </code></pre>
+<p>To describe the above output we see:</p>
 <ul>
-<li><code>perf stat -r 100 -ad</code>
-also add pre/post measurement hooks.</li>
+<li>the first benchmark's report</li>
+<li>the second benchmark's report</li>
+<li>the summary of which was fastest</li>
 </ul>
+<p>In this case running in release mode led to a 20.87 (give or take 1.30) times
+improvement over non-release (debug).</p>
+<h3>Describing key metrics with <code>perf stat</code></h3>
+<p><code>perf stat</code> gives you a summary of common hardware statistics. You almost always
+want to run it with <code>-d</code> and you can add more <code>d</code>s to increase the number of
+useful metrics it provides, but I find one is sufficient.</p>
+<p>Like any good profiling or benchmarking tool, we are unlikely to observe the
+same sample every time, thus variations could be due to any number of factors,
+and we can generally describe these as noise. Noise in data is normal, and
+unless you are using a profiler like <code>cachegrind</code> which runs your code in a
+sandbox and records its own metrics, you re likely to see variations of all
+sorts. What we want to know is</p>
+<ul>
+<li>are the variations extreme or minimal?</li>
+<li>what is center across all the variations?</li>
+</ul>
+<p>Thus it's a good idea to run our program with <code>-r 100</code> which will rerun the
+program under <code>perf stat</code> 100 times.</p>
 <pre><code>; perf stat -ad -r 100 target/release/perf-and-dhat-profiling-example test.csv
-&lt;snip&gt;
+&lt;snip, lots of output from the program itself&gt;
 
  Performance counter stats for 'system wide' (100 runs):
 
@@ -154,23 +199,90 @@ also add pre/post measurement hooks.</li>
 
          0.0219215 +- 0.0000420 seconds time elapsed  ( +-  0.19% )
 </code></pre>
-<p><code>-r</code> is important here because it will make sure the measurements are run
-multiple times. Given that the numbers <code>perf</code> will report will be unstable plus
-or minus some margin of error (see the fourth column), this will help us
-ascertain which is the most trustworthy of metrics (the ones that don't change a
-lot over time). The last column shows us how much of the program is built up of
-this particular metric. Hence we can see about half of our time we are doing
-successful L1 (first level) cache hits, but also half of the time we are missing
-the L1 cache, <em>however</em>, it's only a tiny proportion of all the L1 cache
-accesses.</p>
-<p>note that the LLC-load-misses is highlighted in your output, and that it's
-nearly 71% of all LL (last-level) cache accesses! The highlighting is just perf
-trying to be helpful by pointing out something that seems suss, which is good
-for us because it gives us a lead. So we'll do a recording to try to get
-symbol-by-symbol updates on what is happening.</p>
+<p><strong>A handy tip:</strong> <em><code>perf</code> subcommands often take a <code>pre</code> and <code>post</code> argument, which
+you can use to plug in setup and teardown actions, such as <code>--pre=cargo build --release</code>, which is particularly handy to ensure you are getting results on the
+latest results.</em></p>
+<p><code>perf stat</code> will report output with bolded items of note. In my code above you
+won't notice this given how I format things but on your terminal you might. The
+output can be deciphered as such, per column, in order, we have:</p>
+<ol>
+<li>The arithmetic mean of the counted values</li>
+<li>The unit, if known</li>
+<li>The event name</li>
+<li>Summary of event in human terms (sometimes referred to as a shadow metric)</li>
+<li>Deviation across samples</li>
+</ol>
+<p><em>The sixth column is a bit of a mystery to me. I think it has to do with scaling
+the metrics somehow, but if you happen to know definitely, please get in touch!</em></p>
+<p>It definitely helps to know a little bit about hardware architecture to get a
+sense of where problems can arise. You can <a href="https://www.justanotherdot.com/posts/what-makes-up-a-cpu.html">read my longer
+summary</a> of a
+basic architecture, but what we care about here, in essence, is about
+utilization. For example we want to make sure,</p>
 <ul>
-<li><code>perf record -e --call-graph dwarf -- program</code> followed by <code>perf report</code></li>
+<li>Is the CPU being utilized as effectively as it can be?
+<ul>
+<li><code>insn per cycle</code> in the above output next to <code>instructions</code> designates
+roughly how many &quot;instructions per cycle&quot; are being executed on average.
+If a CPU can run, say, four instructions at the same time in its pipeline,
+then we'd hopefully see a value of around 4, but anything from one and
+above is good, too.</li>
 </ul>
+</li>
+<li>Are we switching between threads or are threads switching cores often?
+<ul>
+<li><code>context-switches</code> and <code>cpu-migrations</code> respectively show how often
+how commonly threads are being scheduled or run on cores other than the
+ones they were originally running on.</li>
+</ul>
+</li>
+<li>Are the CPUs caches being maximized or we having to go to main memory a lot?
+<ul>
+<li><a href="https://www.justanotherdot.com/posts/making-friends-with-caches.html">Caches</a>
+are about reuse and speculation. If you want to get water from a well, it
+would take you less time on average if you could bring a lot of water
+closer to home. If we are frequently accessing data, it's better if we can
+architect a program that doesn't have to communicate excessively with main
+memory, although this may not always be possible, depending on context, of
+course. All the <code>L1-*</code> and <code>LLC-*</code> metrics describe this, but there is a
+difference between the <code>dcache</code> and <code>icache</code> which stand for <code>data cache</code>
+and <code>instruction cache</code> respectively. In the same way we can utilize a
+cache for data, we can do the same for instructions so we don't have to
+decode them repeatedly.</li>
+</ul>
+</li>
+<li>Are we trashing useful work in the CPU?
+<ul>
+<li>Speculative branch prediction tries to take a best-guess at which path on
+a branch can be taken. This allows the CPU to do as much work as possible,
+as early as possible, but if the CPU makes the wrong guess, it will have
+to give up everything it's doing at that moment and start over.
+<code>branch-misses</code> tells us how many of <code>branches</code> have been wrong out of
+these best-guesses.</li>
+</ul>
+</li>
+</ul>
+<p>We see that <code>L1</code> (first level) cache hits for data (<code>dcache</code>) aren't that great,
+and that the last level cache (<code>LLC</code>) is missing a <em>lot</em>. This implies that we
+are having to go out to main memory often, which is a good lead on something to
+improve! However, this output is failing to tell us <em>where</em> we should be looking
+in our program to see this manifest itself. For this we'll use <code>perf record</code> to
+associate metrics to symbols in our program.</p>
+<h3>Digging deeper with <code>perf record</code> and <code>perf report</code></h3>
+<p><code>perf record</code> takes samples of events over a given period of time, and lines
+them up with the specific instructions (and, therefore, symbols those
+instructions belong to) giving us insight into which particular part of our code
+is underutilizing or misusing our hardware,</p>
+<pre><code>perf record -e L1-dcache-loads,LLC-load-misses --call-graph dwarf -- target/release/perf-and-dhat-profiling-example test.csv
+</code></pre>
+<p>The above is going to track the two events <code>L1-dcache-loads</code> and
+<code>LLC-load-misses</code> on the command, mentioned after the double hyphen <code>--</code>. It is
+going to use a <code>dwarf</code> debug symbol format, which we enabled output of for
+release builds above in our setup under our cargo manifest.</p>
+<p>When we run <code>perf report</code>, we'll be able to interactively explore hot spots in
+our code. We should start with the biggest ones first. By digging into the
+report we see that event <code>L1-dcache-loads</code> has 98.42% of the event happening
+around lots of code that looks to be <code>deserializing</code> and allocating memory:</p>
 <pre><code>Samples: 91  of event 'L1-dcache-loads', Event count (approx.): 44200363
   Children      Self  Command          Shared Object                    Symbol
 -   98.42%    41.08%  perf-and-dhat-p  perf-and-dhat-profiling-example  [.] perf_and_dhat_profiling_example::main                                                                                  ◆
@@ -213,65 +325,86 @@ symbol-by-symbol updates on what is happening.</p>
          + 0.53% perf_and_dhat_profiling_example::read_file (inlined)                                                                                                                              ▒
 Tip: Show individual samples with: perf script                                                                                                                                                     ▒
 </code></pre>
-<p>The above is giving us a hint of how the program is running and how it <em>might</em>
-be inefficient. On its own, missed cache accesses for reading data isn't
-necessarily bad, but hardware ought to be able to read up chunks of data at a
-time, leveraging a thing called <em>spatial locality</em>, meaning &quot;if you want
-something, you're likely to want the things around it, too&quot;. In this case, we
-are seeing us trying to hit data specifically taking a byte record and
-deserializing it into some other memory for later usage. Check out all the
-malloc and insert calls; we are spending a lot of time building up HashMaps!</p>
-<ul>
-<li>making it more visual with flamegraphs</li>
-</ul>
-<p><code>cargo install --force inferno</code></p>
-<pre><code># `perf script` will use the `perf.data` that you generated after `perf record`
-perf script | inferno-collapse-perf &gt; stacks.folded
-# produce a flamegraph as an interactive SVG to open
-cat stacks.folded | inferno-flamegraph &gt; profile.svg
+<p>Specifically, check out these lines:</p>
+<pre><code>&lt;snip&gt;
+-   98.42%    41.08%  perf-and-dhat-p  perf-and-dhat-profiling-example  [.] perf_and_dhat_profiling_example::main                                                                                  ◆
+&lt;snip&gt;
+         - 52.78% perf_and_dhat_profiling_example::read_csv (inlined)                                                                                                                              ▒
+&lt;snip&gt;
+            - 18.41% &lt;csv::reader::ByteRecordsIter&lt;R&gt; as core::iter::traits::iterator::Iterator&gt;::next (inlined)                                                                                   ▒
+&lt;snip&gt;
+               - 11.44% csv::reader::Reader&lt;R&gt;::read_byte_record (inlined)                                                                                                                         ▒
+&lt;snip&gt;
+            - 12.87% csv::byte_record::ByteRecord::deserialize (inlined)                                                                                                                           ▒
+&lt;snip&gt;
+               - &lt;serde::de::impls::&lt;impl serde::de::Deserialize for std::collections::hash::map::HashMap&lt;K,V,S&gt;&gt;::deserialize::MapVisitor&lt;K,V,S&gt; as serde::de::Visitor&gt;::visit_map (inlined)      ▒
+&lt;snip&gt;
+            + 5.31% core::ptr::drop_in_place&lt;std::collections::hash::map::IntoIter&lt;alloc::string::String,serde_bytes::bytebuf::ByteBuf&gt;&gt; (inlined)                                                 ▒
+            + 4.99% core::ptr::drop_in_place&lt;csv::byte_record::ByteRecord&gt; (inlined)                                                                                                               ▒
+&lt;snip&gt;
 </code></pre>
-<p>This visually shows us that <code>read_csv</code> is the largest cost center,
-all things considered. This shows us, at a glance, that there is a fair amount
-of allocation from the byte record iteration that is getting dropped, possibly
-needlessly, and that the deserialize code is also spending a fair bit of time
-allocating memory and constructing hashmaps. If we look at the code this makes
-sense; we are doing this for every single record!</p>
-<p>To get an alternative sense of this we can realise that <code>perf</code> is telling us
-about CPU metrics, and all this churn on memory results in stalled cycles, or,
-in other words, places where the CPU can't advance work because it's stuck
-waiting. We can additionally think about this in the context of <em>instructions
-per cycle</em> which will tell us how much utilization of the CPU we are getting. If
-everything is going at full utilization we would generally see an instructions
-per cycle value in <code>perf stat</code> of about 3 or 4 (depending on the number of
-parallel instructions the pipeline can feed through it's pipeline at a given
-time). Stalls are latency, and we want to reduce latency, hence it makes sense
-for us to target this area. But we aren't going to get a full picture of what is
-happening without verifying the specifics of allocations. We want to make sure
-which allocations are rather senseless versus those that are required. In this
-case, reading the bytes into memory once makes sense, but doing it more than
-that does not. Nor does it make sense for us to be allocating on every read when
-it isn't going to be the memory we are intending to keep.</p>
-<p>Let's pull out <code>DHAT</code> for that next:</p>
+<p>Here's how I read this:</p>
 <ul>
-<li>
-<p>DHAT and heap analysis</p>
-<p>Ok, so we know that there is a deal of memory pressure going on with creating
-HashMap's, but we want to get extra numbers on what particular allocations are
-the most wasteful. When optimising anything, you can ride hunches, but it's best
-to be sure that your hunches are verified and don't stay as blind or educated
-guesses.</p>
-<p>We'll plug in the dhat stuff under a feature flag so we can easily turn it on
+<li><code>read_csv</code> is taking up half the number of these last level cache load misses</li>
+<li>Part (18.41%) of that is reading a byte record; this is expected.</li>
+<li>another part (12.87%) is deserializing each byte record into a HashMap</li>
+<li>a small, but still sizeable, part is dropping the HashMap (5.31%), as well as the
+ByteRecord (4.99%)</li>
+</ul>
+<p>Which leads us to ask; can we get rid of all this deserialization and HashMap
+construction work? A principle of performance is to be lazy, and the best way to
+be lazy is to avoid doing work you don't need to do! Before we get to tweaking
+the code, let's analyze this outside of the terminal with flamegraphs.</p>
+<h3>Making it more visual with flamegraphs</h3>
+<p><code>inferno</code> is a collection of flamegraph related tooling that Jon Gjenset built
+to produce different types of flamegraphs. The original flamegraph generation
+was a perl script but I find it easier to install and reuse a compiled tool, so
+we'll use <code>inferno</code>.</p>
+<pre><code>cargo install --force inferno
+</code></pre>
+<p>In order to generate a flamegraph, we have to take the <code>perf.data</code> file that is
+generated as part of <code>perf record</code> and run it through <code>perf script</code>. Then we'll
+take <code>inferno-collapse-perf</code> to turn the stack traces into a &quot;folded&quot; format.</p>
+<pre><code>perf script | inferno-collapse-perf &gt; stacks.folded
+</code></pre>
+<p>Then, we'll spit the folded format into <code>inferno-flamegraph</code> and dump the output
+into an SVG.</p>
+<pre><code>cat stacks.folded | inferno-flamegraph &gt; profile.svg
+</code></pre>
+<p>You can load this into a browser to interactively zoom into sections.
+flamgegraphs are purely shown in terms of scale of magnitude. The x-axis has no
+bearing on chronological ordering, but the relative sizes of elements is
+comparable.</p>
+<figure>
+  <img
+    src="/assets/images/perf-flamegraph-screenshot-before.jpg"
+    alt="A flamegraph of our unoptimised program"
+    title="A flamegraph of our unoptimised program">
+  </img>
+</figure>
+<p>This visually shows us that <code>read_csv</code> is the largest cost center. At a glance,
+there is a fair amount of allocation from the byte record iteration that is
+getting dropped, possibly needlessly, and that the deserialize code is also
+spending a fair bit of time allocating memory and constructing HashMaps, as we
+saw with the terminal. If we look at the code this makes sense; we are doing
+this for every single record!</p>
+<p>What about specific allocations? <code>perf</code> isn't going to be able to tell us
+specifics about allocations, and for that we'll turn to Nicholas Nethercoate's
+wonderful <code>dhat</code> Rust library, built out of the same tooling for <code>dhat</code> on
+valgrind.</p>
+<h3>Allocation analysis</h3>
+<p>We'll plug in the <code>dhat</code> stuff under a feature flag so we can easily turn it on
 later when we want, and leave it out of the way when we don't. I'll be
-unimaginative and call this feature flag <code>dhat-on</code>, thus in our manifest file,</p>
+unimaginative and call this feature flag <code>dhat-on</code>, thus in our cargo manifest,</p>
 <pre><code>[features]
 default = []
 dhat-on = []
 </code></pre>
-<p>plus, you'll need to make sure you turn off <code>lto</code> that we had on before. We
-want to be able to see the stack traces for the allocations, and
-optimisations such as <code>lto</code> will do as much inlining across dependencies as
+<p>Plus, you'll need to make sure you turn off <code>lto</code> that we had on before with
+<code>lto = false</code>. We want to be able to see the stack traces for the allocations,
+and optimisations such as <code>lto</code> will do as much inlining across dependencies as
 possible.</p>
-<p>and also, here's the patch plugging it in,</p>
+<p>Here's the patch plugging it in to the codebase,</p>
 <pre><code>diff --git a/src/main.rs b/src/main.rs
 index bd43846..b140355 100644
  a/src/main.rs
@@ -311,7 +444,14 @@ index bd43846..b140355 100644
 <code>dhat-heap.json</code> that we can take and load into a
 <a href="https://nnethercote.github.io/dh_view/dh_view.html">viewer</a>. You can also clone
 the valgrind project to get access to the same HTML to view the output.</p>
-<pre><code>&lt;snip&gt;
+<pre><code>▼ PP 1/1 (7 children) {
+    Total:     18,443,933 bytes (100%, 8,095,768.23/s) in 374,530 blocks (100%, 164,395.96/s), avg size 49.25 bytes, avg lifetime 121.47 µs (0.01% of program duration)
+    At t-gmax: 2,312,738 bytes (100%) in 26 blocks (100%), avg size 88,951.46 bytes
+    At t-end:  1,024 bytes (100%) in 1 blocks (100%), avg size 1,024 bytes
+    Allocated at {
+      #0: [root]
+    }
+  }
   ├── PP 1.1/7 {
   │     Total:     973,674 bytes (5.28%, 469,997.01/s) in 112,347 blocks (30%, 54,230.42/s), avg size 8.67 bytes, avg lifetime 13.41 µs (0% of program duration)
   │     Max:       26 bytes in 3 blocks, avg size 8.67 bytes
@@ -403,23 +543,36 @@ the valgrind project to get access to the same HTML to view the output.</p>
 <ul>
 <li>blocks is just a specific call to an allocation, so &quot;100 blocks&quot; means 100
 individual allocation calls, I think.</li>
-<li>the hashbrown calls end up producing more total bytes than the actual
-deserialize calls themselves, but
-the byterecord iteration seem to be broken up, likely because the byterecord
-needs to allocate for the individual values or handing back the ByteRecord
-value itself.</li>
+<li>the hashbrown (HashMap) calls end up producing more total bytes than the
+actual deserialize calls themselves, but the byterecord iteration seem to be
+broken up, likely because the byterecord needs to allocate for the individual
+values or handing back the ByteRecord value itself.</li>
 </ul>
-</li>
-<li>
-<p>putting in a few simple benchmarks to confirm our updates</p>
-</li>
-</ul>
-<p>Cool, we've confirmed we can clearly fix one thing that is under our control,
-the HashMap construction. If we take a step back and think about this program,
-we don't need to have the HashMap at all! Reading through the <code>csv</code> docs it
-looks like we can reuse a single <code>ByteRecord</code>. Before we go about making chnages
-though, we want some <em>reproducible</em> ways to confirm to ourselves, and especially
-to others, that we've made a reasonable optimisation.</p>
+<p>Particularly, let's look at this output:</p>
+<pre><code>  │     Total:     973,674 bytes (5.28%, 469,997.01/s) in 112,347 blocks (30%, 54,230.42/s), avg size 8.67 bytes, avg lifetime 13.41 µs (0% of program duration)
+  │     Max:       26 bytes in 3 blocks, avg size 8.67 bytes
+&lt;snip&gt;
+  │     Allocated at {
+  │       #1: 0x556ef23a8ab5: &lt;alloc::alloc::Global as core::alloc::Allocator&gt;::allocate (alloc.rs:226:9)
+&lt;snip&gt;
+  │       #21: 0x556ef23aa85a: csv::byte_record::ByteRecord::deserialize (byte_record.rs:233:9)
+  │     }
+  │   }
+</code></pre>
+<p>Although it's useful to know the total, max, and etc. what this is telling us is
+that each deserialize step is leading to plenty of allocations. We had
+previously estimated, based on <code>perf</code>s output, that it would be good idea to
+stop deserializing if we can, but this confirms that it is definitely happening
+a lot and is non-trivial in the scheme of things. Before we begin changing code,
+we should put in benchmarks to let others running our code confirm results for
+themselves (possibly documenting our process like how we've done in this
+article, too!).</p>
+<h3>Benchmarks for reproduction</h3>
+<p>We now know we want to remove our <code>deserialize</code> code and that means finding
+something we can recycle on every iteration of our loop. Reading through the
+<code>csv</code> docs it looks like we can reuse a single <code>ByteRecord</code>. Having benchmarks
+in place will help us verify for ourselves, and others, that the change we've
+put in has actually made a net positive gain.</p>
 <pre><code>#[cfg(test)]
 mod tests {
     extern crate test;
@@ -441,8 +594,6 @@ mod tests {
 <p>You'll have to chuck <code>#[feature(test)]</code> at the top of <code>main.rs</code> and run the
 benches with nightly. You can pass <code>+nightly</code> to do that on the fly without
 having to change the current toolchain.</p>
-<p>you likely want to make a top-level <code>bin</code> directory and include some scripts
-that allow anyone else to reproduce the <code>perf</code> and <code>dhat</code> checks as well.</p>
 <pre><code>; cargo +nightly bench
    Compiling perf-and-dhat-profiling-example v0.1.0 (/home/rjs/repos/perf-and-dhat-profiling-exam
 ple)
@@ -454,6 +605,9 @@ test tests::bench_read_csv ... bench:  18,044,486 ns/iter (+/- 551,993)
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 1 measured; 0 filtered out; finished in 5.47s
 </code></pre>
+<p>This shows us an average of 18,044,486 nanoseconds per iteration. 1,000
+nanoseconds is a millisecond, and 1000 milliseconds is a second, thus we have 18
+seconds per iteration to run against our test case.</p>
 <p>Now let's try the single allocation for ByteRecord,</p>
 <pre><code>diff --git a/src/main.rs b/src/main.rs
 index 8d425c1..a68b0ec 100644
@@ -506,8 +660,8 @@ test tests::bench_read_csv ... bench:   4,528,433 ns/iter (+/- 1,328,048)
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 1 measured; 0 filtered out; finished in 4.22s
 </code></pre>
-<p>Which is a ~4x improvement in terms of timing. Let's confirm it in a few ways:</p>
-<p>perf stats with stalled cycles:</p>
+<p>We're down to four seconds! Which is a ~4x improvement in terms of timing. Let's confirm it in a few ways:</p>
+<p><code>perf stat</code></p>
 <pre><code> Performance counter stats for 'system wide' (100 runs):
 
              37.61 msec cpu-clock                 #    3.537 CPUs utilized            ( +-  1.93% )
@@ -526,10 +680,17 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 1 measured; 0 filtered out; fini
          0.0106321 +- 0.0000668 seconds time elapsed  ( +-  0.63% )
 
 </code></pre>
-<p>where we can see LLC-load-misses are not even counted.</p>
+<p>where we can see <code>LLC-load-misses</code> aren't even counted anymore.</p>
 <p><code>perf record</code> and friends, which show that read_byte_record takes just as long
 as our <code>parse</code> code.</p>
-<p>DHAT which shows our overall memory footprint is drastically reduced,</p>
+<figure>
+  <img
+    src="/assets/images/perf-flamegraph-screenshot-after.jpg"
+    alt="A flamegraph of our optimised program"
+    title="A flamegraph of our optimised program">
+  </img>
+</figure>
+<p><code>dhat</code> instrumentation, which shows our overall memory footprint is drastically reduced,</p>
 <pre><code>&lt;snip&gt;
 PP 1/1 (18 children) {
     Total:     3,539,231 bytes (100%, 115,733,004.15/s) in 40 blocks (100%, 1,308/s), avg size 88,480.78 bytes, avg lifetime 8,511.5 µs (27.83% of program duration)
@@ -561,128 +722,34 @@ PP 1/1 (18 children) {
   │   │       #5: 0x565479a3819f: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve (raw_vec.rs:337:13)
   │   │     }
   │   │   }
-  │   ├─▼ PP 1.1.2/3 (2 children) {
-  │   │     Total:     80 bytes (0%, 2,616/s) in 5 blocks (12.5%, 163.5/s), avg size 16 bytes, avg lifetime 8,096.8 µs (26.48% of program duration)
-  │   │     At t-gmax: 48 bytes (0%) in 2 blocks (12.5%), avg size 24 bytes
-  │   │     At t-end:  0 bytes (0%) in 0 blocks (0%), avg size 0 bytes
-  │   │     Allocated at {
-  │   │       ^1: 0x565479a3edc2: &lt;dhat::DhatAlloc as core::alloc::global::GlobalAlloc&gt;::alloc (lib.rs:244:9)
-  │   │       ^2: 0x565479a37aa5: alloc::raw_vec::finish_grow (result.rs:0:23)
-  │   │       #3: 0x565479a30754: alloc::raw_vec::RawVec&lt;T,A&gt;::grow_amortized (raw_vec.rs:442:19)
-  │   │       #4: 0x565479a30754: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve::do_reserve_and_handle (raw_vec.rs:333:28)
-  │   │     }
-  │   │   }
-  │   │   ├── PP 1.1.2.1/2 {
-  │   │   │     Total:     56 bytes (0%, 1,831.2/s) in 3 blocks (7.5%, 98.1/s), avg size 18.67 bytes, avg lifetime 6,708.67 µs (21.94% of program duration)
-  │   │   │     Max:       32 bytes in 1 blocks, avg size 32 bytes
-  │   │   │     At t-gmax: 32 bytes (0%) in 1 blocks (6.25%), avg size 32 bytes
-  │   │   │     At t-end:  0 bytes (0%) in 0 blocks (0%), avg size 0 bytes
-  │   │   │     Allocated at {
-  │   │   │       ^1: 0x565479a3edc2: &lt;dhat::DhatAlloc as core::alloc::global::GlobalAlloc&gt;::alloc (lib.rs:244:9)
-  │   │   │       ^2: 0x565479a37aa5: alloc::raw_vec::finish_grow (result.rs:0:23)
-  │   │   │       ^3: 0x565479a30754: alloc::raw_vec::RawVec&lt;T,A&gt;::grow_amortized (raw_vec.rs:442:19)
-  │   │   │       ^4: 0x565479a30754: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve::do_reserve_and_handle (raw_vec.rs:333:28)
-  │   │   │       #5: 0x565479a38d21: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve (raw_vec.rs:337:13)
-  │   │   │       #6: 0x565479a38d21: alloc::vec::Vec&lt;T,A&gt;::reserve (mod.rs:803:9)
-  │   │   │       #7: 0x565479a38d21: alloc::vec::Vec&lt;T,A&gt;::extend_with (mod.rs:2226:9)
-  │   │   │       #8: 0x565479a38d21: alloc::vec::Vec&lt;T,A&gt;::resize (mod.rs:2122:13)
-  │   │   │       #9: 0x565479a38d21: csv::byte_record::ByteRecord::expand_fields (byte_record.rs:529:9)
-  │   │   │       #10: 0x565479a38d21: csv::reader::Reader&lt;R&gt;::read_byte_record_impl (reader.rs:1661:21)
-  │   │   │       #11: 0x565479a38d21: csv::reader::Reader&lt;R&gt;::read_byte_record (reader.rs:1601:18)
-  │   │   │       #12: 0x565479a38060: perf_and_dhat_profiling_example::read_csv (main.rs:44:9)
-  │   │   │     }
-  │   │   │   }
-  │   │   └── PP 1.1.2.2/2 {
-  │   │         Total:     24 bytes (0%, 784.8/s) in 2 blocks (5%, 65.4/s), avg size 12 bytes, avg lifetime 10,179 µs (33.29% of program duration)
-  │   │         Max:       16 bytes in 1 blocks, avg size 16 bytes
-  │   │         At t-gmax: 16 bytes (0%) in 1 blocks (6.25%), avg size 16 bytes
-  │   │         At t-end:  0 bytes (0%) in 0 blocks (0%), avg size 0 bytes
-  │   │         Allocated at {
-  │   │           ^1: 0x565479a3edc2: &lt;dhat::DhatAlloc as core::alloc::global::GlobalAlloc&gt;::alloc (lib.rs:244:9)
-  │   │           ^2: 0x565479a37aa5: alloc::raw_vec::finish_grow (result.rs:0:23)
-  │   │           ^3: 0x565479a30754: alloc::raw_vec::RawVec&lt;T,A&gt;::grow_amortized (raw_vec.rs:442:19)
-  │   │           ^4: 0x565479a30754: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve::do_reserve_and_handle (raw_vec.rs:333:28)
-  │   │           #5: 0x565479a39fe6: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve (raw_vec.rs:337:13)
-  │   │           #6: 0x565479a39fe6: alloc::vec::Vec&lt;T,A&gt;::reserve (mod.rs:803:9)
-  │   │           #7: 0x565479a39fe6: alloc::vec::Vec&lt;T,A&gt;::extend_with (mod.rs:2226:9)
-  │   │           #8: 0x565479a39fe6: alloc::vec::Vec&lt;T,A&gt;::resize (mod.rs:2122:13)
-  │   │           #9: 0x565479a39fe6: csv::byte_record::ByteRecord::expand_fields (byte_record.rs:529:9)
-  │   │           #10: 0x565479a39fe6: csv::reader::Reader&lt;R&gt;::read_byte_record_impl (reader.rs:1661:21)
-  │   │           #11: 0x565479a39fe6: csv::reader::Reader&lt;R&gt;::headers (reader.rs:1332:13)
-  │   │           #12: 0x565479a37d70: perf_and_dhat_profiling_example::read_csv (main.rs:40:20)
-  │   │         }
-  │   │       }
-  │   └─▼ PP 1.1.3/3 (2 children) {
-  │         Total:     64 bytes (0%, 2,092.8/s) in 2 blocks (5%, 65.4/s), avg size 32 bytes, avg lifetime 20,246 µs (66.2% of program duration)
-  │         At t-gmax: 64 bytes (0%) in 2 blocks (12.5%), avg size 32 bytes
-  │         At t-end:  0 bytes (0%) in 0 blocks (0%), avg size 0 bytes
-  │         Allocated at {
-  │           ^1: 0x565479a3edc2: &lt;dhat::DhatAlloc as core::alloc::global::GlobalAlloc&gt;::alloc (lib.rs:244:9)
-  │           ^2: 0x565479a37aa5: alloc::raw_vec::finish_grow (result.rs:0:23)
-  │           #3: 0x565479a3069f: alloc::raw_vec::RawVec&lt;T,A&gt;::grow_amortized (raw_vec.rs:442:19)
-  │           #4: 0x565479a3069f: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve::do_reserve_and_handle (raw_vec.rs:333:28)
-  │         }
-  │       }
-  │       ├── PP 1.1.3.1/2 {
-  │       │     Total:     32 bytes (0%, 1,046.4/s) in 1 blocks (2.5%, 32.7/s), avg size 32 bytes, avg lifetime 20,132 µs (65.83% of program duration)
-  │       │     Max:       32 bytes in 1 blocks, avg size 32 bytes
-  │       │     At t-gmax: 32 bytes (0%) in 1 blocks (6.25%), avg size 32 bytes
-  │       │     At t-end:  0 bytes (0%) in 0 blocks (0%), avg size 0 bytes
-  │       │     Allocated at {
-  │       │       ^1: 0x565479a3edc2: &lt;dhat::DhatAlloc as core::alloc::global::GlobalAlloc&gt;::alloc (lib.rs:244:9)
-  │       │       ^2: 0x565479a37aa5: alloc::raw_vec::finish_grow (result.rs:0:23)
-  │       │       ^3: 0x565479a3069f: alloc::raw_vec::RawVec&lt;T,A&gt;::grow_amortized (raw_vec.rs:442:19)
-  │       │       ^4: 0x565479a3069f: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve::do_reserve_and_handle (raw_vec.rs:333:28)
-  │       │       #5: 0x565479a38d50: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve (raw_vec.rs:337:13)
-  │       │       #6: 0x565479a38d50: alloc::vec::Vec&lt;T,A&gt;::reserve (mod.rs:803:9)
-  │       │       #7: 0x565479a38d50: alloc::vec::Vec&lt;T,A&gt;::extend_with (mod.rs:2226:9)
-  │       │       #8: 0x565479a38d50: alloc::vec::Vec&lt;T,A&gt;::resize (mod.rs:2122:13)
-  │       │       #9: 0x565479a38d50: csv::byte_record::Bounds::expand (byte_record.rs:711:9)
-  │       │       #10: 0x565479a38d50: csv::byte_record::ByteRecord::expand_ends (byte_record.rs:535:9)
-  │       │       #11: 0x565479a38d50: csv::reader::Reader&lt;R&gt;::read_byte_record_impl (reader.rs:1665:21)
-  │       │       #12: 0x565479a38d50: csv::reader::Reader&lt;R&gt;::read_byte_record (reader.rs:1601:18)
-  │       │       #13: 0x565479a38060: perf_and_dhat_profiling_example::read_csv (main.rs:44:9)
-  │       │     }
-  │       │   }
-  │       └── PP 1.1.3.2/2 {
-  │             Total:     32 bytes (0%, 1,046.4/s) in 1 blocks (2.5%, 32.7/s), avg size 32 bytes, avg lifetime 20,360 µs (66.58% of program duration)
-  │             Max:       32 bytes in 1 blocks, avg size 32 bytes
-  │             At t-gmax: 32 bytes (0%) in 1 blocks (6.25%), avg size 32 bytes
-  │             At t-end:  0 bytes (0%) in 0 blocks (0%), avg size 0 bytes
-  │             Allocated at {
-  │               ^1: 0x565479a3edc2: &lt;dhat::DhatAlloc as core::alloc::global::GlobalAlloc&gt;::alloc (lib.rs:244:9)
-  │               ^2: 0x565479a37aa5: alloc::raw_vec::finish_grow (result.rs:0:23)
-  │               ^3: 0x565479a3069f: alloc::raw_vec::RawVec&lt;T,A&gt;::grow_amortized (raw_vec.rs:442:19)
-  │               ^4: 0x565479a3069f: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve::do_reserve_and_handle (raw_vec.rs:333:28)
-  │               #5: 0x565479a3a048: alloc::raw_vec::RawVec&lt;T,A&gt;::reserve (raw_vec.rs:337:13)
-  │               #6: 0x565479a3a048: alloc::vec::Vec&lt;T,A&gt;::reserve (mod.rs:803:9)
-  │               #7: 0x565479a3a048: alloc::vec::Vec&lt;T,A&gt;::extend_with (mod.rs:2226:9)
-  │               #8: 0x565479a3a048: alloc::vec::Vec&lt;T,A&gt;::resize (mod.rs:2122:13)
-  │               #9: 0x565479a3a048: csv::byte_record::Bounds::expand (byte_record.rs:711:9)
-  │               #10: 0x565479a3a048: csv::byte_record::ByteRecord::expand_ends (byte_record.rs:535:9)
-  │               #11: 0x565479a3a048: csv::reader::Reader&lt;R&gt;::read_byte_record_impl (reader.rs:1665:21)
-  │               #12: 0x565479a3a048: csv::reader::Reader&lt;R&gt;::headers (reader.rs:1332:13)
-  │               #13: 0x565479a37d70: perf_and_dhat_profiling_example::read_csv (main.rs:40:20)
-  │             }
 &lt;snip&gt;
 </code></pre>
-<p>and finally <code>hyperfine</code>.</p>
-<pre><code>Benchmark #1: target/release/perf-and-dhat-profiling-example test.csv
-  Time (mean ± σ):       8.8 ms ±   0.5 ms    [User: 7.9 ms, System: 1.0 ms]
-  Range (min … max):     8.4 ms …  11.7 ms    293 runs
+<p>Which shows us that we've gone from 18,443,933 bytes to 3,539,231 bytes and we
+are mostly spending time largely building <code>RawVec</code>s now.</p>
+<p>Finally <code>hyperfine</code>.</p>
+<pre><code>; hyperfine &quot;target/release/perf-and-dhat-profiling-example test.csv&quot; &quot;target/release/perf-and-dhat-profiling-example-unoptimized test.csv&quot;
+Benchmark #1: target/release/perf-and-dhat-profiling-example test.csv
+  Time (mean ± σ):       8.9 ms ±   0.5 ms    [User: 8.0 ms, System: 0.9 ms]
+  Range (min … max):     8.4 ms …  11.8 ms    291 runs
 
-  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet PC without any interferences from other programs. It might help to use the '--warmup' or '--prepare' op
-tions.
+Benchmark #2: target/release/perf-and-dhat-profiling-example-unoptimized test.csv
+  Time (mean ± σ):      23.7 ms ±   1.2 ms    [User: 22.5 ms, System: 1.1 ms]
+  Range (min … max):    22.6 ms …  31.8 ms    121 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet PC without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+Summary
+  'target/release/perf-and-dhat-profiling-example test.csv' ran
+    2.66 ± 0.19 times faster than 'target/release/perf-and-dhat-profiling-example-unoptimized test.csv'
 </code></pre>
-<p>which shows an improvement of ~2.4x in terms of latency.</p>
-<p>&quot;Trivial allocations&quot; are not so trivial!</p>
+<p>Lesson: &quot;trivial allocations&quot; are not so trivial!</p>
 <h2>Conclusion</h2>
 <p>Using <code>perf</code> and a memory analysis tool like <code>dhat</code> can give you a pretty solid
 picture of what is going on in terms of hardware utilization. Obviously it's not
-the only profilers at your disposal, but discovering issues backed by numbers is
-crucial.</p>
-<p>If you want to have a look over the code examples and stages above, head over to
-the <a href="https://github.com/justanotherdot/perf-and-dhat-profiling-example">repo</a>.</p>
+the only profilers at your disposal, and we'll likely tackle some other articles
+doing the same above with different tooling, but discovering issues backed by
+numbers is fundamentally crucial in demonstrating to yourself and others that a
+change is worth accepting.</p>
 
         </div>
         <!-- NEWSLETTER BEGIN -->
