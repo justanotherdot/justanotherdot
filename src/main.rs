@@ -222,7 +222,7 @@ fn create_deploy_dirs(deploy_prefix: &str, deploy_dirs: &[&str]) -> Result<(), E
         .map(|p| {
             let path = format!("{}/{}", deploy_prefix, p);
             let path = Path::new(&path);
-            std::fs::create_dir_all(path).map_err(Error::IoError)
+            std::fs::create_dir_all(path).map_err(|_| Error::DeployDirectoryCreateError)
         })
         .collect()
 }
@@ -233,14 +233,15 @@ fn render_posts(template_root: &str, deploy_prefix: &str, domain: &str) -> Vec<P
     let mut posts = WalkDir::new(&format!("{}/posts", template_root))
         .into_iter()
         .filter_map(|e| e.ok())
-        .fold(vec![], |mut acc, entry| {
+        .filter_map(|entry| {
             let path = entry.path();
             if path.is_file() && path.extension() == Some(OsStr::new("md")) {
-                let post = parse_post(path, domain);
-                acc.push(post);
+                Some(parse_post(path, domain))
+            } else {
+                None
             }
-            acc
-        });
+        })
+        .collect::<Vec<_>>();
     posts.sort_by_key(|p| std::cmp::Reverse(p.date_iso8601.clone()));
     posts.iter().for_each(|post| {
         let rendered = post_template.render(&post);
@@ -325,23 +326,24 @@ fn render_sitemap(template_root: &str, deploy_prefix: &str, posts: &[Post]) {
         .expect("failed to write post to deploy");
 }
 
-fn main() {
-    // TODO: render -> write split out.
-    // TODO: Pre-render templates upfront?
-    // TODO: generic version would not have unwraps here.
+fn go() -> Result<(), Error> {
     let template_root = std::env::var("TEMPLATE_ROOT").unwrap_or("site".to_string());
     let deploy_prefix = std::env::var("DEPLOY_PREFIX").unwrap_or("deploy".to_string());
     let title = std::env::var("TITLE").unwrap_or("justanotherdot".to_string());
     let domain = std::env::var("DOMAIN").unwrap_or("https://justanotherdot.com".to_string());
-
-    create_deploy_dirs(&deploy_prefix, &["posts", "tags", "assets"]).unwrap_or_else(|_| {
-        eprintln!("could not create initial directories");
-        std::process::exit(1);
-    });
-
+    create_deploy_dirs(&deploy_prefix, &["posts", "tags", "assets"])?;
+    // TODO: conexts -> render -> write split out.
     let posts = render_posts(&template_root, &deploy_prefix, &domain);
     let tags = render_tags(&template_root, &deploy_prefix, &posts);
     render_index(&template_root, &deploy_prefix, &title, &posts, &tags);
     render_rss(&template_root, &deploy_prefix, &domain, &posts);
     render_sitemap(&template_root, &deploy_prefix, &posts);
+    Ok(())
+}
+
+fn main() {
+    go().unwrap_or_else(|e| {
+        eprintln!("[justanotherdot] {}", e);
+        std::process::exit(1);
+    });
 }

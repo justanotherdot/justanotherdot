@@ -1,9 +1,14 @@
+use std::fmt::{Display, Formatter, Result};
+
 pub enum Error {
-    IoError(std::io::Error),
+    DeployDirectoryCreateError,
 }
 
-impl From<std::io::Error> for Error {
-    fn from(err: std::io::Error) -> Error {
-        Error::IoError(err)
+impl Display for Error {
+    fn fmt(&self, fmt: &mut Formatter) -> Result {
+        use Error::*;
+        match self {
+            DeployDirectoryCreateError => write!(fmt, "failed creating deploy directories"),
+        }
     }
 }
