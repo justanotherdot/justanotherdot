@@ -1,8 +1,3 @@
-extern crate chrono;
-extern crate ramhorns;
-extern crate regex;
-extern crate serde;
-extern crate walkdir;
 #[macro_use]
 extern crate lazy_static;
 
