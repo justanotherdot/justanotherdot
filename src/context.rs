@@ -2,11 +2,76 @@ use chrono::{DateTime, FixedOffset};
 use ramhorns::Content;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeSet;
+use std::ffi::OsStr;
 use std::path::Path;
+use walkdir::WalkDir;
+
+use crate::template::*;
 
 lazy_static! {
     static ref WHITESPACE_RE: Regex = Regex::new(r"\s+").unwrap();
     static ref UNDERSCORE_RE: Regex = Regex::new(r"_+").unwrap();
+}
+
+pub enum Context<'a> {
+    Posts(Vec<Post>),
+    Tags(BTreeSet<Tag>),
+    Index(Index<'a>),
+    Rss(Rss),
+    Sitemap(Sitemap),
+}
+
+impl<'a> Context<'a> {
+    // TODO: render + write, rather than just render + write in same spot.
+    pub fn render(&self, template_root: &str, deploy_prefix: &str) {
+        use Context::*;
+        match self {
+            Posts(posts) => {
+                let post_template_path = &format!("{}/templates/post.html", template_root);
+                let post_template = PostTemplate(template(post_template_path));
+                posts.iter().for_each(|post| {
+                    let rendered = post_template.render(&post);
+                    std::fs::write(format!("{}/{}", deploy_prefix, &post.url), &rendered)
+                        .expect("failed to write post to deploy");
+                    std::fs::write(format!("{}/{}", deploy_prefix, &post.snake_url), &rendered)
+                        .expect("failed to write post to deploy");
+                });
+            }
+            Tags(tags) => {
+                let tags_template_path = format!("{}/templates/tags.html", template_root);
+                let tags_template = TagsTemplate(template(&tags_template_path));
+                for tag in tags.iter() {
+                    let rendered = tags_template.render(&tag);
+                    std::fs::write(format!("{}/{}", deploy_prefix, tag.url), &rendered)
+                        .expect("failed to write post to deploy");
+                    std::fs::write(format!("{}/{}", deploy_prefix, tag.snake_url), &rendered)
+                        .expect("failed to write post to deploy");
+                }
+            }
+            Index(index) => {
+                let index_template_path = format!("{}/templates/index.html", template_root);
+                let index_template = IndexTemplate(template(&index_template_path));
+                let rendered = index_template.render(&index);
+                std::fs::write(&format!("{}/index.html", deploy_prefix), rendered)
+                    .expect("failed to write post to deploy");
+            }
+            Rss(rss) => {
+                let rss_template_path = format!("{}/templates/rss.xml", template_root);
+                let rss_template = RssTemplate(template(&rss_template_path));
+                let rendered = rss_template.render(&rss);
+                std::fs::write(&format!("{}/rss.xml", deploy_prefix), rendered)
+                    .expect("failed to write post to deploy");
+            }
+            Sitemap(sitemap) => {
+                let sitemap_template_path = format!("{}/templates/sitemap.xml", template_root);
+                let sitemap_template = SitemapTemplate(template(&sitemap_template_path));
+                let rendered = &sitemap_template.render(&sitemap);
+                std::fs::write(&format!("{}/sitemap.xml", deploy_prefix), rendered)
+                    .expect("failed to write post to deploy");
+            }
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -158,8 +223,44 @@ impl Ord for Tag {
 }
 
 #[derive(Content, Clone, Debug)]
-pub struct Blog<'a> {
+pub struct Index<'a> {
     pub title: &'a str,
     pub posts: Vec<Post>,
     pub tags: Vec<Tag>,
+}
+
+pub fn list_posts(template_root: &str, domain: &str) -> Vec<Post> {
+    let mut posts = WalkDir::new(&format!("{}/posts", template_root))
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter_map(|entry| {
+            let path = entry.path();
+            if path.is_file() && path.extension() == Some(OsStr::new("md")) {
+                Some(Post::parse(path, domain))
+            } else {
+                None
+            }
+        })
+        .collect::<Vec<_>>();
+    posts.sort_by_key(|p| std::cmp::Reverse(p.date_iso8601.clone()));
+    posts
+}
+
+pub fn list_tags(posts: &[Post]) -> BTreeSet<Tag> {
+    let tags = posts.into_iter().fold(BTreeSet::new(), |mut acc, p| {
+        for tag in &p.tags {
+            acc.insert(tag.clone());
+        }
+        acc
+    });
+    tags.into_iter()
+        .map(|tag| Tag {
+            posts: posts
+                .into_iter()
+                .filter(|p| p.tags.iter().find(|x| x.tag == tag.tag).is_some())
+                .cloned()
+                .collect(),
+            ..tag
+        })
+        .collect()
 }

@@ -1,4 +1,4 @@
-use crate::context::{Blog, Post, Rss, Sitemap, Tag};
+use crate::context::{Index, Post, Rss, Sitemap, Tag};
 use ramhorns::Template;
 
 pub struct PostTemplate<'a>(pub Template<'a>);
@@ -12,7 +12,7 @@ impl<'a> PostTemplate<'a> {
 pub struct IndexTemplate<'a>(pub Template<'a>);
 
 impl<'a> IndexTemplate<'a> {
-    pub fn render(&self, context: &Blog) -> String {
+    pub fn render(&self, context: &Index) -> String {
         self.0.render(context)
     }
 }
