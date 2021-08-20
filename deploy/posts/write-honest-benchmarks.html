@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Write Honest Benchmarks">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/write-honest-benchmarks.jpg">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Do benchmarks feel really _really_ hard to get right and that you are never sure you are measuring what you want to measure? It’s likely you feel this way because benchmarks are like mini experiments; you run the experiment to see if there are reproducible results given some fixed parameters. Yet despite the relative ease of running experiments and collating data, experiments can be a net negative as they are prone to lie if you don’t heed some straightforward mistakes.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Write Honest Benchmarks">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/write-honest-benchmarks.jpg">
+    <meta name="twitter:description" content="Do benchmarks feel really _really_ hard to get right and that you are never sure you are measuring what you want to measure? It’s likely you feel this way because benchmarks are like mini experiments; you run the experiment to see if there are reproducible results given some fixed parameters. Yet despite the relative ease of running experiments and collating data, experiments can be a net negative as they are prone to lie if you don’t heed some straightforward mistakes.">
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Write Honest Benchmarks &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Write Honest Benchmarks</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          <p>Do benchmarks feel really <em>really</em> hard to get right and that you are never sure you are measuring what you want to measure? It’s likely you feel this way because benchmarks are like mini experiments; you run the experiment to see if there are reproducible results given some fixed parameters. Yet despite the relative ease of running experiments and collating data, experiments can be a net negative as they are prone to lie if you don’t heed some straightforward mistakes.</p>
+<p>What do we want out of benchmarks?</p>
+<ul>
+<li>Insight on the impact our changes have on runtime characteristics</li>
+<li>To prove to others that the system in question  possesses or lacks runtime characteristics</li>
+</ul>
+<p>Thankfully, the tradition of experimentation and statistics is a long one, full of lots of lessons learned. Many of the tips I’m about to go into I’ve learned the hard way, but I can say that once you have these in hand, writing reliable, honest benchmarks should feel painless.</p>
+<h2>tl;dr</h2>
+<p>Much of these things can be tackled by choice of benchmark harness. Other of these are important to keep in mind as you write benchmarks.</p>
+<ul>
+<li>Choose a benchmark harness that runs your code across many iterations, performs trial runs, and tells you a good range of statistical information to help you confirm if you can trust the result</li>
+<li>Randomize the order of benchmark runs, as well as varying the workloads you feed them, to root out pathological cases</li>
+<li>Treat your benchmarks as an extension of a profiler, instrumenting many facets of the system as a whole to gain insights on the relative sizes each part plays in the bigger picture</li>
+<li>Pin down as many details as possible and mention them in documentation paired with the benchmarks</li>
+<li>Run benchmarks on as quiet a machine as possible, unless the intent is to draw conclusions about how the system will run on a fully loaded host, in which case be clear about this distinction.</li>
+<li>Verify the code under measurement is what you expect it to be by measuring overheads or inspecting generated assembly. Although you can guard against. compiler optimisations by using <code>black_box</code>, use it sparingly as it is unlikely that unoptimised code is what you want to be measuring!</li>
+</ul>
+<h2>Variance and you</h2>
+<p>The aim of the game in benchmarking is to derive a single figure of merit. This is usually an arithmetic mean. Why aggregate a mean when we can run the program once and get a number we can use immediately? Unfortunately, if we did that, we’d be potentially hiding away all sorts of useful information. Consider a system that half the time observed performs some task in 20 milliseconds and then the other half of the time observed performs the task for 20 seconds. If we were to accept the first number we saw, we’d draw a drastically different conclusion depending on which number we saw!</p>
+<p>By taking the average, we understand a better sense of <em>center</em>, but we can’t just accept an average by itself, either! If we did, we’d ignore how widely spaced our observations are. The greater degree of variance across the numbers, the less we can trust this sense of center. Thus, when we run benchmarks we generally</p>
+<ul>
+<li>Run many iterations of the experiment</li>
+<li>Average the results, and</li>
+<li>Report the range of the results and their standard deviation</li>
+</ul>
+<p>This gives you a decent amount of information to tell you if stray statistical outliers are tugging an average in a certain direction or if the results are all over the place. If timings are all over the place, the only reasonable conclusion we can draw from the result is that the system under test does not display dependable characteristics.</p>
+<h2>Variety is the spice of life</h2>
+<p>Hardware is stateful; data stored in memory, caches, buffers, and so on, from prior runs can have an impact on making a benchmark look better or worse than it might have if it was run in a different order or if it didn’t have warmup runs. If you run warmups, ensure their results are included in the mix or they may show up as unexpected variance in the results.</p>
+<p>It’s additionally important to treat your benchmarks as an extension of a profiler. While performance isn’t necessarily additive, it is imperative to observe the different parts of the system to understand the relative sizes of the role of each part in the sum. It is tempting to look at a single part of a program and label the whole thing with “bad” or “good”, but understanding if a single bottleneck is skewing results helps you and others better understand the strengths and weaknesses of the system as a whole.</p>
+<p>Lastly, it’s important to consider varying benchmark inputs or “workloads”. The purpose of this is to understand corner cases. Regular strides or powers of two may seem fine, but if you don’t explore the crevices between these inputs you’ll likely leave pathological cases lurking behind what seem like perfectly fine benchmark results.</p>
+<h2>Be precise and be public</h2>
+<p>A common mistake with benchmarks is assuming two environments are comparable. Hence a developer may run benchmarks on their laptop and try to infer the runtime characteristics of a production machine from the local results, or vice versa!</p>
+<p>The answer to this is to be public with your results. Documenting everything will force you to get feedback early about their legitimacy. A great way to drive this publicity is by documenting everything you do. In part of documenting everything, I find it helps me actually pin down specific details of the benchmarking: what configurations am I opting into? What exact hardware am I running things on? If it is variable, it’s likely to change when others are to run my benchmarks.</p>
+<p>Speaking of comparing machines, it’s also to consider a machine that is quiet versus a machine that is in full effect running other programs is not the same environment: always prefer to run your benchmarks on as quiet a machine as possible.</p>
+<h2>Compilers are aggressive optimisers</h2>
+<p>With benchmarks, you usually will be running code that has had some or all optimisations turned on. However, compilers will do all sorts of things to make code fast, which can involve replacing or removing whole chunks of code, for example.</p>
+<p>If you want to verify that the code you are benchmarking is exactly the code you expect it to be, you can always check the assembly in either godbolt or generated locally. The one benefit of checking the assembly locally is that you may have, for example, the <code>target-cpu</code> flag turned on with an architecture that isn’t supported by godbolt, thus you’re assembly output will best match what was chosen for your target environment.</p>
+<p>If you want the compiler to skip optimisations in rust within a benchmark, you can always use the <code>black_box</code> hint, which will issue a volatile memory access crippling optimisation attempts in the resulting code block.</p>
+<p>“But I <em>want</em> the compiler to optimise this chunk of code!” you say? And you’re right! The compiler <em>should</em> be allowed to optimise away at will! Using <code>black_box</code> is a blunt tool used in specific places rather than huge chunks.</p>
+<p>A traditional trick is to ensure the code you are testing is in a dedicated function, and that the benchmark is calling that function, and that the compiler isn’t aggressively replacing <em>that</em> function call. Then, you can write a benchmark to record the overhead of a function call separately, and use that as a baseline against the specific code you are expecting to measure.</p>
+<p>You can do this for other overheads, too. If there is some overhead I want to compare that isn’t necessarily a function call, I will sometimes <code>black_box</code> the thing I want to record the measurement of, say a loop with a particular number of iterations, and put something like an <code>asm!(&quot;nop&quot;)</code> in there to ensure that no actual activity is taking place, but that the compiler won’t look at this code, rightfully determine it does nothing, and delete it.</p>
+<h2>Conclusion</h2>
+<p>Hopefully each of these has shown you a way to improve your benchmarks or benchmarking harnesses. The aim of the game is to have dependable, reproducible ways that provide insight into our systems, forming a foundation for driving improvements over time rather than making lofty guesses about the overall performance of a program.</p>
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want a weekly digest of my latest articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>
