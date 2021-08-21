@@ -7,6 +7,12 @@
   </url>
   
   <url>
+    <loc>https://justanotherdot.com/posts/write-honest-benchmarks.html</loc>
+    <lastmod>2021-08-20T23:57:06.506319068+00:00</lastmod>
+    <priority>0.95</priority>
+  </url>
+  
+  <url>
     <loc>https://justanotherdot.com/posts/profiling-with-perf-and-dhat-on-rust-code-in-linux.html</loc>
     <lastmod>2021-07-12T00:18:23.156780952+00:00</lastmod>
     <priority>0.95</priority>
