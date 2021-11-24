@@ -35,9 +35,10 @@ performance on the whole, despite the effort put in at each stage of allocation
 and copying. Or, we may decide it’s not worth optimising anything in the program
 at all because we need to work on a new feature that is much more valuable to
 customers than a 5ns improvement to a rarely used endpoint. And when in doubt,
-if you’re program is hurting others or damaging the world around it, consider if
-the software should even exist rather than helping it accomplish it’s job faster
-(hat tip to Itamar Turner-Trauring on this point).
+if your program is hurting others or damaging the world around it, consider if
+the software should even exist rather than helping it accomplish its job faster
+([hat tip to Itamar Turner-Trauring on this
+point](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjbrLeX5rD0AhUnTmwGHb8uC_4QwqsBegQIChAB&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Ds_xWflagwbo&usg=AOvVaw32CWmP0sDX92TBm5MCbPLz)).
 
 Costs are everywhere; they are in the pooled costs we see pile up as well as the
 costs that spread about a program. These latter costs constitute the diffuse
