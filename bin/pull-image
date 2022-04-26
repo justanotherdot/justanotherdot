@@ -1,0 +1,9 @@
+#!/bin/sh -eu
+
+TITLE="$( git current | sd 'topic/' '' )"
+
+IMAGE_ID="$1"
+URL="https://unsplash.com/photos/$IMAGE_ID/download"
+
+curl -L "$URL" > "images/$TITLE.jpg"
+./bin/process-images
