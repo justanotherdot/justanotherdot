@@ -98,7 +98,7 @@ pub struct Post {
     pub snake_url: String,
     pub domain: String,
     pub tags: Vec<Tag>,
-    pub image: String,
+    //pub image: String,
     pub summary: Option<String>,
 }
 
@@ -147,20 +147,20 @@ impl Post {
             .unwrap()
             .replace(".md", ".html")
             .to_lowercase();
-        let image = path
-            .file_name()
-            .unwrap()
-            .to_str()
-            .unwrap()
-            .replace(".md", ".jpg")
-            .to_lowercase();
-        assert!(
-            std::path::Path::new(&format!("deploy/assets/images/{}", image)).exists(),
-            "could not find image: {}",
-            image
-        );
+        //let image = path
+        //    .file_name()
+        //    .unwrap()
+        //    .to_str()
+        //    .unwrap()
+        //    .replace(".md", ".jpg")
+        //    .to_lowercase();
+        //assert!(
+        //    std::path::Path::new(&format!("deploy/assets/images/{}", image)).exists(),
+        //    "could not find image: {}",
+        //    image
+        //);
         let snake_url = format!("/posts/{}", UNDERSCORE_RE.replace_all(&url, r"-"));
-        let snake_image = UNDERSCORE_RE.replace_all(&image, r"-").to_string();
+        //let snake_image = UNDERSCORE_RE.replace_all(&image, r"-").to_string();
         let url = format!("/posts/{}", url);
 
         Post {
@@ -176,7 +176,7 @@ impl Post {
             domain: domain.to_string(),
             content: markdown.to_string(),
             tags: tags.clone(),
-            image: snake_image,
+            //image: snake_image,
             summary: header.summary,
         }
     }
