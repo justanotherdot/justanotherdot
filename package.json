@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "imagemin-cli": "^7.0.0",
-    "imagemin-mozjpeg": "^10.0.0"
-  },
-  "license": "UNLICENSED"
-}
