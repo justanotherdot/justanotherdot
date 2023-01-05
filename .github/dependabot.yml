@@ -20,9 +20,3 @@ updates:
     versions:
     - 0.8.15
     - 0.8.16
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "19:00"
-  open-pull-requests-limit: 99
