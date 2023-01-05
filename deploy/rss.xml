@@ -10,11 +10,51 @@
     <language>en-us</language>
     
     <item>
+      <title>Default to trust</title>
+      <author>Ryan James Spencer</author>
+      <link>https://justanotherdot.com/posts/default-to-trust.html</link>
+      <guid>https://justanotherdot.com/posts/default-to-trust.html</guid>
+      <pubDate>Thu, 05 Jan 2023 19:51:34 +1100</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>You may get to the point in your career where you see enough things break and
+assume everything is fundamentally flawed. Paranoia sets in, robust
+architectures are designed and implemented, and you witness a spectacular
+explosion of failure on the faintest breeze of unexpected input. Alternatively,
+the paranoia bonds with apathy and you sit on our hands, unsure what to do,
+trying to settle on an option like the donkey deciding between hay or water,
+eventually starving from an inability to decide.</p>
+<p>Cut the cycle and default to trust. </p>
+<p>You can have correct, safe, and performant code that is delivered in time, and
+we get there by growing.  When trust is determined to be misplaced, that is
+where the growth can happen. All this requires opening up as guarded attitudes
+will keep you from change. Be receptive to being wrong and to listen. When the
+tools, interactions, or knowledge are mended, trust again and repeat. </p>
+<p>This isn’t blind optimism. There is no hoping things will get better on their
+own, without any intervention. Rather, it is a form of strengthening against
+<a href="https://english.stackexchange.com/a/56532">variable perturbations</a>. </p>
+<p>Trust your tools such that you gain an arsenal of quality at your fingertips,
+forged through consistent applied improvements.</p>
+<p>Trust your teams such that you assume peers are acting with clarity and
+intent, turning towards the difficult and challenging interactions that
+strengthen the collective fabric.</p>
+<p>Trust your knowledge such that you make exceptional maps of a variety of
+different fidelities, updating swathes as you become surprised at new
+knowledge.</p>
+<p>Engineering out of fear leads to miserable results, always flexing between the
+poles of apathy or stress. You can abandon fear by adopting an attitude of
+curiosity, defaulting to trust, and being open to the inevitable surprises that
+will come your way. </p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Put your oxygen mask on first</title>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/oxygen-mask.html</link>
       <guid>https://justanotherdot.com/posts/oxygen-mask.html</guid>
-      <pubDate>Fri, 11 Nov 2022 18:53:39 +1000</pubDate>
+      <pubDate>Fri, 11 Nov 2022 19:53:39 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Before the plane takes off you’re told to attach your own oxygen mask first before helping those around you. Putting the oxygen mask on first feels counterintuitive. Giving is about putting others first, is it not? The vision blurs, our senses numb, and we no longer clearly identify how to help others, let alone ourselves. </p>
@@ -114,7 +154,7 @@ process of doing &quot;automatic drawing&quot;.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/on-breathing-room.html</link>
       <guid>https://justanotherdot.com/posts/on-breathing-room.html</guid>
-      <pubDate>Sun, 06 Mar 2022 10:03:22 +1000</pubDate>
+      <pubDate>Sun, 06 Mar 2022 11:03:22 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>You need to make changes to produce new states of the system you expose. Code
@@ -163,7 +203,7 @@ you regret, try these approaches to making changes in the future.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/ship-it.html</link>
       <guid>https://justanotherdot.com/posts/ship-it.html</guid>
-      <pubDate>Thu, 03 Mar 2022 19:13:03 +1000</pubDate>
+      <pubDate>Thu, 03 Mar 2022 20:13:03 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>shipping things can be done in a way that isn’t tasteless, where you won’t have to go scrambling back to fix things. shipping work can be done in an incremental way, forming <em>progress</em> towards the things you want to achieve.</p>
@@ -193,7 +233,7 @@ you regret, try these approaches to making changes in the future.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/harvesting-pull-requests.html</link>
       <guid>https://justanotherdot.com/posts/harvesting-pull-requests.html</guid>
-      <pubDate>Thu, 24 Feb 2022 14:21:52 +1000</pubDate>
+      <pubDate>Thu, 24 Feb 2022 15:21:52 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Commonly the ideal way to work with code changes is to do them immutably. What i mean by this is that you</p>
@@ -220,7 +260,7 @@ you regret, try these approaches to making changes in the future.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/reading-review-2021.html</link>
       <guid>https://justanotherdot.com/posts/reading-review-2021.html</guid>
-      <pubDate>Sun, 12 Dec 2021 19:21:20 +1000</pubDate>
+      <pubDate>Sun, 12 Dec 2021 20:21:20 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Instead of focusing on the entirety or majority of books I’ve read this year, I
@@ -392,7 +432,7 @@ through being the core of your actions.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/pull-requests-also-go-stale.html</link>
       <guid>https://justanotherdot.com/posts/pull-requests-also-go-stale.html</guid>
-      <pubDate>Wed, 24 Nov 2021 20:27:04 +1000</pubDate>
+      <pubDate>Wed, 24 Nov 2021 21:27:04 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Pull requests aren’t precious things. They propose changes, and there is often an unfair assumption in a company setting that they will always make their way to trunk. Pull requests, just like issues, go stale. Not just in respect to the being up to date with the latest changes that may have surfaced since the pull request has been raised, but also in terms of general age.</p>
@@ -410,7 +450,7 @@ through being the core of your actions.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/performance-analysis-is-cost-analysis.html</link>
       <guid>https://justanotherdot.com/posts/performance-analysis-is-cost-analysis.html</guid>
-      <pubDate>Mon, 22 Nov 2021 19:35:03 +1000</pubDate>
+      <pubDate>Mon, 22 Nov 2021 20:35:03 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Benchmarks and profiler in hand, you’re ready to start taking stabs to improve
@@ -481,7 +521,7 @@ off your estimate was when you wind up with something tangible.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/performance-principles-visualised.html</link>
       <guid>https://justanotherdot.com/posts/performance-principles-visualised.html</guid>
-      <pubDate>Sun, 24 Oct 2021 12:35:01 +1000</pubDate>
+      <pubDate>Sun, 24 Oct 2021 13:35:01 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Not all of our decisions around performance are going to be driven after the thing we want to optimise has been built. In order to design programs with performance in mind at the start, we need a set of heuristics to guide us to make better choices.</p>
@@ -1302,7 +1342,7 @@ change is worth accepting.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-many-uses-of-the-empty-tuple.html</link>
       <guid>https://justanotherdot.com/posts/the-many-uses-of-the-empty-tuple.html</guid>
-      <pubDate>Thu, 11 Feb 2021 07:12:41 +1000</pubDate>
+      <pubDate>Thu, 11 Feb 2021 08:12:41 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>For newcomers to Rust unfamiliar with the empty tuple (<code>()</code>), it can be a
@@ -1491,7 +1531,7 @@ shape(s) you are expecting to deal with.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/increase-the-rate-of-oxidation-getting-more-rust-into-your-life.html</link>
       <guid>https://justanotherdot.com/posts/increase-the-rate-of-oxidation-getting-more-rust-into-your-life.html</guid>
-      <pubDate>Thu, 04 Feb 2021 07:47:37 +1000</pubDate>
+      <pubDate>Thu, 04 Feb 2021 08:47:37 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>With the growing number of resources to learn Rust nowadays, where does one even
@@ -1614,7 +1654,7 @@ is caked into the language from the start.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/cut-down-time-debugging-with-rich-error-types.html</link>
       <guid>https://justanotherdot.com/posts/cut-down-time-debugging-with-rich-error-types.html</guid>
-      <pubDate>Fri, 29 Jan 2021 05:47:15 +1000</pubDate>
+      <pubDate>Fri, 29 Jan 2021 06:47:15 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Have you ever spent a considerable amount of time tracking down the meaning of
@@ -1768,7 +1808,7 @@ refresher.</em></p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/quick-and-dirty-benchmarking.html</link>
       <guid>https://justanotherdot.com/posts/quick-and-dirty-benchmarking.html</guid>
-      <pubDate>Mon, 11 Jan 2021 07:19:45 +1000</pubDate>
+      <pubDate>Mon, 11 Jan 2021 08:19:45 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>In the past I've advocated for the default use of criterion in Rust projects as
@@ -1916,7 +1956,7 @@ change.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/shape-systems-that-are-easy-to-take-apart.html</link>
       <guid>https://justanotherdot.com/posts/shape-systems-that-are-easy-to-take-apart.html</guid>
-      <pubDate>Thu, 17 Dec 2020 06:19:20 +1000</pubDate>
+      <pubDate>Thu, 17 Dec 2020 07:19:20 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>In imaging, there's a notion called &quot;separation of tone&quot; or sometimes curtly
@@ -2005,7 +2045,7 @@ as much part of the implementation as the logic itself</strong>.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/how-do-you-cast-generic-values-youre-sure-are-numbers.html</link>
       <guid>https://justanotherdot.com/posts/how-do-you-cast-generic-values-youre-sure-are-numbers.html</guid>
-      <pubDate>Tue, 20 Oct 2020 15:29:46 +1000</pubDate>
+      <pubDate>Tue, 20 Oct 2020 16:29:46 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Imagine you have a generic collection that holds values, but the struct
@@ -4276,7 +4316,7 @@ is best to define them clearly!</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/how-to-pick-stable-beta-or-nightly-rust.html</link>
       <guid>https://justanotherdot.com/posts/how-to-pick-stable-beta-or-nightly-rust.html</guid>
-      <pubDate>Thu, 02 Apr 2020 19:04:29 +1000</pubDate>
+      <pubDate>Thu, 02 Apr 2020 20:04:29 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>It would seem natural to always pick stable Rust, but how much awesome new
@@ -4340,7 +4380,7 @@ features.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/catching-panics-in-dependencies.html</link>
       <guid>https://justanotherdot.com/posts/catching-panics-in-dependencies.html</guid>
-      <pubDate>Fri, 27 Mar 2020 11:55:26 +1000</pubDate>
+      <pubDate>Fri, 27 Mar 2020 12:55:26 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Having crates panic on you feels random because the specific conditions that
@@ -4503,7 +4543,7 @@ verify earlier failures aren't still happening.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/how-to-return-an-iterator-from-a-function.html</link>
       <guid>https://justanotherdot.com/posts/how-to-return-an-iterator-from-a-function.html</guid>
-      <pubDate>Thu, 19 Mar 2020 19:40:42 +1000</pubDate>
+      <pubDate>Thu, 19 Mar 2020 20:40:42 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Iterators are handy ways to describe the potential for looping over data but
@@ -4575,7 +4615,7 @@ continues.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/working-from-home-without-clawing-at-the-walls.html</link>
       <guid>https://justanotherdot.com/posts/working-from-home-without-clawing-at-the-walls.html</guid>
-      <pubDate>Mon, 16 Mar 2020 18:49:21 +1000</pubDate>
+      <pubDate>Mon, 16 Mar 2020 19:49:21 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Swaths of people are shifting into working from home, otherwise acronymized as
@@ -4697,7 +4737,7 @@ you while everyone adjusts. I hope some points here help ease the adjustment.</p
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/why-are-there-two-types-of-strings-in-rust.html</link>
       <guid>https://justanotherdot.com/posts/why-are-there-two-types-of-strings-in-rust.html</guid>
-      <pubDate>Sat, 14 Mar 2020 10:45:46 +1000</pubDate>
+      <pubDate>Sat, 14 Mar 2020 11:45:46 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Understanding the distinction between <code>str</code> and <code>String</code> can be painful if you
@@ -4764,7 +4804,7 @@ pointer which is possibly reused it when we borrow.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/when-to-move-copy-or-clone.html</link>
       <guid>https://justanotherdot.com/posts/when-to-move-copy-or-clone.html</guid>
-      <pubDate>Mon, 09 Mar 2020 19:35:28 +1000</pubDate>
+      <pubDate>Mon, 09 Mar 2020 20:35:28 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Do you understand ownership and borrowing in theory but find it hard in
@@ -4898,7 +4938,7 @@ use anymore.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/four-ways-to-avoid-the-wrath-of-the-borrow-checker.html</link>
       <guid>https://justanotherdot.com/posts/four-ways-to-avoid-the-wrath-of-the-borrow-checker.html</guid>
-      <pubDate>Sun, 01 Mar 2020 16:07:25 +1000</pubDate>
+      <pubDate>Sun, 01 Mar 2020 17:07:25 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Maybe you've tried to write a simple program in Rust using references that would
@@ -5043,7 +5083,7 @@ step, producing a final, desired result</li>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/bindings-are-cheap-managing-rightward-drift.html</link>
       <guid>https://justanotherdot.com/posts/bindings-are-cheap-managing-rightward-drift.html</guid>
-      <pubDate>Thu, 20 Feb 2020 20:34:34 +1000</pubDate>
+      <pubDate>Thu, 20 Feb 2020 21:34:34 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>How do you avoid deeply nested <code>if let</code> or <code>match</code> statements when you're first
@@ -5151,7 +5191,7 @@ might,</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/idiomatic-argument-passing-in-rust.html</link>
       <guid>https://justanotherdot.com/posts/idiomatic-argument-passing-in-rust.html</guid>
-      <pubDate>Fri, 14 Feb 2020 06:05:17 +1000</pubDate>
+      <pubDate>Fri, 14 Feb 2020 07:05:17 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>If you're coming from a language that supports automatically taking references
@@ -5237,7 +5277,7 @@ function ought to take ownership.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/error-handling-with-closures-in-iterators.html</link>
       <guid>https://justanotherdot.com/posts/error-handling-with-closures-in-iterators.html</guid>
-      <pubDate>Mon, 03 Feb 2020 19:38:54 +1000</pubDate>
+      <pubDate>Mon, 03 Feb 2020 20:38:54 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Iterators give us a wonderful array of functional-style combinators. Past
@@ -5310,7 +5350,7 @@ better sense of what <code>collect</code> can roll up!</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html</link>
       <guid>https://justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html</guid>
-      <pubDate>Thu, 30 Jan 2020 16:31:53 +1000</pubDate>
+      <pubDate>Thu, 30 Jan 2020 17:31:53 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>How do you organize Rust projects with multiple binaries so that the build
@@ -5406,7 +5446,7 @@ is that they are executables!</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/peer-pressure-is-the-sign-of-ownership.html</link>
       <guid>https://justanotherdot.com/posts/peer-pressure-is-the-sign-of-ownership.html</guid>
-      <pubDate>Tue, 21 Jan 2020 19:27:28 +1000</pubDate>
+      <pubDate>Tue, 21 Jan 2020 20:27:28 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>I'm nearing 6,000 contributions on GitHub. I mix personal and private
@@ -5473,7 +5513,7 @@ prophecy. The experiment will change you and your teams for the better.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/consistent-date-handling.html</link>
       <guid>https://justanotherdot.com/posts/consistent-date-handling.html</guid>
-      <pubDate>Sat, 18 Jan 2020 19:27:50 +1000</pubDate>
+      <pubDate>Sat, 18 Jan 2020 20:27:50 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Date handling is the kind of funny where you sob from of the ways it can
@@ -5582,7 +5622,7 @@ things. A little upfront focus on consistency will save you a lot of shed tears.
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-production-environments-new-clothes.html</link>
       <guid>https://justanotherdot.com/posts/the-production-environments-new-clothes.html</guid>
-      <pubDate>Fri, 10 Jan 2020 19:08:56 +1000</pubDate>
+      <pubDate>Fri, 10 Jan 2020 20:08:56 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Staging environments are a distraction. Massive hours have been poured into
@@ -5666,7 +5706,7 @@ seen.</strong></p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/soft-skill-hygiene.html</link>
       <guid>https://justanotherdot.com/posts/soft-skill-hygiene.html</guid>
-      <pubDate>Tue, 07 Jan 2020 18:57:10 +1000</pubDate>
+      <pubDate>Tue, 07 Jan 2020 19:57:10 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Eyes glaze over at the words &quot;soft skills&quot; for developers of both the &quot;ship it&quot;
@@ -5747,7 +5787,7 @@ to luck.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-one-dimensional-programmer.html</link>
       <guid>https://justanotherdot.com/posts/the-one-dimensional-programmer.html</guid>
-      <pubDate>Sun, 29 Dec 2019 20:00:26 +1000</pubDate>
+      <pubDate>Sun, 29 Dec 2019 21:00:26 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Technical skill alone is not going to advance your career as a programmer. In
@@ -5833,7 +5873,7 @@ time to time.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/running-build-bots-on-premise.html</link>
       <guid>https://justanotherdot.com/posts/running-build-bots-on-premise.html</guid>
-      <pubDate>Sun, 22 Dec 2019 14:13:05 +1000</pubDate>
+      <pubDate>Sun, 22 Dec 2019 15:13:05 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Late November I did a <a href="https://www.youtube.com/watch?v=DL_hODqnUy0&amp;list=PLG8S6YrJRoYI3CIUqvGX4NBSaMWZxe9in">video
@@ -5969,7 +6009,7 @@ cloud compute.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/patterns-for-knowledge-acquisition.html</link>
       <guid>https://justanotherdot.com/posts/patterns-for-knowledge-acquisition.html</guid>
-      <pubDate>Thu, 12 Dec 2019 14:30:40 +1000</pubDate>
+      <pubDate>Thu, 12 Dec 2019 15:30:40 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Having written another <a href="https://www.justanotherdot.com/posts/reading-review-2019.html">yearly review of
@@ -6075,7 +6115,7 @@ more invigorating to work through material that is high signal <em>for you</em>.
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-perils-of-test-taxonomy.html</link>
       <guid>https://justanotherdot.com/posts/the-perils-of-test-taxonomy.html</guid>
-      <pubDate>Sun, 08 Dec 2019 14:53:57 +1000</pubDate>
+      <pubDate>Sun, 08 Dec 2019 15:53:57 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>You are wasting your time by classifying tests. Instead of discerning what
@@ -6150,7 +6190,7 @@ assert?</strong></a></p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/reading-review-2019.html</link>
       <guid>https://justanotherdot.com/posts/reading-review-2019.html</guid>
-      <pubDate>Tue, 03 Dec 2019 19:53:17 +1000</pubDate>
+      <pubDate>Tue, 03 Dec 2019 20:53:17 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>This year came up at roughly sixty books &quot;consumed&quot;. I've pared the list here
@@ -6497,7 +6537,7 @@ course</a></p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/a-release-does-not-make-a-deploy.html</link>
       <guid>https://justanotherdot.com/posts/a-release-does-not-make-a-deploy.html</guid>
-      <pubDate>Sun, 24 Nov 2019 19:21:53 +1000</pubDate>
+      <pubDate>Sun, 24 Nov 2019 20:21:53 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Is the vision in your head of your pipelines that of lean, graceful atheletes?
@@ -6564,7 +6604,7 @@ infrastructure that makes Friday deploys a nightmare.</strong></p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-simplest-programming-language-i-know.html</link>
       <guid>https://justanotherdot.com/posts/the-simplest-programming-language-i-know.html</guid>
-      <pubDate>Wed, 20 Nov 2019 20:35:16 +1000</pubDate>
+      <pubDate>Wed, 20 Nov 2019 21:35:16 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>I'm going to teach you the simplest programming language I know.</p>
@@ -6623,7 +6663,7 @@ calculus&quot;</a>.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/habit-a-tale-of-two-water-bottles.html</link>
       <guid>https://justanotherdot.com/posts/habit-a-tale-of-two-water-bottles.html</guid>
-      <pubDate>Mon, 18 Nov 2019 19:48:12 +1000</pubDate>
+      <pubDate>Mon, 18 Nov 2019 20:48:12 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>I've the same one-litre water bottle at work as I do at home. I always drink
@@ -6701,7 +6741,7 @@ autonomy of people is their most valuable asset to a technical team.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/teleporting-at-the-speed-of-thought.html</link>
       <guid>https://justanotherdot.com/posts/teleporting-at-the-speed-of-thought.html</guid>
-      <pubDate>Fri, 15 Nov 2019 19:25:52 +1000</pubDate>
+      <pubDate>Fri, 15 Nov 2019 20:25:52 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Adept text editor users fly around and manipulate text as if by <em>teleportation</em>.
@@ -6760,7 +6800,7 @@ building your own.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/an-infinite-barrage-of-mountains-to-climb.html</link>
       <guid>https://justanotherdot.com/posts/an-infinite-barrage-of-mountains-to-climb.html</guid>
-      <pubDate>Wed, 13 Nov 2019 19:14:36 +1000</pubDate>
+      <pubDate>Wed, 13 Nov 2019 20:14:36 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>This Tuesday I went to my last therapy session for the year. In that session I
@@ -6869,7 +6909,7 @@ tends to comes with it, easier.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/nothing-of-value-will-be-lost.html</link>
       <guid>https://justanotherdot.com/posts/nothing-of-value-will-be-lost.html</guid>
-      <pubDate>Sun, 10 Nov 2019 18:49:53 +1000</pubDate>
+      <pubDate>Sun, 10 Nov 2019 19:49:53 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p><strong>Drop your backlog. Burn all of your tickets. Eject your issues into the sun.
@@ -6917,7 +6957,7 @@ todo lists to offload information.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/a-love-letter-to-composition.html</link>
       <guid>https://justanotherdot.com/posts/a-love-letter-to-composition.html</guid>
-      <pubDate>Thu, 07 Nov 2019 06:07:08 +1000</pubDate>
+      <pubDate>Thu, 07 Nov 2019 07:07:08 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Using composition gives you superpowers. It is by far the most practical
@@ -6987,7 +7027,7 @@ improved retention of knowledge. This is why composition is a superpower.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-lowly-assert-roundtrips.html</link>
       <guid>https://justanotherdot.com/posts/the-lowly-assert-roundtrips.html</guid>
-      <pubDate>Sat, 02 Nov 2019 20:37:16 +1000</pubDate>
+      <pubDate>Sat, 02 Nov 2019 21:37:16 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Data &quot;roundtrips&quot; when it goes from one value, to another, and back to the same
@@ -7101,7 +7141,7 @@ suffices to simply show the action going forwards and backwards.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-lowly-assert-idempotence.html</link>
       <guid>https://justanotherdot.com/posts/the-lowly-assert-idempotence.html</guid>
-      <pubDate>Wed, 30 Oct 2019 20:28:07 +1000</pubDate>
+      <pubDate>Wed, 30 Oct 2019 21:28:07 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Charging someone twice is bad for business; it burns trust with customers and it
@@ -7161,7 +7201,7 @@ button for a slowly loading payment submission page!</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-lowly-assert-involution.html</link>
       <guid>https://justanotherdot.com/posts/the-lowly-assert-involution.html</guid>
-      <pubDate>Tue, 29 Oct 2019 05:43:10 +1000</pubDate>
+      <pubDate>Tue, 29 Oct 2019 06:43:10 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>As part of <a href="https://www.justanotherdot.com/posts/the-lowly-assert.html">The Lowly
@@ -7204,7 +7244,7 @@ example of The Lowly Assert.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/making-plants-thrive.html</link>
       <guid>https://justanotherdot.com/posts/making-plants-thrive.html</guid>
-      <pubDate>Wed, 23 Oct 2019 19:38:18 +1000</pubDate>
+      <pubDate>Wed, 23 Oct 2019 20:38:18 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>It's often lamented that software projects become dead plants in an unloved
@@ -7250,7 +7290,7 @@ problem you are trying to solve).</strong></p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/dumping-grounds-for-good-and-bad.html</link>
       <guid>https://justanotherdot.com/posts/dumping-grounds-for-good-and-bad.html</guid>
-      <pubDate>Mon, 21 Oct 2019 19:04:52 +1000</pubDate>
+      <pubDate>Mon, 21 Oct 2019 20:04:52 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>A former colleague and friend once referred to modules that grow without any
@@ -7294,7 +7334,7 @@ keep</em>&quot;.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/safely-shape-code-with-curtains.html</link>
       <guid>https://justanotherdot.com/posts/safely-shape-code-with-curtains.html</guid>
-      <pubDate>Sat, 19 Oct 2019 21:29:55 +1000</pubDate>
+      <pubDate>Sat, 19 Oct 2019 22:29:55 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Once upon a time I studied photography at an art school. It was there that I
@@ -7397,7 +7437,7 @@ experimentation.</strong></p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/fools-gold-time-estimates.html</link>
       <guid>https://justanotherdot.com/posts/fools-gold-time-estimates.html</guid>
-      <pubDate>Tue, 15 Oct 2019 19:02:35 +1000</pubDate>
+      <pubDate>Tue, 15 Oct 2019 20:02:35 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>It would be fantastic if we knew the future. With that knowledge we could plan
@@ -7479,7 +7519,7 @@ a guess, educated or not.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/how-fast-can-you-take-your-time-kid.html</link>
       <guid>https://justanotherdot.com/posts/how-fast-can-you-take-your-time-kid.html</guid>
-      <pubDate>Wed, 09 Oct 2019 20:38:58 +1000</pubDate>
+      <pubDate>Wed, 09 Oct 2019 21:38:58 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>There is nothing wrong with chopping wood and carrying water. Hard work
@@ -7563,7 +7603,7 @@ subtlety until the whole thing crumbles before you.</strong></p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/the-lowly-assert.html</link>
       <guid>https://justanotherdot.com/posts/the-lowly-assert.html</guid>
-      <pubDate>Mon, 07 Oct 2019 21:43:52 +1000</pubDate>
+      <pubDate>Mon, 07 Oct 2019 22:43:52 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>There is one thing that ties all forms of testing together; <strong>assertions</strong>. The
@@ -7656,7 +7696,7 @@ can leverage within reason.</strong></p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/how-i-git.html</link>
       <guid>https://justanotherdot.com/posts/how-i-git.html</guid>
-      <pubDate>Mon, 07 Oct 2019 20:02:46 +1000</pubDate>
+      <pubDate>Mon, 07 Oct 2019 21:02:46 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>I thought it might be worth having a look at two things <code>git</code> allows I've abused
@@ -8681,7 +8721,7 @@ gain a handle on parameterizing search functionality with your address bar.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/reading-review-2018.html</link>
       <guid>https://justanotherdot.com/posts/reading-review-2018.html</guid>
-      <pubDate>Wed, 12 Dec 2018 20:09:20 +1000</pubDate>
+      <pubDate>Wed, 12 Dec 2018 21:09:20 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Being a voracious reader, one thing that helps bring the mountain of things I
@@ -9241,7 +9281,7 @@ let hof = trampoline(higherOrderFunc);
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/proficiency-is-tiered-and-other-lies-we-tell-ourselves.html</link>
       <guid>https://justanotherdot.com/posts/proficiency-is-tiered-and-other-lies-we-tell-ourselves.html</guid>
-      <pubDate>Thu, 01 Mar 2018 15:48:02 +1000</pubDate>
+      <pubDate>Thu, 01 Mar 2018 16:48:02 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Tiered categorisations of knowledge and proficiency are fundamentally flawed as
@@ -9336,7 +9376,7 @@ code.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/reading-code-is-decoding.html</link>
       <guid>https://justanotherdot.com/posts/reading-code-is-decoding.html</guid>
-      <pubDate>Sat, 27 Jan 2018 13:43:09 +1000</pubDate>
+      <pubDate>Sat, 27 Jan 2018 14:43:09 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p>Roger Antonsen says in his Ted Talk <a href="https://www.ted.com/talks/roger_antonsen_math_is_the_hidden_secret_to_understanding_the_world"><em>Mathematics is
@@ -9432,7 +9472,7 @@ be pouring time and attention into.</p>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/fail-fast-not-error-out.html</link>
       <guid>https://justanotherdot.com/posts/fail-fast-not-error-out.html</guid>
-      <pubDate>Sat, 07 Oct 2017 12:50:02 +1000</pubDate>
+      <pubDate>Sat, 07 Oct 2017 13:50:02 +1100</pubDate>
       <description></description>
       <content:encoded><![CDATA[
         <p><strong>tl;dr</strong> Static analysis is a form of 'failing fast' that does not consist of
