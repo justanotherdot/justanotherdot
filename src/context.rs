@@ -1,4 +1,5 @@
-use chrono::{DateTime, FixedOffset};
+use chrono::DateTime;
+use chrono_tz::Tz;
 use ramhorns::Content;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -132,7 +133,7 @@ impl Post {
 
         let date_iso8601 =
             DateTime::parse_from_rfc3339(&header.date).expect("failed to parse date");
-        let date_shifted = date_iso8601.with_timezone(&FixedOffset::east(10 * 3600));
+        let date_shifted = date_iso8601.with_timezone(&Tz::Australia__Sydney);
         let date = date_shifted.format("%B %e %Y, %_I:%M%p").to_string();
         let date_month_day_year = date_shifted.format("%D").to_string();
         let date_rfc822 = date_shifted.format("%a, %d %b %Y %T %z").to_string();
