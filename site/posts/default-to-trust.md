@@ -12,14 +12,15 @@ assume everything is fundamentally flawed. Paranoia sets in, robust
 architectures are designed and implemented, and you witness a spectacular
 explosion of failure on the faintest breeze of unexpected input. Alternatively,
 the paranoia bonds with apathy and you sit on our hands, unsure what to do,
-trying to settle on an option like the donkey deciding between hay or water,
-eventually starving from an inability to decide.
+trying to settle on an option like the [donkey deciding between hay or
+water](https://en.wikipedia.org/wiki/Buridan%27s_ass), eventually starving from
+an inability to decide.
 
 Cut the cycle and default to trust. 
 
 You can have correct, safe, and performant code that is delivered in time, and
 we get there by growing.  When trust is determined to be misplaced, that is
-where the growth can happen. All this requires opening up as guarded attitudes
+where the growth can happen. All this requires opening up, as guarded attitudes
 will keep you from change. Be receptive to being wrong and to listen. When the
 tools, interactions, or knowledge are mended, trust again and repeat. 
 
