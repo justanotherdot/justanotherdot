@@ -611,8 +611,8 @@ test tests::bench_read_csv ... bench:  18,044,486 ns/iter (+/- 551,993)
 test result: ok. 0 passed; 0 failed; 0 ignored; 1 measured; 0 filtered out; finished in 5.47s
 </code></pre>
 <p>This shows us an average of 18,044,486 nanoseconds per iteration. 1,000
-nanoseconds is a millisecond, and 1000 milliseconds is a second, thus we have 18
-seconds per iteration to run against our test case.</p>
+nanoseconds is a microseconds, and 1000 microseconds is a millisecond, thus we have 18
+milliseconds per iteration to run against our test case.</p>
 <p>Now let's try the single allocation for ByteRecord,</p>
 <pre><code>diff --git a/src/main.rs b/src/main.rs
 index 8d425c1..a68b0ec 100644
@@ -665,7 +665,7 @@ test tests::bench_read_csv ... bench:   4,528,433 ns/iter (+/- 1,328,048)
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 1 measured; 0 filtered out; finished in 4.22s
 </code></pre>
-<p>We're down to four seconds! Which is a ~4x improvement in terms of timing. Let's confirm it in a few ways:</p>
+<p>We're down to four milliseconds! Which is a ~4x improvement in terms of timing. Let's confirm it in a few ways:</p>
 <p><code>perf stat</code></p>
 <pre><code> Performance counter stats for 'system wide' (100 runs):
 

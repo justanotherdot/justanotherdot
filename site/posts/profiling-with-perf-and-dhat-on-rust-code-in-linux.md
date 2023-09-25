@@ -654,8 +654,8 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 1 measured; 0 filtered out; fini
 ```
 
 This shows us an average of 18,044,486 nanoseconds per iteration. 1,000
-nanoseconds is a millisecond, and 1000 milliseconds is a second, thus we have 18
-seconds per iteration to run against our test case.
+nanoseconds is a microseconds, and 1000 microseconds is a millisecond, thus we have 18
+milliseconds per iteration to run against our test case.
 
 Now let's try the single allocation for ByteRecord,
 
@@ -715,7 +715,7 @@ test tests::bench_read_csv ... bench:   4,528,433 ns/iter (+/- 1,328,048)
 test result: ok. 0 passed; 0 failed; 0 ignored; 1 measured; 0 filtered out; finished in 4.22s
 ```
 
-We're down to four seconds! Which is a ~4x improvement in terms of timing. Let's confirm it in a few ways:
+We're down to four milliseconds! Which is a ~4x improvement in terms of timing. Let's confirm it in a few ways:
 
 `perf stat`
 
