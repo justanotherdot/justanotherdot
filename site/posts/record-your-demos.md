@@ -81,5 +81,6 @@ I'll leave you with some practical tools to use:
 * miro
 * asciiflow
 * (gist with unicode boxes i did sometime back)
+* [unicode to make boxes](https://gist.github.com/justanotherdot/b049f9e607543225ac7c383c64b8f2ef)
 
 Be kind to your peers, record your demos, and share your gold with your team.
