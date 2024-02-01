@@ -42,7 +42,7 @@ Perhaps it's easier to showcase your API by writing a quick CLI, or cobbling
 together a frontend may give an inlet with your data.  Favor lightweight tools;
 If making a frontend sounds too heavyweight, use something like retool to demo a
 "live view" of a database table, for example, or draw a diagram during a video.
-Remember the aim is to be 
+Remember the aim is to convey a message, not build a masterpiece.
 
 In the end, value thy readers time. Whatever your decide to present should be
 quick, concise, and distilled. Think "tiktok" not "The Hobbit". You are looking
