@@ -8,7 +8,7 @@ edition = "2018"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
 ramhorns = "0.6.1"
-chrono = "0.4.23"
+chrono = "0.4.37"
 walkdir = "2.5.0"
 lazy_static = "1.4.0"
 regex = "1.4.2"
