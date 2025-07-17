@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Actually Using Git Worktrees">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Let&#x27;s say you are expected to do code review and you are also expected to code. When you do either a certain set of changes is in place. Switching because you are blocking someone means you have to do a dance with stashing changes, checking out a branch, perhaps cleaning temporary files, restarting tooling, etc. Bar changing your codebase, workflow, and job requirements, here&#x27;s an approach that uses &#x60;git&#x60; &#x60;worktrees&#x60; to ease the cost of these context-switches.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Actually Using Git Worktrees">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Let&#x27;s say you are expected to do code review and you are also expected to code. When you do either a certain set of changes is in place. Switching because you are blocking someone means you have to do a dance with stashing changes, checking out a branch, perhaps cleaning temporary files, restarting tooling, etc. Bar changing your codebase, workflow, and job requirements, here&#x27;s an approach that uses &#x60;git&#x60; &#x60;worktrees&#x60; to ease the cost of these context-switches.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Actually Using Git Worktrees &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Actually Using Git Worktrees</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Let&#x27;s say you are expected to do code review and you are also expected to code.
+When you do either a certain set of changes is in place. Switching because you
+are blocking someone means you &lt;em&gt;have&lt;/em&gt; to do a dance with stashing changes,
+checking out a branch, perhaps cleaning temporary files, restarting tooling,
+etc. Bar changing your codebase, workflow, and job requirements, here&#x27;s an
+approach that uses &lt;code&gt;git&lt;/code&gt; &lt;a href&#x3D;&quot;https://git-scm.com/docs/git-worktree&quot;&gt;&lt;code&gt;worktrees&lt;/code&gt;&lt;/a&gt; to
+ease the cost of these context-switches.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git&lt;/code&gt; uses &lt;code&gt;worktree&lt;/code&gt;s to track changes in a repository. &lt;code&gt;git&lt;/code&gt; gives us the
+ability to make more than one &lt;code&gt;worktree&lt;/code&gt; at a time that are checked out to
+potentially different sets of changes. This means we can effectively split up
+our codebase into review and development environments:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ git worktree add ../foo-review --checkout master # where &#x60;foo&#x60; is the name of your project
+$ cd ../foo-review
+$ git clean -fddx
+$ git checkout branch-name
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can tuck the change-directory code into a script if there&#x27;s a slew of other
+steps needed to get into a good-known state. If you are using GitHub, here&#x27;s an
+added bonus for checking out pull requests by number rather than by branch name:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[alias]
+  &amp;lt;snip&amp;gt;
+  copr &#x3D; &quot;!f() { git fetch origin pull/$1/head &amp;amp;&amp;amp; git checkout pr/$1; }; f&quot;
+  &amp;lt;snip&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;N.B. There are alternative ways of &lt;a href&#x3D;&quot;https://gist.github.com/piscisaureus/3342247&quot;&gt;fetching all remote pull requests from
+GitHub&lt;/a&gt; which might be preferable
+to the above alias.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;GitHub assigns this special remote tracking branch to your PR, but it&#x27;s
+read-only so if you want to contribute changes you will need to know the name of
+the original branch.&lt;/p&gt;
+&lt;p&gt;With this setup the context-switch dance is reduced. The workflow could be like
+this:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Someone asks for a review or perhaps you&#x27;re done and want to get back to work&lt;/li&gt;
+&lt;li&gt;Calling &lt;code&gt;work&lt;/code&gt; might get you back into your development environment where you
+left off&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;review branch-name&lt;/code&gt; will go the other direction preparing the pull-request
+for inspection&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Git aliases are a neat way to remap the surface area of &lt;code&gt;git&lt;/code&gt;. I actually think
+this is a utility for configuration I don&#x27;t see more CLI tooling using that
+probably could to great effect. In the context of &lt;code&gt;git&lt;/code&gt; it allows me to get
+around some particular ergonomic warts. Also, I don&#x27;t do this workflow anymore
+as I leverage pull-requests largely for communicating changes more than
+gate-keeping these days, but I understand not all circumstances are the same.
+Worktrees could be used to keep a reference implementation around for quickly
+inspecting without having to switch branches, for example. Little things like
+this that help reduce toil are worth their weight in platinum so it pays to keep
+your eye open to automation opportunities!&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

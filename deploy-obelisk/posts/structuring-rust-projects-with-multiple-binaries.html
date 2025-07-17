@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Structuring Rust Projects With Multiple Binaries">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="How do you organize Rust projects with multiple binaries so that the build output winds up in a common subdirectory? Should you be looking for a solution other than cargo?">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Structuring Rust Projects With Multiple Binaries">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="How do you organize Rust projects with multiple binaries so that the build output winds up in a common subdirectory? Should you be looking for a solution other than cargo?">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Structuring Rust Projects With Multiple Binaries &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Structuring Rust Projects With Multiple Binaries</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;How do you organize Rust projects with multiple binaries so that the build
+output winds up in a common subdirectory? Should you be looking for a solution
+other than cargo? Regardless of whether you are using nested crates within a
+workspace or simply a mixture of &lt;code&gt;.rs&lt;/code&gt; files under &lt;code&gt;src/bin/&lt;/code&gt;, &lt;strong&gt;you absolutely
+should be looking for something other than cargo.&lt;/strong&gt; What you need is a proper
+task runner and the most portable task runner ships with every unix
+flavored operating system; &lt;code&gt;sh&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;People seem to conflate task runners with build tools. Build tools generate
+artifacts such as binaries or libraries whereas task runners act as the glue for
+teams to share ways to achieve particular chores. Some people use tools like
+&lt;code&gt;make&lt;/code&gt; to do both jobs and the crossed responsibility brings a lot of pain and
+maintenance burden. People need to be aware of the many nuances of &lt;code&gt;make&lt;/code&gt; such
+as the fact that tabs for indenting are semantic, rules for tasks need to be
+marked as &lt;code&gt;.PHONY&lt;/code&gt; if there is a target they relate to, and so on. Others end up
+using scripting languages such as python or javascript or they may use some
+hybrid domain specific language that mixes a bit of programming and
+configuration to specify how tasks are run, e.g. &lt;code&gt;gulp&lt;/code&gt;. You don&#x27;t need any of
+these options.&lt;/p&gt;
+&lt;p&gt;I&#x27;ll call this script &lt;code&gt;bin/build&lt;/code&gt;. We will assume there are several crates in a
+workspace for this example and that we use &lt;code&gt;git&lt;/code&gt; since cargo bootstraps projects
+with it by default.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#!/bin/sh -eux
+
+ROOT&#x3D;$(git rev-parse --show-toplevel)
+cd &quot;$ROOT&quot;
+mkdir -p dist/bin
+for crate in crate1 crate2 crate3; do
+  cd &quot;$crate&quot;
+  cargo build --release
+  cp target/release/$crate &quot;$ROOT/dist/bin/&quot;
+  cd &quot;$ROOT&quot;
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This script is dead-simple. It shoots to the root of the project, makes the
+directories &lt;code&gt;dist&lt;/code&gt; and its subdirectory &lt;code&gt;bin&lt;/code&gt;. We have a list of crates in a
+loop we iterate across but we could make this dynamic, as well. Then, in each
+crate we create a release build and copy the binary from the project up to the
+common subdirectory. Then, we shoot back to the root directory again and repeat.
+All we have to do now to do now is make the script executable and call it:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ chmod +x bin/build
+$ bin/build
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You don&#x27;t need to let scripts grow out of control, either. What&#x27;s awesome about
+keeping scripts, and, more generally, programs small means you can compose
+things like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+bin/init
+bin/run
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Where &lt;code&gt;init&lt;/code&gt; might do some stubbing or setup work and &lt;code&gt;run&lt;/code&gt; might launch a
+service, whatever those tasks may be.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sh&lt;/code&gt; is POSIX compliant, which means it allows us to write highly portable, and
+therefore shareable, scripts. Like anything there are ways things can go wrong
+but you can address this by using the linter
+&lt;a href&#x3D;&quot;https://github.com/koalaman/shellcheck&quot;&gt;shellcheck&lt;/a&gt;. Every shell script you
+write should have the following&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#!/bin/sh -eux
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which says to use &lt;code&gt;sh&lt;/code&gt; instead of, say, &lt;code&gt;bash&lt;/code&gt;. shellcheck will actually
+recommend things intelligently based on which shell you specify. &lt;code&gt;bash&lt;/code&gt; is not
+ideal here because support for particular features differs between versions and
+we are aiming to have something pretty much anyone on a team can use at a
+moment&#x27;s notice so long as they are using linux, bsd, darwin, or any other *nix
+flavor. This prelude also turns on some common flags.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;e&lt;/strong&gt; to stop on the first &lt;strong&gt;e&lt;/strong&gt;rror&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;u&lt;/strong&gt; to stop if a variable is &lt;strong&gt;u&lt;/strong&gt;nset&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;x&lt;/strong&gt; to print tracing output of each e&lt;strong&gt;x&lt;/strong&gt;ecuted statement&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;(3) can be optionally dropped if you don&#x27;t want to expose details or want
+cleaner output.&lt;/p&gt;
+&lt;p&gt;The last convention is to keep scripts in a common &lt;code&gt;bin&lt;/code&gt; directory at the root
+of your project which enhances discoverability of scripts for others. Allowing
+people to make less guesses about which directory is the single source of truth
+for automation scripts helps people move faster. If they want a chore done, they
+can see what&#x27;s present under &lt;code&gt;bin&lt;/code&gt;, or if they need to add a chore they know
+exactly where it&#x27;s added for every project. The reason for why its called &lt;code&gt;bin&lt;/code&gt;
+is that they are executables!&lt;/p&gt;
+&lt;p&gt;In summary, for shell script success all you need is:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;A common prelude that uses &lt;code&gt;sh&lt;/code&gt; and some options set&lt;/li&gt;
+&lt;li&gt;Using shellcheck to ensure you&#x27;re writing sensible and POSIX compliant scripts&lt;/li&gt;
+&lt;li&gt;A common directory for scripts that is the same for all projects&lt;/li&gt;
+&lt;/ol&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

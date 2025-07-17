@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How I Git">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="I thought it might be worth having a look at two things &#x60;git&#x60; allows I&#x27;ve abused to remove some warts and toil from my day-to-day flow.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="How I Git">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="I thought it might be worth having a look at two things &#x60;git&#x60; allows I&#x27;ve abused to remove some warts and toil from my day-to-day flow.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>How I Git &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>How I Git</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;I thought it might be worth having a look at two things &lt;code&gt;git&lt;/code&gt; allows I&#x27;ve abused
+to remove some warts and toil from my day-to-day flow.&lt;/p&gt;
+&lt;p&gt;One thing &lt;code&gt;git&lt;/code&gt; does is alias support. Anything under the &lt;code&gt;[alias]&lt;/code&gt; key in ones
+&lt;code&gt;$HOME/.gitconfig&lt;/code&gt; is treated as a valid subcommand. This is fine for quick
+things, like &lt;code&gt;r&lt;/code&gt; as &lt;code&gt;rebase&lt;/code&gt; or &lt;code&gt;a&lt;/code&gt; for &lt;code&gt;add&lt;/code&gt;, but you can also alias one-line
+scripts, for example, here&#x27;s a snippet from my &lt;code&gt;.gitconfig&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  it &#x3D; &quot;!f() { git fp &amp;amp;&amp;amp; git r origin/master; }; f&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This demonstrates defining an ad hoc shell function named &lt;code&gt;f&lt;/code&gt; and calling it
+immediately. What&#x27;s notable about this is that it is &lt;em&gt;also&lt;/em&gt; calling a &lt;code&gt;git&lt;/code&gt;
+alias. &lt;code&gt;git fp&lt;/code&gt; in this case is an alias for &lt;code&gt;git fetch --prune&lt;/code&gt; and &lt;code&gt;r&lt;/code&gt; we&#x27;ve
+already mentioned is &lt;code&gt;rebase&lt;/code&gt;, so this, verbosely, is,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ git fetch --prune &amp;amp;&amp;amp; git rebase origin/master
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Another thing &lt;code&gt;git&lt;/code&gt; let&#x27;s you do is invoke arbitrary scripts that are named in
+the format &lt;code&gt;git-name&lt;/code&gt;. If the script is on the path, you can call &lt;code&gt;git name&lt;/code&gt; and
+the script, &lt;code&gt;git-name&lt;/code&gt;, will run. My old process for pushing to a branch I had
+authored was a bit verbose,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# on first push
+$ git push -u origin/master current-branch
+
+# afterwards ...
+$ git fetch --prune
+
+# and, after hacking, changes both behind + ahead on branch (rewritten history)
+$ git push --force-with-lease
+
+# or, if simply, without any &#x60;--force*&#x60; flag
+$ git push
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I wrote a script that does all of this, automatically, called
+&lt;a href&#x3D;&quot;https://github.com/justanotherdot/gits/blob/master/scripts/git-p&quot;&gt;&lt;code&gt;git-p&lt;/code&gt;&lt;/a&gt;,
+which lets me call &lt;code&gt;git p&lt;/code&gt;. It&#x27;s doesn&#x27;t work for all corner cases, and could be
+extended to, but this fits ninety-nine percent of my use case. This worked well
+for awhile, but I needed to build on it. I eventually wrote an alias called &lt;code&gt;git up&lt;/code&gt;,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  up &#x3D; &quot;!f() { git it &amp;amp;&amp;amp; git p; }; f&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The point of &lt;code&gt;up&lt;/code&gt; is to ensure my changes are always rebased on master before I
+push. This is pretty handy but I&#x27;ve recently added yet another alias called
+&lt;code&gt;raise&lt;/code&gt; (also aliased as &lt;code&gt;pr&lt;/code&gt;),&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  raise &#x3D; &quot;!f() { git up 2&amp;gt;&amp;amp;1 | awk &#x27;/http/ { print $2 }&#x27; | xargs open; }; f&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This scrapes out the remote output with the PR creation link that GitHub
+provides after a branch is first pushed to the remote repository and funnels it
+into &lt;code&gt;open&lt;/code&gt;. MacOS X has &lt;code&gt;open&lt;/code&gt; as the default way to open mime-type related
+files to respective &#x27;default&#x27; applications. On linux, where I use the gnome
+windows manager, I have the shell alias,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ which open
+open: aliased to xdg-open
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;to try to bridge the gap, which just goes to show aliases and scripts that use
+this same format can be really handy for hiding away toil! I don&#x27;t know if it&#x27;s
+ideal for all CLI tooling but I think this approach is certainly an interesting
+approach to let people slip in their own functionality and &#x27;rewire&#x27; an interface
+to better suit their needs.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

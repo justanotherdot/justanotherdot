@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Let The Caller Decide The Return Value!">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Changing function interfaces to get different return values is a chore and can weigh down refactoring sessions. There is a simpler way to &quot;slot in&quot; different functionality based on types and traits!">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Let The Caller Decide The Return Value!">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Changing function interfaces to get different return values is a chore and can weigh down refactoring sessions. There is a simpler way to &quot;slot in&quot; different functionality based on types and traits!">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Let The Caller Decide The Return Value! &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Let The Caller Decide The Return Value!</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Changing function interfaces to get different return values is a chore and can weigh down refactoring sessions. There is a simpler way to &quot;slot in&quot; different functionality based on types and traits!&lt;/p&gt;
+&lt;p&gt;If you&#x27;ve used Rust long enough you are likely aware of the pattern with iterators where you can &lt;code&gt;collect&lt;/code&gt; into different collections based on types. Iterators themselves don&#x27;t have to keep around all of these definitions: they are implemented &lt;a href&#x3D;&quot;https://doc.rust-lang.org/std/iter/trait.FromIterator.html&quot;&gt;via a trait named &lt;code&gt;FromIterator&lt;/code&gt;&lt;/a&gt;. This trait uses a trick often returned to as &quot;return type polymorphism&quot; to accomplish its task; the trait is generic and only requires one method, &lt;code&gt;from_iter&lt;/code&gt;, to be implemented. In fact, &lt;code&gt;collect&lt;/code&gt; is just a &lt;a href&#x3D;&quot;https://doc.rust-lang.org/src/core/iter/traits/iterator.rs.html#1664-1672&quot;&gt;thin wrapper around this function&lt;/a&gt;!&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-rust&quot;&gt;fn collect&amp;lt;B: FromIterator&amp;lt;Self::Item&amp;gt;&amp;gt;(self) -&amp;gt; B
+    where Self: Sized,
+{
+    FromIterator::from_iter(self)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What&#x27;s important about this pattern of using &lt;code&gt;collect&lt;/code&gt; is that it is always the same semantics; you are collecting values of an iterator into a collection. You could theoretically abuse this approach to come up with a way to do &quot;dynamic&quot; dispatch to wildly different behavior by specifying different types, and that &lt;em&gt;might&lt;/em&gt; work depending on your use case, but the approach would feel a tad unidiomatic in the light of the larger Rust code ecosystem.&lt;/p&gt;
+&lt;p&gt;Here&#x27;s a rough example using a trait to allow different types of files to be opened depending on the needs of the caller:&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-rust&quot;&gt;use std::{
+    fs::File,
+    io::{BufReader, Cursor, Result},
+    path::Path,
+};
+
+trait Open&amp;lt;T&amp;gt; {
+    fn open(&amp;amp;self) -&amp;gt; Result&amp;lt;T&amp;gt;;
+}
+
+impl Open&amp;lt;File&amp;gt; for Path {
+    fn open(&amp;amp;self) -&amp;gt; Result&amp;lt;File&amp;gt; {
+        File::open(self)
+    }
+}
+
+impl Open&amp;lt;BufReader&amp;lt;File&amp;gt;&amp;gt; for Path {
+    fn open(&amp;amp;self) -&amp;gt; Result&amp;lt;BufReader&amp;lt;File&amp;gt;&amp;gt; {
+        Ok(BufReader::new(File::open(self)?))
+    }
+}
+
+impl Open&amp;lt;Cursor&amp;lt;File&amp;gt;&amp;gt; for Path {
+    fn open(&amp;amp;self) -&amp;gt; Result&amp;lt;Cursor&amp;lt;File&amp;gt;&amp;gt; {
+        Ok(Cursor::new(File::open(self)?))
+    }
+}
+
+fn main() {
+    let p &#x3D; Path::new(&quot;foo&quot;);
+    File::create(p).unwrap();
+    dbg!(
+        Open::&amp;lt;File&amp;gt;::open(p).unwrap(),
+        Open::&amp;lt;BufReader&amp;lt;File&amp;gt;&amp;gt;::open(p).unwrap(),
+        Open::&amp;lt;Cursor&amp;lt;File&amp;gt;&amp;gt;::open(p).unwrap(),
+    );
+    let _: File &#x3D; dbg!(p.open().unwrap());
+    let _: BufReader&amp;lt;File&amp;gt; &#x3D; dbg!(p.open().unwrap());
+    let _: Cursor&amp;lt;File&amp;gt; &#x3D; dbg!(p.open().unwrap());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;71b87a2671cc5723b5b164842ff61e85&quot;&gt;playground&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The beauty of this approach is that context can dictate which function will run. Note that I&#x27;ve included two approaches to showing the same thing; one using the trait&#x27;s associated function syntax and the other as part of the type annotation on a &lt;code&gt;let&lt;/code&gt;. I could have just as easily wrapped this function and specified concrete types on the function signature to get the same result.&lt;/p&gt;
+&lt;p&gt;In this example users of the trait can decide if the file ought to be returned &quot;raw&quot;, wrapped for buffered access, or put in a cursor for seeking around the file&#x27;s contents. This works because we have defined the trait generically, and therefore are really defining implementations for several different traits that all have the same minimal requirements. In this specific case we cannot write a generic implementation for &lt;code&gt;Open&lt;/code&gt; for all &lt;code&gt;T&lt;/code&gt; because there&#x27;s no way for us to write a function that could return all possible &lt;code&gt;T&lt;/code&gt;. That said, this trick still works even if you are not specifying the return type as part of the function calls, so long as you specify which trait implementation you want to select.&lt;/p&gt;
+&lt;p&gt;In order to use return type polymorphism you need:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A generic trait, usually with a function or functions that use the generic type in the return value&lt;/li&gt;
+&lt;li&gt;Implementations of the concrete versions of the return type&lt;/li&gt;
+&lt;li&gt;Usually some final type annotation or type inference that will trigger the right implementation to be picked depending on context&lt;/li&gt;
+&lt;/ul&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

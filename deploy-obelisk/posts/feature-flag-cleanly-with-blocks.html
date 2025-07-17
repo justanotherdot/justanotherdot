@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Feature Flag Cleanly With Blocks">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="If you&#x27;re tired of polluting your code with one-off functions and identifiers, then you can turn to blocks in Rust to simplify the mayhem. While you can use blocks to feature flag code, the same pattern applies to general refactoring, making your code easier to read and maintain.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Feature Flag Cleanly With Blocks">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="If you&#x27;re tired of polluting your code with one-off functions and identifiers, then you can turn to blocks in Rust to simplify the mayhem. While you can use blocks to feature flag code, the same pattern applies to general refactoring, making your code easier to read and maintain.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Feature Flag Cleanly With Blocks &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Feature Flag Cleanly With Blocks</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;I recently had to feature flag some code in JavaScript and felt myself wishing I
+had Rust&#x27;s expression-based blocks. In the JavaScript code, I didn&#x27;t want to
+break out the logic into its own function or module as the code was a proof of
+concept and deciding on an interface early on would distract me. In languages
+that aren&#x27;t expression and block oriented, you have one of two choices:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Use an immediately invoked function&lt;/li&gt;
+&lt;li&gt;Have &#x27;unset&#x27; or &#x27;default&#x27; variables on the outside of some scope and a scope that
+potentially assigns to the variables&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Here&#x27;s an example of the two cases in JS:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// with an IIFE.
+const featureFlaggedItem &#x3D; (() &#x3D;&amp;gt; {
+  if (!featureFlag) {
+    return {
+      // defaults without the flag.
+      // the steady state of the system.
+    };
+  }
+
+  // feature flagged code.
+})();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// or with an assignment, relying on side effect.
+let featureFlaggedItem &#x3D; {
+  // defaults without the flag.
+  // the steady state of the system.
+};
+if (featureFlag) {
+  featureFlaggedItem &#x3D; {
+    // featureFlagContent
+  };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The problem with the side effect approach is that we lose the nice benefit of
+having &lt;code&gt;featureFlaggedItem&lt;/code&gt; as &lt;code&gt;const&lt;/code&gt; as well as keeping things nice and tidy
+for easier deletion later on. I personally refuse to use the second approach.
+Rust let&#x27;s you easily write the above code as following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let feature_flagged_item &#x3D; {
+  if (!featureFlag) {
+    return {
+      // defaults without the flag.
+      // the steady state of the system.
+    };
+  }
+
+  // feature flagged code.
+};
+
+// or ...
+
+let feature_flagged_item &#x3D; if (featureFlag) {
+  // feature flagged code.
+else {
+  return {
+    // defaults without the flag.
+    // the steady state of the system.
+  };
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But this is wildly useful for a lot of things beyond one-off changes. Maybe you
+need a one-off value for a function argument but you don&#x27;t want to immediately
+invoke a closure or define a function to call. With blocks you can tuck all
+sorts of code into places with or without assignment. If you have a lot of
+&quot;identifier&quot; pollution going on in a given scope, say with a lot of temporary
+variables, you can tuck them under the rug with blocks. I tend to have a lot of
+assignments that break up code like a newspaper article but there is some
+dispute around shadowing. I am pro shadowing in Rust as I feel it bars a class
+of bugs, but you can understandably avoid shadowing if you so care; &lt;a href&#x3D;&quot;https://github.com/rust-lang/rust-clippy/blob/master/clippy_lints/src/shadow.rs&quot;&gt;using
+&lt;code&gt;clippy&lt;/code&gt;s lint on the
+matter&lt;/a&gt;,
+or ensuring the temporary shadowed variable(s) are only present for the inner,
+temporary, scope.&lt;/p&gt;
+&lt;p&gt;The best part is that when the &quot;one-off&quot; value becomes less &quot;one-off&quot;, you can
+easily take the block and dump the contents straight into a function and it will
+work as-is, with or without the superfluous curly braces! Splitting up the
+decisions around what is done to build up the value versus the surface area of
+the value (its interface) is a great way to guarantee the interface is what you
+really want it to be rather than what it had to be in order to figure out its
+implementation. In general it&#x27;s best to split up work in such a way that you can
+focus on each piece in isolation without the other pieces distracting you.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

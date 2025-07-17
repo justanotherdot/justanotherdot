@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How do you cast generic values you&#x27;re sure are numbers?">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Sometimes you may have collections whose generics aren&#x27;t the same as the contents, by way of associated types; if you know the values are primitives, how do you go about casting the collections contents?">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="How do you cast generic values you&#x27;re sure are numbers?">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Sometimes you may have collections whose generics aren&#x27;t the same as the contents, by way of associated types; if you know the values are primitives, how do you go about casting the collections contents?">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>How do you cast generic values you&#x27;re sure are numbers? &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>How do you cast generic values you&#x27;re sure are numbers?</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Imagine you have a generic collection that holds values, but the struct
+mentioned in the generic is not the actual values of the holder &lt;em&gt;(astute
+observers will realize this is a bit like &lt;code&gt;ArrowPrimitiveType&lt;/code&gt; in &lt;code&gt;arrow&lt;/code&gt;).&lt;/em&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;trait NumberLike {
+  type Native;
+}
+
+impl NumberLike for Int64 {
+  type Native &#x3D; i64;
+}
+
+impl NumberLike for Float64 {
+  type Native &#x3D; f64;
+}
+
+#[derive(Debug, Clone, PartialEq)]
+struct NumberLikeArray&amp;lt;A: NumberLike&amp;gt;(Vec&amp;lt;A::Native&amp;gt;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notice how the generic on our struct is different from the value stored, as specified by the trait.
+You might think you can use this associated type to do primitive casts, like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn cast_vec&amp;lt;A, B&amp;gt;(xs: NumberLikeArray&amp;lt;A&amp;gt;) -&amp;gt; NumberLikeArray&amp;lt;B&amp;gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+{
+  NumberLikeArray(xs.0.into_iter().map(|x| x as B::Native).collect())
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But this won&#x27;t work, the compiler tells us:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;error[E0605]: non-primitive cast: &#x60;&amp;lt;A as NumberLike&amp;gt;::Native&#x60; as &#x60;&amp;lt;B as NumberLike&amp;gt;::Native&#x60;
+  --&amp;gt; src/lib.rs:24:44
+   |
+24 |   NumberLikeArray(xs.0.into_iter().map(|x| x as B::Native).collect())
+   |                                            ^^^^^^^^^^^^^^ an &#x60;as&#x60; expression can only be used to convert between primitive types or to coerce to a specific trait object
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This error helpfully informs us that &lt;code&gt;as&lt;/code&gt; only works on primitive types or
+specific trait objects on the right hand side of the keyword. With generics we
+reduce the amount of duplicated code we need to write, but we also lose less
+information about the values themselves. To gain back some information about
+the types, we can put bounds on the generic values which will tell us about
+whether or not there are associated types available to us
+or functions we can run on said types.&lt;/p&gt;
+&lt;p&gt;The associated type for &lt;code&gt;NumberLike&lt;/code&gt; could be anything, hence Rust won&#x27;t let us
+compile this code because it can&#x27;t be 100% sure that &lt;code&gt;x&lt;/code&gt; is a primitive value
+or a specific trait object, nor can it confirm that &lt;code&gt;B::Native&lt;/code&gt; is a primitive
+type. Rust isn&#x27;t going to try to figure out that information from all the trait
+bounds it knows about during compilation, either. What we need is something
+that can allow us to convert values but expressed as a trait; what about
+&lt;code&gt;From&lt;/code&gt;?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn cast&amp;lt;A, B&amp;gt;(xs: NumberLikeArray&amp;lt;A&amp;gt;) -&amp;gt; NumberLikeArray&amp;lt;B&amp;gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+  B::Native: From&amp;lt;A::Native&amp;gt;,
+{
+  NumberLikeArray(xs.0.into_iter().map(|x| x.into()).collect())
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;but we&#x27;re going to hit another wall with this the moment we try to use it;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn main() {
+    let xs: NumberLikeArray&amp;lt;Int64&amp;gt; &#x3D; NumberLikeArray(vec![12, 13, 14]);
+    let ys: NumberLikeArray&amp;lt;Float64&amp;gt; &#x3D; cast(xs);
+    assert_eq!(ys.0, vec![12.0, 13.0, 14.0]);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;there is no implementation for &lt;code&gt;From&amp;lt;i64&amp;gt; for f64&lt;/code&gt; or the other way around!&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;error[E0277]: the trait bound &#x60;f64: std::convert::From&amp;lt;i64&amp;gt;&#x60; is not satisfied
+  --&amp;gt; src/main.rs:30:40
+   |
+19 | fn cast&amp;lt;A, B&amp;gt;(xs: NumberLikeArray&amp;lt;A&amp;gt;) -&amp;gt; NumberLikeArray&amp;lt;B&amp;gt;
+   |    - required by a bound in this
+...
+23 |   B::Native: From&amp;lt;A::Native&amp;gt;,
+   |               required by this bound in &#x60;cast&#x60;
+...
+30 |     let ys: NumberLikeArray&amp;lt;Float64&amp;gt; &#x3D; cast(xs);
+   |                                        ^^^^ the trait &#x60;std::convert::From&amp;lt;i64&amp;gt;&#x60; is not implemented for &#x60;f64&#x60;
+   |
+   &#x3D; help: the following implementations were found:
+             &amp;lt;f64 as std::convert::From&amp;lt;f32&amp;gt;&amp;gt;
+             &amp;lt;f64 as std::convert::From&amp;lt;i16&amp;gt;&amp;gt;
+             &amp;lt;f64 as std::convert::From&amp;lt;i32&amp;gt;&amp;gt;
+             &amp;lt;f64 as std::convert::From&amp;lt;i8&amp;gt;&amp;gt;
+           and 3 others
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This makes sense as &lt;code&gt;From&lt;/code&gt; is really intended for cheap, infallible conversions
+between types, and &lt;code&gt;as&lt;/code&gt; is quite a blunt tool. &lt;code&gt;as&lt;/code&gt; can perform truncations and
+other changes to the data depending on the arguments. Converting from an &lt;code&gt;i64&lt;/code&gt;
+to an &lt;code&gt;f64&lt;/code&gt; may seem odd, but we may want the behavior that &lt;code&gt;as&lt;/code&gt; supports in
+our program. You might reach to &lt;code&gt;impl From for f64&lt;/code&gt; and &lt;code&gt;i64&lt;/code&gt; respectively to
+make this happen:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;impl From&amp;lt;i64&amp;gt; for f64 {
+    fn from(x: i64) -&amp;gt; f64 {
+        x as f64
+    }
+}
+
+impl From&amp;lt;i64&amp;gt; for f64 {
+    fn from(x: i64) -&amp;gt; f64 {
+        x as i64
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;but alas another wall:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;error[E0117]: only traits defined in the current crate can be implemented for arbitrary types
+  --&amp;gt; src/main.rs:16:1
+   |
+16 | impl From&amp;lt;i64&amp;gt; for f64 {
+   | ^^^^^^^^^^
+   | |    |             |
+   | |    |             &#x60;f64&#x60; is not defined in the current crate
+   | |    &#x60;i64&#x60; is not defined in the current crate
+   | impl doesn&#x27;t use only types from inside the current crate
+   |
+   &#x3D; note: define and implement a trait or new type instead
+
+error[E0117]: only traits defined in the current crate can be implemented for arbitrary types
+  --&amp;gt; src/main.rs:22:1
+   |
+22 | impl From&amp;lt;f64&amp;gt; for i64 {
+   | ^^^^^^^^^^
+   | |    |             |
+   | |    |             &#x60;i64&#x60; is not defined in the current crate
+   | |    &#x60;f64&#x60; is not defined in the current crate
+   | impl doesn&#x27;t use only types from inside the current crate
+   |
+   &#x3D; note: define and implement a trait or new type instead
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let&#x27;s follow the advice the compiler has given us:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;trait Cast&amp;lt;A&amp;gt; {
+    fn cast(self) -&amp;gt; A;
+}
+
+impl Cast&amp;lt;i64&amp;gt; for f64 {
+    fn cast(self) -&amp;gt; i64 {
+        self as i64
+    }
+}
+
+impl Cast&amp;lt;f64&amp;gt; for i64 {
+    fn cast(self) -&amp;gt; f64 {
+        self as f64
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and we&#x27;ll update our &lt;code&gt;cast&lt;/code&gt; function:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn cast&amp;lt;A, B&amp;gt;(xs: NumberArray&amp;lt;A&amp;gt;) -&amp;gt; NumberArray&amp;lt;B&amp;gt;
+where
+    A: NumberLike,
+    B: NumberLike,
+    A::Native: Cast&amp;lt;B::Native&amp;gt;,
+{
+  NumberArray(xs.0.into_iter().map(|x| x.cast()).collect())
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We could have easily swapped the argument order of &lt;code&gt;Cast::cast&lt;/code&gt; just like
+&lt;code&gt;From&lt;/code&gt; and &lt;code&gt;Into&lt;/code&gt;&#x27;s symmetry. The choice felt arbitrary here and I&#x27;ve picked to
+have things feel like they say &quot;A::Native supports casts into B::Native&#x27;s&quot; and
+simply replace the &lt;code&gt;into&lt;/code&gt; call we had earlier with &lt;code&gt;cast&lt;/code&gt;. If we wanted to push
+this further, we could also describe &lt;code&gt;NumberLikeArray&lt;/code&gt; with a &lt;code&gt;Cast::cast&lt;/code&gt;
+implementation:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn cast&amp;lt;A, B&amp;gt;(xs: NumberLikeArray&amp;lt;A&amp;gt;) -&amp;gt; NumberLikeArray&amp;lt;B&amp;gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+  A::Native: Cast&amp;lt;B::Native&amp;gt;,
+{
+  NumberLikeArray(xs.0.into_iter().map(|x| x.cast()).collect())
+}
+
+impl&amp;lt;A, B&amp;gt; Cast&amp;lt;NumberLikeArray&amp;lt;B&amp;gt;&amp;gt; for NumberLikeArray&amp;lt;A&amp;gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+  A::Native: Cast&amp;lt;B::Native&amp;gt;,
+{
+    fn cast(self) -&amp;gt; NumberLikeArray&amp;lt;B&amp;gt; {
+        cast(self)
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This shows a way of writing method implementations I sometimes like to do. When
+you define &lt;code&gt;Cast::cast&lt;/code&gt; you get two functions for free: &lt;code&gt;Cast::cast(array)&lt;/code&gt; and
+&lt;code&gt;array.cast()&lt;/code&gt;. I also like to have the option of doing a qualified import via
+a module, s.t. someone could do &lt;code&gt;crate::convert::cast(array)&lt;/code&gt; if they so
+desired. With the above approach, you get all three. Here&#x27;s the &lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;514a19b873cf4226f3ac7315550657ba&quot;&gt;full
+listing&lt;/a&gt;
+to explore on your own.&lt;/p&gt;
+&lt;p&gt;The good news is, you don&#x27;t have to do this &#x27;from scratch&#x27; every time you start
+a project, and you don&#x27;t need to spin up your own crate because the &lt;code&gt;num&lt;/code&gt; crate
+already has a &lt;code&gt;NumCast&lt;/code&gt; and &lt;code&gt;ToPrimitive&lt;/code&gt; pair of buddy traits that do this.
+The one major difference is that &lt;code&gt;NumCast::from&lt;/code&gt; produces an &lt;code&gt;Option&lt;/code&gt; that
+we&#x27;ll need to handle. We could flatmap this, causing items to go missing during
+the cast, or we could make it error on first cast, like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn cast&amp;lt;A, B&amp;gt;(xs: NumberLikeArray&amp;lt;A&amp;gt;) -&amp;gt; Option&amp;lt;NumberLikeArray&amp;lt;B&amp;gt;&amp;gt;
+where
+  A: NumberLike,
+  B: NumberLike,
+  A::Native: NumCast,
+  B::Native: ToPrimitive + NumCast,
+{
+  Some(NumberLikeArray(xs.0.into_iter().map(|x| NumCast::from(x)).collect::&amp;lt;Option&amp;lt;Vec&amp;lt;B::Native&amp;gt;&amp;gt;&amp;gt;()?))
+}
+
+fn main() {
+    let xs: NumberLikeArray&amp;lt;Int64&amp;gt; &#x3D; NumberLikeArray(vec![12, 13, 14]);
+    let ys: NumberLikeArray&amp;lt;Float64&amp;gt; &#x3D; cast(xs).expect(&quot;could not cast array&quot;);
+    assert_eq!(ys.0, vec![12.0, 13.0, 14.0]);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Using bounds to specify requirements on generics is a way of gaining back
+information about the types we abstract over. Instead of working over all A&#x27;s
+and B&#x27;s, we&#x27;re specifically working over A&#x27;s and B&#x27;s that implement certain
+charecteristics, and we can leverage those characteristics to transform values,
+perform effects, or simply declare that some type has been marked or tagged, as
+is the case with &lt;code&gt;Eq&lt;/code&gt; and others.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

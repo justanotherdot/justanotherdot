@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Benchmark It!">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Performance is something users feel. Maybe you&#x27;re in an organization that doesn&#x27;t care about performance, and you think they should. Perhaps there are lofty claims that performance does matter, but loose arguments for one approach over another filled with baseless claims like &quot;X is fast!&quot;. The only way to get past this conjecture is with numbers, and we collect numbers with benchmarks.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Benchmark It!">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Performance is something users feel. Maybe you&#x27;re in an organization that doesn&#x27;t care about performance, and you think they should. Perhaps there are lofty claims that performance does matter, but loose arguments for one approach over another filled with baseless claims like &quot;X is fast!&quot;. The only way to get past this conjecture is with numbers, and we collect numbers with benchmarks.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Benchmark It! &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Benchmark It!</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Performance is something users &lt;em&gt;feel&lt;/em&gt;. Maybe you&#x27;re in an organization that
+doesn&#x27;t care about performance, and you think they should. Perhaps there are
+lofty claims that performance &lt;em&gt;does&lt;/em&gt; matter, but loose arguments for one
+approach over another filled with baseless claims like &quot;X is &lt;em&gt;fast&lt;/em&gt;!&quot;. The only
+way to get past this conjecture is with numbers, and we collect numbers with
+benchmarks.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Benchmarking&lt;/strong&gt; is the act of measuring latency or throughput of some component
+regardless of size. &lt;strong&gt;Profiling&lt;/strong&gt; is a means to explore the constituent parts of
+where code spends its time. There is a dizzying array of variables we can tweak
+to impact the performance of user experience on modern platforms, but benchmarks
+should come first before we begin profiling. With benchmarks, we get
+reproducibility, enabling others to test our claims and verify our results for
+their use cases. As we generate measurements for targets, we can store the
+results away so we can visualize the data however we please or compare
+particular runs tied to specific code changes. In this sense, benchmarks provie
+us a historical context of performance.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Latency&lt;/strong&gt; is the duration of time the component in question takes to complete.
+&lt;strong&gt;Throughput&lt;/strong&gt;, on the other hand, is the amount of work completed in a window of
+time. &lt;strong&gt;You cannot trust the first number you get out of a single trial.&lt;/strong&gt; Hence, we
+focus on arithmetic mean averages or medians from multiple measurements. A
+server might have an average latency of 123 milliseconds, or a JSON parser might
+boast an average of 2.6GiB processed per second.&lt;/p&gt;
+&lt;p&gt;Cargo does have built-in support for benchmarking, and it works in a pinch but
+hides the influence of outliers on your results. This is handy if you want
+something you can quickly run and glance at to make improvements, but tests are
+&lt;strong&gt;reliable&lt;/strong&gt; if they are low on noise.&lt;/p&gt;
+&lt;p&gt;To gain this insight, I strongly recommend
+&lt;a href&#x3D;&quot;https://github.com/bheisler/criterion.rs&quot;&gt;criterion.rs&lt;/a&gt;. It does all the things
+&lt;code&gt;cargo-bench&lt;/code&gt; does, along with providing additional statistical metrics to help
+us determine if a benchmark is worth trusting.&lt;/p&gt;
+&lt;p&gt;By default, criterion takes one-hundred measurements. It then tries to find a
+line that fits these measurements using linear regression. How well this line
+fits the data is designated by the metric &lt;strong&gt;R^2&lt;/strong&gt;. The &lt;strong&gt;slope&lt;/strong&gt; of this line,
+along with the &lt;strong&gt;mean&lt;/strong&gt; and &lt;strong&gt;median&lt;/strong&gt;, offer ways of viewing &quot;center&quot; for the
+data. If there are no outliers, then slope, mean, and median should be similar.
+&lt;strong&gt;Standard deviation&lt;/strong&gt; is the dispersal of values around the mean, and &lt;strong&gt;MAD or
+Median Absolute Deviation&lt;/strong&gt; is the same for the median. A high standard
+deviation or MAD might indicate a higher than expected level of noise.
+Similarly, if the R^2 is low, then the difference between timings is high. To
+get reliable tests, we want each iteration to be the same. There is bound to be
+&lt;em&gt;some&lt;/em&gt; noise and differences between runs, but we are trying to find the values
+we are confident aren&#x27;t merely aberrations.&lt;/p&gt;
+&lt;p&gt;You can add it to a project by adding the dependency to your Cargo.toml:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[dev-dependencies]
+criterion &#x3D; &quot;0.3&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then, in the same file we can add the benchmark:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[[bench]]
+name &#x3D; &quot;benchmark_it&quot;
+harness &#x3D; false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;benchmarks live in distinct files under the &lt;code&gt;benches&lt;/code&gt; directory in the root of
+your project, named the same as the name we gave in the manifest:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ fd benchmark_it
+benches/benchmark_it.rs
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Imagine our crate is called &lt;code&gt;crate&lt;/code&gt; and it exposes a public function named
+&lt;code&gt;function&lt;/code&gt; that we want to measure, the most basic benchmark looks something
+like the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use crate::function;
+
+pub fn criterion_benchmark(c: &amp;amp;mut Criterion) {
+    c.bench_function(&quot;benchmark_function&quot;, |b| b.iter(|| function(black_box(20))));
+}
+
+criterion_group!(benches, criterion_benchmark);
+criterion_main!(benches);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and you can run this benchmark with &lt;code&gt;cargo bench&lt;/code&gt;. After the tests run you get
+output on the command line. If you have gnuplot installed you can also view
+an HTML report generated at &lt;code&gt;target/criterion/report/index.html&lt;/code&gt; you can open in
+a browser. If you want access to the raw data, you can find that dumped as
+CSVs under &lt;code&gt;target/criterion/benchmark_function/{base,change,new}/raw.csv&lt;/code&gt;. As
+you run the benchmarks, the base gets replaced with the last latest run, and the
+latest run is compared to visualize improvements or regressions.&lt;/p&gt;
+&lt;p&gt;Criterion&#x27;s reports include explanations in reports, along with &lt;a href&#x3D;&quot;https://bheisler.github.io/criterion.rs/book/index.html&quot;&gt;fantastic
+documentation&lt;/a&gt;
+outlining how the test harness works and how the statistics are calculated,
+including diagnostics in the output about when different outliers are detected.&lt;/p&gt;
+&lt;p&gt;To further reduce noise, you want to run on a machine that matches your target
+environment as much as possible, which depends on your domain in question. If
+you are running a server on a specific configuration, test the code on that
+hardware with that configuration. If you are building a CLI tool used by
+developers, it might make sense to have many benchmarks from commodity hardware
+that developers are using, such as laptops with little to nothing else running
+on the system. We might also want to benchmark on the fastest, quality hardware
+we can find to determine limits of what you could hope to attain given empirical
+results.&lt;/p&gt;
+&lt;p&gt;Benchmarks can explain performance under various loads. Input now comes into the
+picture. If you are a data-regulation compliant company, and I hope you are
+self-compliant if not, then generating data that has the same characteristics
+and cardinality of what you tend to expect is vital to feed into your benchmarks
+as expected &quot;normal load&quot; under the system. You also want to try to record
+pathological cases where the system is exceptionally slow under particular
+input. This isn&#x27;t to say these pathological cases need to be your primary target
+for the profiling and optimization that comes later. You might want to improve
+the life of 99% of your users rather than worrying about an edge case that
+happens 0.001% of the time. However, pathological cases still give us insight
+into the limits of the component under measurement.&lt;/p&gt;
+&lt;p&gt;Independent of where you store your benchmarks, having them recorded for every
+commit, or possibly every master commit, can let you easily compare two changes
+using something like Andrew Gallant&#x27;s tool
+&lt;a href&#x3D;&quot;https://github.com/BurntSushi/critcmp&quot;&gt;cargo-critcmp&lt;/a&gt;. If you have
+different hardware to test, you can script checking out changes, running the
+benchmarks, and comparing the results. When making comparisons, make sure to
+minimize variables of change across the various measurements! You don&#x27;t want one
+to have programs running in the background while the other was on a totally
+silent system, for example.&lt;/p&gt;
+&lt;p&gt;Andy Gavin talks about how they &lt;a href&#x3D;&quot;https://www.youtube.com/watch?v&#x3D;izxXGuVL21o&amp;amp;feature&#x3D;youtu.be&amp;amp;t&#x3D;513&quot;&gt;benchmarked the various display
+modes&lt;/a&gt; for
+the Sony Playstation during the making of Crash Bandicoot. He remarks how if he
+had not done this and taken the recommended mode at face value, it would have
+been subpar for their situation! This is precisely the kind of speculation that
+measurements help dispel. &lt;strong&gt;Performance matters and numbers help make
+performance tangible.&lt;/strong&gt; Write benchmarks that work for &lt;em&gt;your&lt;/em&gt; data and &lt;em&gt;your&lt;/em&gt;
+setup! Arm yourself to the teeth with numbers and ensure they are &lt;em&gt;valid&lt;/em&gt;
+numbers to be confident in your fight against lofty claims. &lt;em&gt;Valid&lt;/em&gt; measurements
+are useful to the community, whether it&#x27;s your local team or the open-source
+community as a whole. Write more benchmarks!&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

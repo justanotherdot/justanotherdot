@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Picking Variants or Fields Out Of Collections of Enums">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Occasionally you want to pull out a specific field or variant out of one or more enums. Doing this with pattern matching is tedious and verbose, but there&#x27;s a simple way to use methods and combinators to do exactly what you want.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Picking Variants or Fields Out Of Collections of Enums">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Occasionally you want to pull out a specific field or variant out of one or more enums. Doing this with pattern matching is tedious and verbose, but there&#x27;s a simple way to use methods and combinators to do exactly what you want.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Picking Variants or Fields Out Of Collections of Enums &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Picking Variants or Fields Out Of Collections of Enums</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Occasionally you want to pull out a specific field or variant out of one or more
+enums. Doing this with pattern matching is tedious and verbose, but there&#x27;s a
+simple way to use methods and combinators to do exactly what you want.&lt;/p&gt;
+&lt;p&gt;There&#x27;s a pattern I use to solve both of these. If you already have the
+collection in hand, you can write a simple method that operates on the type
+named something like &lt;code&gt;as_foo&lt;/code&gt; where foo is the name of the variant or field name
+you are after. There&#x27;s a clippy lint that says &lt;code&gt;as_*&lt;/code&gt; functions should always
+take references so I&#x27;ve followed the lint in the following example but it
+doesn&#x27;t really matter what you name the method and it&#x27;s fine to have the method
+take ownership of the value, too, if that makes sense for your use case. When
+you define a method you can use it either with the basic method syntax
+&lt;code&gt;value.as_foo()&lt;/code&gt; or you can access it as an associated function e.g.
+&lt;code&gt;Type::as_foo(value)&lt;/code&gt;. Then we can use either method in tandem with the
+&lt;code&gt;filter_map&lt;/code&gt; or &lt;code&gt;flat_map&lt;/code&gt; methods of an iterator. I personally prefer the more
+terse way of passing the associated function instead of the closure, which is
+sometimes referred to as &quot;point free&quot; style where the arguments, or points, are
+not mentioned:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[derive(Debug, Clone, PartialEq)]
+enum E {
+    A { x: i32 },
+    B { x: i32 },
+}
+
+impl E {
+    pub fn as_x(&amp;amp;self) -&amp;gt; Option&amp;lt;i32&amp;gt; {
+        Some(match self {
+            E::A { x } &#x3D;&amp;gt; *x,
+            E::B { x } &#x3D;&amp;gt; *x,
+        })
+    }
+
+    pub fn as_b(&amp;amp;self) -&amp;gt; Option&amp;lt;&amp;amp;E&amp;gt; {
+        match self {
+            x @ E::B { .. } &#x3D;&amp;gt; Some(x),
+            E::A { .. } &#x3D;&amp;gt; None,
+        }
+    }
+}
+
+pub fn main() {
+    // Method access off type.
+    let a &#x3D; E::A { x: 1 };
+    let b &#x3D; E::B { x: 2 };
+    assert_eq!(a.as_x(), Some(1));
+    assert_eq!(b.as_x(), Some(2));
+
+    // Associated function on impl.
+    let a &#x3D; E::A { x: 1 };
+    let b &#x3D; E::B { x: 2 };
+    assert_eq!(E::as_x(&amp;amp;a), Some(1));
+    assert_eq!(E::as_x(&amp;amp;b), Some(2));
+
+    // In a collection.
+    let a &#x3D; E::A { x: 1 };
+    let b &#x3D; E::B { x: 2 };
+    let as_and_bs &#x3D; vec![a, b];
+    let xs &#x3D; as_and_bs.iter().filter_map(E::as_x).collect::&amp;lt;Vec&amp;lt;i32&amp;gt;&amp;gt;();
+    assert_eq!(xs, vec![1, 2]);
+
+    // Selecting a field as a dummy pattern match.
+    let b &#x3D; E::B { x: 2 };
+    let xs &#x3D; Some(&amp;amp;b).and_then(E::as_b);
+    assert_eq!(xs, Some(&amp;amp;E::B { x: 2 }));
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;5bb110c4a9981caa3bc3317b9e2350c3&quot;&gt;Playground&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Pattern matching is powerful but sometimes you can reduce the number of explicit
+pattern matches you perform by taking advantage of functions and combinators and
+keeping the logic small and simple, letting you reason about what the result
+ought to be on the other end. In the last case using &lt;code&gt;and_then&lt;/code&gt; above, we can
+reason that whenever we call &lt;code&gt;as_b&lt;/code&gt; we&#x27;re sure to get a single pattern match if
+we must simply checking for &lt;code&gt;Some(E::B { .. })&lt;/code&gt; or &lt;code&gt;None&lt;/code&gt;. The compiler may not
+understand that, though, and you&#x27;ll most likely have to include a wildcard case,
+but the brilliance of combinators is that you can chain them together in a
+pipeline similarly to the fluid interface that iterators present.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

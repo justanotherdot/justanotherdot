@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="The Lowly Assert: Roundtrips">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Data &quot;roundtrips&quot; when it goes from one value, to another, and back to the same value without any data loss, gain, or corruption. If you write code, you have probably roundtripped JSON, YAML, TOML, or some other serialization format in your time. You have also probably written versions of functions that do a similar &#x27;cycle&#x27; of some data. Any time you care about data being the same after it&#x27;s gone through the ringer, you want to write a roundtrip test.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="The Lowly Assert: Roundtrips">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Data &quot;roundtrips&quot; when it goes from one value, to another, and back to the same value without any data loss, gain, or corruption. If you write code, you have probably roundtripped JSON, YAML, TOML, or some other serialization format in your time. You have also probably written versions of functions that do a similar &#x27;cycle&#x27; of some data. Any time you care about data being the same after it&#x27;s gone through the ringer, you want to write a roundtrip test.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>The Lowly Assert: Roundtrips &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>The Lowly Assert: Roundtrips</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Data &quot;roundtrips&quot; when it goes from one value, to another, and back to the same
+value without any data loss, gain, or corruption. If you write code, you have
+probably roundtripped JSON, YAML, TOML, or some other serialization format in
+your time. You have also probably written versions of functions that do a
+similar &#x27;cycle&#x27; of some data. Any time you care about data being the same after
+it&#x27;s gone through the ringer, you want to write a roundtrip test.&lt;/p&gt;
+&lt;p&gt;Pretend we have a system where data comes in as JSON. We slurp up that JSON into
+a type using &lt;code&gt;serde&lt;/code&gt; (rust&#x27;s idiomatic, type-driven serialization +
+deserialization library). That data might later go onto being a type unrelated
+to JSON, so we might write some &lt;code&gt;From&lt;/code&gt; instances. This will be our adaptive
+layer so we can keep the shape of the JSON and our core types distinct. I
+mention this approach briefly in my post &lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/safely-shape-code-with-curtains.html&quot;&gt;&quot;Safely Shape Code with
+Curtains&quot;&lt;/a&gt;.
+The &lt;code&gt;From&lt;/code&gt; instance would normally be trivial, but we don&#x27;t want the JSON layer
+and the core types to look the same, do we? That would make the point of the
+JSON types moot:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct JsonType {
+  names: Option&amp;lt;Vec&amp;lt;String&amp;gt;&amp;gt;,
+  ids: Vec&amp;lt;i64&amp;gt;,
+}
+
+struct CoreType {
+  names: Vec&amp;lt;String&amp;gt;,
+  ids: Vec&amp;lt;i64&amp;gt;,
+}
+
+impl From&amp;lt;JsonType&amp;gt; for CoreType {
+  fn from(x: JsonType) -&amp;gt; Self {
+    Self {
+      names: x.names.unwrap_or(vec![]),
+      ids: x.ids,
+    }
+  }
+}
+
+impl From&amp;lt;CoreType&amp;gt; for JsonType {
+  fn from(x: CoreType) -&amp;gt; Self {
+    Self {
+      names: Some(x.unwrap())
+      ids: x.ids,
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We could test each direction in isolation, but that would mask the actual
+mistake here. Can you spot it? The roundtrip test in a property based testing
+context would find the failure quite quickly. I&#x27;ll do it by hand here to
+demonstrate the mistake:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let beg &#x3D; JsonType {
+  names: None,
+  ids: vec![1,2,3],
+};
+let roundtrip_fwd: CoreType &#x3D; expected.into();
+let end: JsonType &#x3D; roundtrip_fwd.into();
+assert_eq!(beg, end);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When the data comes back to the JSON layer, unless we tell &lt;code&gt;serde&lt;/code&gt; that empty
+vectors are always &lt;code&gt;None&lt;/code&gt;s for this field, we&#x27;ve now lost information. Clients
+might care a lot that their POST of some JSON for creating an entity in this
+make-believe system is non-symmetric. Developers might be going between the core
+and the JSON types regularly, and they may even be using the JSON types to write
+to disk, too, which would mean what was passed up from the client is now not the
+same as what is stored.&lt;/p&gt;
+&lt;p&gt;We can extrapolate this sort of information loss or corruption to other
+conversions. If you author an automatic code formatter, say &lt;code&gt;prettier&lt;/code&gt;, &lt;code&gt;gofmt&lt;/code&gt;,
+&lt;code&gt;mix fmt&lt;/code&gt;, &lt;code&gt;rustfmt&lt;/code&gt;, and so on, you&#x27;d want to make sure that any time you save
+a file and the formatter runs that your code is still the same code,
+semantically, as it was before saving the file. Although things might possibly
+look the same by eye, it could be another program entirely when run.&lt;/p&gt;
+&lt;h3&gt;Food for thought&lt;/h3&gt;
+&lt;p&gt;A quick refresher on functions.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Functions can be seen as &lt;strong&gt;mappings&lt;/strong&gt; from one type of value to another&lt;/li&gt;
+&lt;li&gt;All possible values that can go into our mapping are known as the &lt;strong&gt;domain&lt;/strong&gt; of
+a function&lt;/li&gt;
+&lt;li&gt;The set of all possible values our mapping can produce is called the &lt;strong&gt;codomain&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;The set of all values the mapping realistically produces is called the
+&lt;strong&gt;range&lt;/strong&gt; or &lt;strong&gt;image&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Ok, onto the concepts with fancy names:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;An &lt;strong&gt;injective&lt;/strong&gt; mapping is when a mapping goes from values in the domain to
+&lt;em&gt;unique&lt;/em&gt; values in the codomain.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A &lt;strong&gt;surjective&lt;/strong&gt; mapping is when a mapping goes from values in the domain to
+&lt;em&gt;every&lt;/em&gt; value in the codomain, even if some mappings overlap.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;A &lt;strong&gt;bijective&lt;/strong&gt; mapping is &lt;strong&gt;simultaneously injective and surjective&lt;/strong&gt; which
+means every value in the domain maps to every value in the codomain exactly
+once.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Why does this matter?&lt;/p&gt;
+&lt;p&gt;Bijective mappings give you an inverse function for free. If you are a value in
+the codomain and you know the mapping is bijective, then you can be sure that
+there must be one, and only one, value where you came from in the domain.
+One could &lt;a href&#x3D;&quot;https://math.stackexchange.com/a/165440/156419&quot;&gt;prove bijections&lt;/a&gt;
+using classical means but we don&#x27;t need to for production usage. Instead, it
+suffices to simply show the action going forwards and backwards.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

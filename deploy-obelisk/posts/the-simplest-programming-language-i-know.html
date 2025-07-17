@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="The Simplest Programming Language I Know">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="I&#x27;m going to teach you the simplest programming language I know.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="The Simplest Programming Language I Know">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="I&#x27;m going to teach you the simplest programming language I know.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>The Simplest Programming Language I Know &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>The Simplest Programming Language I Know</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;I&#x27;m going to teach you the simplest programming language I know.&lt;/p&gt;
+&lt;p&gt;Everything starts with functions:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;(\x -&amp;gt; x)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;x&lt;/code&gt; is the input argument. There may be more than one by adding comma separated
+values, e.g. &lt;code&gt;x, y, z&lt;/code&gt;, and so on. The body comes after the arrow (&lt;code&gt;-&amp;gt;&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;x&lt;/code&gt; is a variable. We can call functions like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;(\x -&amp;gt; x) 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This says &quot;substitute the value of &lt;code&gt;3&lt;/code&gt; everywhere you see &lt;code&gt;x&lt;/code&gt; in the body of the
+function&quot;, like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. (\x -&amp;gt; x) 3
+2. (\x &#x3D; 3 -&amp;gt; x)
+3. (3)
+4. 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here&#x27;s another example with more than one argument:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. (\x, y -&amp;gt; x + y) 3 4
+2. (\x &#x3D; 3, y &#x3D; 4 -&amp;gt; x + y)
+3. (3 + 4)
+4. 7
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Calling a function is called &quot;function application&quot; and when all arguments are
+substituted with actual value we are left with the result. When we assign values
+to variable names we call it &quot;binding&quot;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. f &#x3D; (\x -&amp;gt; x)
+2. f 3
+3. 3
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Sometimes when we talk about function application. It can be bit-by-bit:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1. (\x, y -&amp;gt; x + y) 3 4
+2. (\x &#x3D; 3, y -&amp;gt; x + y) 4
+3. (\y -&amp;gt; 3 + y) 4
+4. (\y &#x3D; 4 -&amp;gt; 3 + y) 4
+5. (3 + 4)
+6. 7
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Functions are values. We call the above &quot;partial application&quot; because we get
+functions back when we apply one argument at a time. This format for function
+application is called &quot;currying&quot; where a function takes one argument at a time.&lt;/p&gt;
+&lt;p&gt;This programming language has many types but has no way to check this before
+running the program. Hence we can wind up with weird expressions such as adding
+the number &lt;code&gt;3&lt;/code&gt; and &lt;code&gt;true&lt;/code&gt; together. This programming language is called the
+&lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Lambda_calculus&quot;&gt;&quot;lambda calculus&quot;&lt;/a&gt; and when you
+add a basic form of types you get the &lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Simply_typed_lambda_calculus&quot;&gt;&quot;simply typed lambda
+calculus&quot;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;And now you know one basis of functional programming and a model of computation.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

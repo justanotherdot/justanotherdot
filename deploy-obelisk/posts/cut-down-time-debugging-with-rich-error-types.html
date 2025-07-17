@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Cut Down Time Debugging With Rich Error Types">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Have you ever spent a considerable amount of time tracking down the meaning of an error flag or code after a program has crashed? In languages that don&#x27;t let you break down values with pattern matching, booleans and error codes run rampant and require extra investigative effort on the part of the programmer. Diagnosing problems in programs doesn&#x27;t have to be hard in Rust given we have &#x60;Result&#x60; to carry along lots of useful information for us.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Cut Down Time Debugging With Rich Error Types">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Have you ever spent a considerable amount of time tracking down the meaning of an error flag or code after a program has crashed? In languages that don&#x27;t let you break down values with pattern matching, booleans and error codes run rampant and require extra investigative effort on the part of the programmer. Diagnosing problems in programs doesn&#x27;t have to be hard in Rust given we have &#x60;Result&#x60; to carry along lots of useful information for us.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Cut Down Time Debugging With Rich Error Types &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Cut Down Time Debugging With Rich Error Types</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Have you ever spent a considerable amount of time tracking down the meaning of
+an error flag or code after a program has crashed? In languages that don&#x27;t let
+you break down values with pattern matching, booleans and error codes run
+rampant and require extra investigative effort on the part of the programmer.
+Diagnosing problems in programs doesn&#x27;t have to be hard in Rust given we have
+&lt;code&gt;Result&lt;/code&gt; to carry along lots of useful information for us.&lt;/p&gt;
+&lt;p&gt;There was a recent video on why &lt;a href&#x3D;&quot;https://www.youtube.com/watch?v&#x3D;zQC8T71Y8e4&quot;&gt;std::process::exit is
+&#x27;evil&#x27;&lt;/a&gt; demonstrating that by
+requesting normal or abnormal termination by the operating system through
+&lt;code&gt;std::process::exit&lt;/code&gt; you could fail to do cleanup that the operating system may
+fail to do. I would say std::process::exit is quirky rather than evil here
+because it is doing exactly what you ask of it. The example is roughly like
+this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[derive(Debug)]
+struct Resource(i32);
+
+impl Drop for Resource {
+    fn drop(&amp;amp;mut self) {
+        println!(&quot;cleaning up resource: {}&quot;, self.0);
+    }
+}
+
+enum Error {
+    Foo
+}
+
+impl Error {
+    pub fn exit_code(self) -&amp;gt; i32 {
+        match self {
+            Error::Foo &#x3D;&amp;gt; 114,
+        }
+    }
+}
+
+fn main() {
+    let _x &#x3D; Resource(0);
+    println!(&quot;about to terminate the process&quot;);
+    std::process::exit(1); // &quot;cleaning up resource: 0&quot; never prints.
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the above code, the destructor for &lt;code&gt;Resource&lt;/code&gt; never runs because the program
+is effectively terminated at the point that &lt;code&gt;std::process::exit&lt;/code&gt; is called. It&#x27;s
+a blunt tool, and can be used for both zero and non-zero exit codes, which in an
+operating system execution context can roughly relate to success or failure
+respectively. Exit codes allow both minimal diagnostic information and sometimes
+even a way to handle control flow, &lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/discovering-problematic-commits-with-git-bisect.html&quot;&gt;as is the case with driving &lt;code&gt;git bisect&lt;/code&gt;
+automatically&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Some resources definitely need cleanup on program failure and the solution is to
+wrap the main logic in another function, preferably one that returns &lt;code&gt;Result&lt;/code&gt;,
+to ensure the resources go out of scope before calling &lt;code&gt;std::process::exit&lt;/code&gt;. The
+solution given in the video has this function returning an exit code (an i32)
+for it&#x27;s error:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[derive(Debug)]
+struct Resource(i32);
+
+impl Drop for Resource {
+    fn drop(&amp;amp;mut self) {
+        println!(&quot;cleaning up resource: {}&quot;, self.0);
+    }
+}
+
+fn run() -&amp;gt; Result&amp;lt;(), i32&amp;gt; {
+    let _x &#x3D; Resource(0);
+    Err(114)
+}
+
+fn main() {
+    let _x &#x3D; Resource(0);
+    run().unwrap_or_else(|exit_code| {
+        println!(&quot;about to terminate the process&quot;);
+        std::process::exit(exit_code);
+    });
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we have destructors running on exit, but we have totally lost relevant
+&lt;em&gt;human readable&lt;/em&gt; diagnostic information in the process. &lt;strong&gt;By using richer types
+for our errors we gain that information back&lt;/strong&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;use std::fmt::{Formatter, Display};
+
+#[derive(Debug)]
+struct Resource(i32);
+
+impl Drop for Resource {
+    fn drop(&amp;amp;mut self) {
+        println!(&quot;cleaning up resource: {}&quot;, self.0);
+    }
+}
+
+enum Error {
+    MissingData
+}
+
+impl Display for Error {
+    fn fmt(&amp;amp;self, f: &amp;amp;mut Formatter) -&amp;gt; Result&amp;lt;(), std::fmt::Error&amp;gt; {
+        match self {
+            Error::MissingData &#x3D;&amp;gt; write!(f, &quot;could not find any data&quot;),
+        }
+    }
+}
+
+impl Error {
+    pub fn exit_code(self) -&amp;gt; i32 {
+        match self {
+            Error::MissingData &#x3D;&amp;gt; 114,
+        }
+    }
+}
+
+
+fn start() -&amp;gt; Result&amp;lt;(), Error&amp;gt; {
+    let _x &#x3D; Resource(0);
+    return Err(Error::MissingData);
+}
+
+fn main() {
+    let _x &#x3D; Resource(0);
+    start().unwrap_or_else(|e| {
+        println!(&quot;about to terminate the process&quot;);
+        eprintln!(&quot;[program] {}&quot;, e);
+        std::process::exit(e.exit_code());
+    });
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;275ccf13e2ca30f6bdb0f96c8b58463f&quot;&gt;playground&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In the above code we can propagate failures from various parts of our program
+and we don&#x27;t have to lose that information that is useful for diagnostics. By
+using a method to map the error to an exit code, we decide to shed that
+information at the point when we call &lt;code&gt;std::process::exit&lt;/code&gt;, allowing us
+to print out our error onto stderr or pattern match on it to do emit metrics,
+and so on. &lt;strong&gt;If you want to avoid the headache of tracking down bugs in production
+systems, keep information as semantically rich as possible for as long as
+possible&lt;/strong&gt;. If you think of a program like a parser that builds up values from
+external input or stimuli, then you want to take advantage of that work for as
+long as possible and only discard it at the fringes.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Astute readers will note that what I&#x27;ve we&#x27;ve written above is the
+&lt;a href&#x3D;&quot;https://doc.rust-lang.org/std/process/trait.Termination.html&quot;&gt;&lt;code&gt;Termination&lt;/code&gt;
+trait&lt;/a&gt; that is
+&lt;a href&#x3D;&quot;https://github.com/rust-lang/rust/issues/43301&quot;&gt;pending stabilization&lt;/a&gt; but I
+personally feel teaching others how to get similar results without having to
+rely on unstable features is a reasonable tradeoff. When
+std::process::Termination stabalizes I&#x27;ll be sure to give this article a
+refresher.&lt;/em&gt;&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Ways Wildcards Hide Bugs">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="We call the wildcard variable, denoted by an underscore (&#x60;_&#x60;), the &quot;don&#x27;t care&quot; variable to throw away values we don&#x27;t care to keep. Wildcards don&#x27;t bind any values, so wildcards have specific support in the language, as opposed to other languages where an underscore may be yet another variable name.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Ways Wildcards Hide Bugs">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="We call the wildcard variable, denoted by an underscore (&#x60;_&#x60;), the &quot;don&#x27;t care&quot; variable to throw away values we don&#x27;t care to keep. Wildcards don&#x27;t bind any values, so wildcards have specific support in the language, as opposed to other languages where an underscore may be yet another variable name.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Ways Wildcards Hide Bugs &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Ways Wildcards Hide Bugs</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;We call the wildcard variable, denoted by an underscore (&lt;code&gt;_&lt;/code&gt;), the &quot;don&#x27;t care&quot;
+variable to throw away values we don&#x27;t care to keep. Wildcards don&#x27;t bind any
+values, so wildcards have specific support in the language, as opposed to other
+languages where an underscore may be yet another variable name.&lt;/p&gt;
+&lt;p&gt;I&#x27;ll discuss three ways bugs can lurk innocently behind wildcards. Wildcards are useful, but reckless use of them can lead to bugs! I&#x27;ll discuss three ways this can happen and how to be a bit more vigilant with their use. The general principle across these fixes is to think twice when you find yourself writing a wildcard. Ask if it is a value you want to ignore?&lt;/p&gt;
+&lt;h3&gt;Throwing away values&lt;/h3&gt;
+&lt;p&gt;The &lt;code&gt;;&lt;/code&gt; without a &lt;code&gt;let&lt;/code&gt; statement in Rust means &quot;turn this thing into a &lt;code&gt;()&lt;/code&gt;because I want to cast the value into something that isn&#x27;t an error but isn&#x27;t a useful value.&quot; If you write a &lt;code&gt;Result&lt;/code&gt; in Rust and don&#x27;t propagate the value with &lt;code&gt;?&lt;/code&gt; and don&#x27;t assign the value to a variable name, say something like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pub fn main() -&amp;gt; Result&amp;lt;(), std::io::Error&amp;gt;  {
+    std::fs::remove_file(&quot;/hello&quot;);
+    Ok(())
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;rustc whinges, stating:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;   Compiling playground v0.0.1 (/playground)
+warning: unused &#x60;std::result::Result&#x60; that must be used
+ --&amp;gt; src/main.rs:2:5
+  |
+2 |     std::fs::remove_file(&quot;/hello&quot;);
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  &#x3D; note: &#x60;#[warn(unused_must_use)]&#x60; on by default
+  &#x3D; note: this &#x60;Result&#x60; may be an &#x60;Err&#x60; variant, which should be handled
+
+    Finished dev [unoptimized + debuginfo] target(s) in 0.61s
+     Running &#x60;target/debug/playground&#x60;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, we can entirely silence this with a wildcard:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pub fn main() -&amp;gt; Result&amp;lt;(), std::io::Error&amp;gt;  {
+    let _ &#x3D; std::fs::remove_file(&quot;/hello&quot;);
+    Ok(())
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It may seem like you don&#x27;t care about the value, but if the value represents a failure in any way, including, say, an &lt;code&gt;Option&lt;/code&gt;, you want to ensure that value is not lost. Silencing any error generally means failures aren&#x27;t be handled or reported, and that can mean things &lt;em&gt;seem&lt;/em&gt; fine on the surface, but might be broken.&lt;/p&gt;
+&lt;p&gt;To give a production example of this, I recently fixed a test bug that used a database transaction but discarded its &lt;code&gt;Result&lt;/code&gt;. It did this with the same sort of wildcard binding we saw above. As such, when it encountered any failure in the transaction and ignored it, the test became a false positive because nothing would panic. Two ways to fix this are to turn the enclosing test as one that returns &lt;code&gt;Result&lt;/code&gt;, which you can do and is excellent, and the other is to bind the value and &lt;code&gt;unwrap&lt;/code&gt;, &lt;code&gt;expect&lt;/code&gt; or even do an &lt;code&gt;assert&lt;/code&gt; on it given what sort of ergonomics and output you like.&lt;/p&gt;
+&lt;h3&gt;Using wildcard cases in a match carelessly&lt;/h3&gt;
+&lt;p&gt;Not everyone coming to Rust is used to match expressions. The anatomy of a match expression is pretty straightforward; you &lt;code&gt;match&lt;/code&gt; on the term of interest, and each &#x27;arm&#x27; is a case that we consider. Match statements are exhaustive, which means we either check every possible value we are matching against or we slap in a wildcard because we don&#x27;t care or can&#x27;t feasibly match on every possible value. When things have high-cardinality of the values they can represent, a wildcard might be funneling unexpected value into the wrong logic.
+rustc is great at calling you out on this sort of stuff. Consider this code that
+matches on an integer:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pub fn main() {
+    let x: i32 &#x3D; 12;
+    match x {
+      y if y &#x3D;&#x3D; 12 &#x3D;&amp;gt; x,
+      y if y &amp;lt; 12 &#x3D;&amp;gt; x,
+      y if y &amp;gt; 12 &#x3D;&amp;gt; x,
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Integers have many values, and we&#x27;re trying to narrow down the selection to an exact match, values that are greater than the exact match, and values that are lesser than the exact match. However, rustc wants to make sure we&#x27;ve genuinely considered every angle:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;   Compiling playground v0.0.1 (/playground)
+error[E0004]: non-exhaustive patterns: &#x60;_&#x60; not covered
+ --&amp;gt; src/main.rs:3:11
+  |
+3 |     match x {
+  |           ^ pattern &#x60;_&#x60; not covered
+  |
+  &#x3D; help: ensure that all possible cases are being handled, possibly by adding wildcards or more match arms
+
+error: aborting due to previous error
+
+For more information about this error, try &#x60;rustc --explain E0004&#x60;.
+error: could not compile &#x60;playground&#x60;.
+
+To learn more, run the command again with --verbose.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you make the first match case &lt;code&gt;12 &#x3D;&amp;gt; x&lt;/code&gt; rustc tells us that we aren&#x27;t considering full ranges:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;   Compiling playground v0.0.1 (/playground)
+error[E0004]: non-exhaustive patterns: &#x60;std::i32::MIN..&#x3D;11i32&#x60; and &#x60;13i32..&#x3D;std::i32::MAX&#x60; not covered
+ --&amp;gt; src/main.rs:3:11
+  |
+3 |     match x {
+  |           ^ patterns &#x60;std::i32::MIN..&#x3D;11i32&#x60; and &#x60;13i32..&#x3D;std::i32::MAX&#x60; not covered
+  |
+  &#x3D; help: ensure that all possible cases are being handled, possibly by adding wildcards or more match arms
+
+error: aborting due to previous error
+
+For more information about this error, try &#x60;rustc --explain E0004&#x60;.
+error: could not compile &#x60;playground&#x60;.
+
+To learn more, run the command again with --verbose.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;rustc is already nudging us towards a solution specifically here where guards aren&#x27;t doing much for us by spelling out the exact patterns for us. With some changes, this builds cleanly:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pub fn main() {
+    let x: i32 &#x3D; 12;
+    match x {
+      12 &#x3D;&amp;gt; x,
+      std::i32::MIN..&#x3D;11i32 &#x3D;&amp;gt; x,
+      13i32..&#x3D;std::i32::MAX &#x3D;&amp;gt; x,
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If possible, it&#x27;s best to refine the type into something like a sum type (enum) so that we can match on exact variants. In our example above, if we were to &lt;code&gt;x.cmp(12i32)&lt;/code&gt;, we&#x27;d have three cases to check for; &lt;code&gt;LessThan&lt;/code&gt;, &lt;code&gt;MoreThan&lt;/code&gt;, and &lt;code&gt;Eq&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;use std::cmp::Ordering;
+
+pub fn main() {
+    let x: i32 &#x3D; 12;
+    match x.cmp(&amp;amp;12i32) {
+        Ordering::Equal &#x3D;&amp;gt; x,
+        Ordering::Less &#x3D;&amp;gt; x,
+        Ordering::Greater &#x3D;&amp;gt; x,
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you still need to use a wildcard, a useful tool is to turn to property-based testing or fuzzing to ensure that the specific branches are covered. Property-based testing and fuzzing are ways to generate test input randomly. Many libraries have support for generating specific ranges of values, such that you could focus more on the &quot;black hole&quot; that the wildcard case is creating, which is &quot;everything that isn&#x27;t the cases I &lt;em&gt;have&lt;/em&gt; covered.&quot; For example, you might have three branches, where one of the branches is a wildcard. 10-20% could go into the first two known branches, and the remaining 60-80% could be left to generate data that isn&#x27;t of those two known branches to shine a flashlight into the dark crevices. When values become known that have special treatment, you can add them to the branches of the &lt;code&gt;match&lt;/code&gt; and adjust the percentages accordingly.&lt;/p&gt;
+&lt;h3&gt;Leaving arguments dormant in a function&lt;/h3&gt;
+&lt;p&gt;When we design public-facing interfaces, it can be tempting to try to keep them stable by softening some of their fields. One way to do this with functions is to treat arguments as &quot;unused&quot; by prefixing them with an underscore. The surface seems the same, but now the value isn&#x27;t used.&lt;/p&gt;
+&lt;p&gt;Since the function ignores these values, callers may make incorrect assumptions about how arguments might change the output. Leaving arguments dormant is especially nefarious when the function is non-deterministic, and it can &lt;em&gt;feel&lt;/em&gt; like the different arguments are making a change. We can&#x27;t always trust that users of our code are going to, or even be able to, read the source code.&lt;/p&gt;
+&lt;p&gt;Ignoring arguments has a straightforward fix; don&#x27;t ignore arguments. Favor deprecating the function for a new version as the alternative and signal new versions with some precise apparatus. This principle is the same across a lot of interface design: make a new thing and migrate over to it rather than trying to change the other thing in place. When you rig up the new version, you can delete the old one, but you need to keep the old one around until you finalize the transition. Changing things in place is fine if the consumption is still light, but the breathing room gained from doing it the immutable way far outweighs the &#x27;ease&#x27; of trying to modify the pre-existing.&lt;/p&gt;
+&lt;h3&gt;Wildcards aren&#x27;t bad!&lt;/h3&gt;
+&lt;p&gt;Don&#x27;t get me wrong, wildcards &lt;em&gt;are&lt;/em&gt; useful, but they are easy to abuse if you are new to them. Hopefully, these points come to mind next time you write a &lt;code&gt;match&lt;/code&gt; expression or modify a function!&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

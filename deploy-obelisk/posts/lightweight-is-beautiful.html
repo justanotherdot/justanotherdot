@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Lightweight is Beautiful">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="We are all guilty of having done the &quot;edit a little bit, go to another terminal, hit the up-arrow a number of times, fire off the found command&quot; dance over and over again at some point in our careers. It&#x27;s such an easy automation to remove these steps! IDEs give this to you because they know best about when a buffer or a file has been saved or modified. Indeed, people go crazy for IDEs because they provide information directly in the editor.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Lightweight is Beautiful">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="We are all guilty of having done the &quot;edit a little bit, go to another terminal, hit the up-arrow a number of times, fire off the found command&quot; dance over and over again at some point in our careers. It&#x27;s such an easy automation to remove these steps! IDEs give this to you because they know best about when a buffer or a file has been saved or modified. Indeed, people go crazy for IDEs because they provide information directly in the editor.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Lightweight is Beautiful &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Lightweight is Beautiful</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;We are all guilty of having done the &quot;edit a little bit, go to another terminal,
+hit the up-arrow a number of times, fire off the found command&quot; dance over and
+over again at some point in our careers. It&#x27;s such an easy automation to remove
+these steps! IDEs give this to you because they know best about when a buffer or
+a file has been saved or modified. Indeed, people go crazy for IDEs because they
+provide information directly in the editor.&lt;/p&gt;
+&lt;p&gt;Even though things like VSCode and the Language Server Protocol have done a
+tremendous amount of work in reducing complexity around both the setup and
+maintenance of an IDE environment since days of yore, there are still times when
+the array of plugins and external tooling &#x27;go wrong&#x27;. Bugs or even the nefarious
+&#x27;opinionated&#x27; feature can cripple a dev&#x27;s workflow. Fixing these issues isn&#x27;t
+necessarily time poorly spent but it&#x27;s hard to shrug off because the integration
+is so tight-knit—now that you depend so heavily on the plugin, switching to
+something different is slow. Here&#x27;s an approach I think is a bit more
+&lt;a href&#x3D;&quot;https://www.goodreads.com/book/show/13530973-antifragile&quot;&gt;antifragile&lt;/a&gt;, to use
+a term coined by author Nassim Taleb. An antifragile approach is distinct from a
+fragile approach because&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a fragile approach will break when encountering an unexpected event and&lt;/li&gt;
+&lt;li&gt;a robust approach does not change when encountering an unexpected event but&lt;/li&gt;
+&lt;li&gt;an antifragile approach gets better as it encounters unexpected events&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I&#x27;m a bit spartan when it comes to coding. I do this largely because I&#x27;ve had a
+lot of tooling mistreat me and this has taught me that the weight of a tool or
+process is a matter of its cost. &lt;strong&gt;Lightweight is beautiful&lt;/strong&gt;. By lightweight we
+mean cheap to replace not &#x27;small&#x27; and &#x27;simple&#x27;. Sometimes you do need beastly
+machines because you can&#x27;t bore a hole into the earth to make a tunnel with a
+few workers armed with spoons. &lt;strong&gt;Lightweight functionality is preferable to
+mindless adherence to a given tool or process.&lt;/strong&gt; In other words, it&#x27;s
+antifragile to be prone to lightweight .&lt;/p&gt;
+&lt;p&gt;So here is the setup; two terminals or windows or whatever you like to use. In
+one is your source code and in the other is your tests, linting, typechecking,
+you name it. Either they are side-by-side or perhaps there is a dead-simple way
+for you to swap between them. You can have several of these going at once and in
+fact I recommend it. If they are resilient to files changing from version
+control that&#x27;s even better. &lt;strong&gt;It&#x27;s important they stay &lt;em&gt;relevant&lt;/em&gt; and by that I
+mean obvious and up-to-date.&lt;/strong&gt; When we talked about
+&lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/stdout_is_forever.html&quot;&gt;debugging&lt;/a&gt;, this
+is the very loop I was referring to. With this in place you can progressively
+slap in debugging statements and changes while watching the results come seeping
+out.&lt;/p&gt;
+&lt;p&gt;There are plenty of testing frameworks and tools that support automatically
+running tests or commands on file save. &lt;code&gt;jest&lt;/code&gt;, &lt;code&gt;PyTest&lt;/code&gt;, &lt;code&gt;cargo watch&lt;/code&gt;, &lt;code&gt;go watcher&lt;/code&gt;, &lt;code&gt;mix watch&lt;/code&gt;, you name it. This sets up an automatic link between the
+file(s) being edited and the suite of tests to run. Just alleviating the step
+where you need to context switch is the small win here and is not the point.&lt;/p&gt;
+&lt;p&gt;With this approach, if anything like a plugin or even a specific command in the
+pipeline you setup goes awry, you can cheaply swap it out for an alternative.
+&lt;strong&gt;This is the best kind of feedback loop as it favours tinkering and
+experimentation.&lt;/strong&gt; Lately because I mostly write Rust at work, I tend to use
+&lt;code&gt;cargo watch&lt;/code&gt; but one incredibly handy, language agnostic tool is
+&lt;a href&#x3D;&quot;http://eradman.com/entrproject/&quot;&gt;&lt;code&gt;entr&lt;/code&gt;&lt;/a&gt; which is useful when I foray into the
+unknown or uncommon. Let&#x27;s say I find that I need to run a particular pipeline,
+I can do that by running,&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;rg -l . | entr -cs &#x27;cmd1; cmd2; cmd3&#x27;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Now if &lt;code&gt;cmd2&lt;/code&gt; is being a pain, I can take it out of the pipeline quickly or even
+choose to replace it. Perhaps it&#x27;s a new project and you are furiously adding
+files, you could set up a governing loop that watches all files and tears down
+the loop if that changes some known set.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;while true; do ls src/* | entr -d cmd; done&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Most people never even think of doing a &lt;code&gt;git bisect&lt;/code&gt; because of the pain of
+steering the interaction with the bisect and running the tests to confirm the
+first failure in the regression suite. This isn&#x27;t just the cost of swapping
+between terminals. Sometimes it can be tests that are flaky and come up as false
+positives or maybe a test suite is slow to run but there is no way to neatly run
+a subsection without commenting out code. With this approach, however, we can
+focus on the steering and watch what happens in the other window. If flaky or
+slow tests show up, we can comment them out and move on (&lt;code&gt;git clean -fdxx&lt;/code&gt; is
+handy for these sort of tempermental changes if you tack on it on the back of
+the pipeline you construct).&lt;/p&gt;
+&lt;p&gt;If a great style guide favours &lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/a_plea_for_style_guides.html&quot;&gt;deletability and ease of
+modification&lt;/a&gt;,
+this approach is stressing for &lt;strong&gt;replaceability&lt;/strong&gt; for producing tinker-friendly,
+antifragile feedback loops. If you lower friction you&#x27;ll always beget action,
+and &lt;a href&#x3D;&quot;http://jsomers.net/blog/speed-matters&quot;&gt;fast systems incur usage&lt;/a&gt;.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

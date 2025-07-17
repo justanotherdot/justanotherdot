@@ -1,0 +1,28 @@
+#!/bin/sh -eu
+
+echo "Building and comparing site-gen vs obelisk..."
+
+# Build both projects
+echo "Building site-gen..."
+cargo build --bin site-gen
+
+echo "Building obelisk..."
+cargo build --bin obelisk
+
+# Run both generators
+echo "Running site-gen..."
+cargo run --bin site-gen
+
+echo "Running obelisk..."
+cargo run --bin obelisk
+
+# Compare outputs
+echo "Comparing outputs..."
+if command -v diff >/dev/null 2>&1; then
+    echo "Differences between deploy/ and deploy-obelisk/:"
+    diff -r deploy/ deploy-obelisk/ || echo "Files differ"
+else
+    echo "diff command not available for comparison"
+fi
+
+echo "Comparison complete!"

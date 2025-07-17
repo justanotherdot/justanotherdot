@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Catching panics in dependencies">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Having crates panic on you feels random because the specific conditions that trigger the panic may not seem clear. Having external crates bring down your program is a pain, but there is currently no static analysis tool to help us easily find panics in external crates. You can get pretty close with fuzzing, though!">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Catching panics in dependencies">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Having crates panic on you feels random because the specific conditions that trigger the panic may not seem clear. Having external crates bring down your program is a pain, but there is currently no static analysis tool to help us easily find panics in external crates. You can get pretty close with fuzzing, though!">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Catching panics in dependencies &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Catching panics in dependencies</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Having crates panic on you feels random because the specific conditions that
+trigger the panic may not seem clear. Having external crates bring down your
+program is a pain, but there is currently no static analysis tool to help us
+easily find panics in external crates. You can get pretty close with fuzzing,
+though!&lt;/p&gt;
+&lt;p&gt;The format for fuzzing is generally:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Get some random bytes&lt;/li&gt;
+&lt;li&gt;Shape them into the right shape needed for our interface&lt;/li&gt;
+&lt;li&gt;Run the interface with the random data and see if it blows up&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Some fuzzing libraries take the input that leads to a crash and continually mutates it
+to find other cases where it might crash as well. I&#x27;m going to use &lt;code&gt;cargo fuzz&lt;/code&gt;
+to reproduce finding a panic in an external dependency. &lt;a href&#x3D;&quot;https://github.com/rust-num/num/issues/268&quot;&gt;Here&#x27;s a
+case&lt;/a&gt; taken from the &lt;code&gt;rust-fuzz&lt;/code&gt;
+organisations &lt;a href&#x3D;&quot;https://github.com/rust-fuzz/trophy-case&quot;&gt;trophy case&lt;/a&gt;. I&#x27;ll use
+&lt;code&gt;num&lt;/code&gt; v0.1.31 which panics when parsing &lt;code&gt;BigInt&lt;/code&gt;s as per the linked issue. I&#x27;ll
+add it to the &lt;code&gt;Cargo.toml&lt;/code&gt; of our project:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[dependencies]
+num &#x3D; &quot;&#x3D;0.1.31&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then, I&#x27;ll install &lt;code&gt;cargo fuzz&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cargo install cargo-fuzz
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then in our project, we can initialize cargo fuzz.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cargo fuzz init
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which gives me a single fuzz target which I can rename if I want. I&#x27;ll rename it
+to &lt;code&gt;parse.rs&lt;/code&gt; so the name is &lt;code&gt;parse&lt;/code&gt; when listed but you can call it anything
+that fits. To do this I will change the &lt;code&gt;fuzz&lt;/code&gt; subdirectories &lt;code&gt;Cargo.toml&lt;/code&gt;. A
+&lt;code&gt;[[bin]]&lt;/code&gt; key is in there that designates what targets are available. Since
+we&#x27;re moving &lt;code&gt;fuzz_target_1&lt;/code&gt; to &lt;code&gt;parse&lt;/code&gt;, we have to do this in the TOML file
+since the &lt;code&gt;cargo fuzz&lt;/code&gt; subcommand doesn&#x27;t have this ability, but we &lt;em&gt;can&lt;/em&gt; use
+the &lt;code&gt;cargo fuzz add&lt;/code&gt; subcommand to add extra targets with custom names in the
+future.&lt;/p&gt;
+&lt;p&gt;The new key should look like this&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[[bin]]
+name &#x3D; &quot;parse&quot;
+path &#x3D; &quot;fuzz_targets/parse.rs&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;with the rest of the &lt;code&gt;fuzz/Cargo.toml&lt;/code&gt; left as-is.&lt;/p&gt;
+&lt;p&gt;Then we can write a simple case for our function. This can be a little tricky
+because the fuzzer will hand us raw bytes and it&#x27;s up to us to shape them into
+the right format, whether that be a struct, i64, f32, and so on. For this case
+I&#x27;ll make a string from the random bytes and feed it into our project&#x27;s &lt;code&gt;parse&lt;/code&gt;
+function:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#![no_main]
+use our_project::parse;
+use libfuzzer_sys::fuzz_target;
+
+fuzz_target!(|data: &amp;amp;[u8]| {
+    if let Ok(s) &#x3D; std::str::from_utf8(data) {
+        let _ &#x3D; parse(&amp;amp;s);
+    }
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;the &lt;code&gt;parse&lt;/code&gt; function might look something like this (lifted from the issue):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;use num::Num;
+
+pub fn parse(str: &amp;amp;str) {
+    num::BigUint::from_str_radix(str, 10);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and then I&#x27;ll run the fuzzer for this target:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cargo fuzz run parse
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This finds offending strings similar to the trophy case example quite quickly:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;snip&amp;gt;
+────────────────────────────────────────────────────────────────────────────────
+
+Failing input:
+
+        fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc
+
+Output of &#x60;std::fmt::Debug&#x60;:
+
+        [48, 43, 49]
+
+Reproduce with:
+
+        cargo fuzz run parse fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc
+
+Minimize test case with:
+
+        cargo fuzz tmin parse fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc
+
+────────────────────────────────────────────────────────────────────────────────
+
+Error: Fuzz target exited with exit code: 77
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Hang on, that debug output doesn&#x27;t look like the offending case mentioned in the
+issue we linked above from the trophy case, does it? Again, this is because it&#x27;s
+the raw bytes. A handy trick I use when running regressions is to utilize the
+stored failing input. In this case it&#x27;s stored at
+&lt;code&gt;fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc&lt;/code&gt; per the
+output above. We can write a regression that uses this directly with the macro
+&lt;code&gt;include_bytes!&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn fuzz_regression_01() {
+        let data &#x3D; include_bytes!(
+            &quot;../fuzz/artifacts/parse/crash-00a78c613a00b21ea723de12e16f32a0385d9bdc&quot;
+        );
+        let s &#x3D; std::str::from_utf8(data).expect(&quot;should be able to make test input&quot;);
+        dbg!(&amp;amp;s);
+        parse(&amp;amp;s);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can run the tests the usual way with &lt;code&gt;cargo test&lt;/code&gt; which should panic. I&#x27;ve
+lobbed a &lt;code&gt;dbg!&lt;/code&gt; in there of the transformed raw bytes into the string. When the
+test panics we see:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;running 1 test
+test tests::fuzz_regression_01 ... FAILED
+
+failures:
+
+- tests::fuzz_regression_01 stdout -
+[src/lib.rs:17] &amp;amp;s &#x3D; &quot;0+1&quot;
+thread &#x27;tests::fuzz_regression_01&#x27; panicked at &#x27;called &#x60;Result::unwrap_err()&#x60; on an &#x60;Ok&#x60; value: 1&#x27;, /home/rjs/.cargo/registry/src/github.com-1ecc6299db9ec823/num-0.1.31/src/bigint.rs:388:25
+note: run with &#x60;RUST_BACKTRACE&#x3D;1&#x60; environment variable to display a backtrace
+
+failures:
+    tests::fuzz_regression_01
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out
+
+error: test failed, to rerun pass &#x27;--lib&#x27;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And there is our offending input, &lt;code&gt;&quot;0+1&quot;&lt;/code&gt;! Beautiful. I can use these specific
+cases in issues for upstream projects instead of wasting time trying to find
+exact cases on my own. Switching to &lt;code&gt;num&lt;/code&gt; v0.1.41 avoids the panic and we can
+run &lt;code&gt;cargo fuzz&lt;/code&gt; again. We can also change the fuzzing library used, such as
+libfuzz or &lt;a href&#x3D;&quot;https://rust-fuzz.github.io/book/afl.html&quot;&gt;afl&lt;/a&gt;, which &lt;code&gt;cargo fuzz&lt;/code&gt;
+supports. You can also use &lt;code&gt;honggfuzz&lt;/code&gt; via the &lt;code&gt;honggfuzz.rs&lt;/code&gt; library over at
+&lt;a href&#x3D;&quot;https://github.com/rust-fuzz/honggfuzz-rs&quot;&gt;honggfuzz-rs&lt;/a&gt;. Different fuzzers
+have different features and guarantees but most are relatively easy to write
+targets for and get fuzzing so it can pay to try a few alternatives to see if
+other cases are lurking around.&lt;/p&gt;
+&lt;p&gt;Before I go, I want to talk about a related concept known as &quot;property based
+testing&quot; where we define how random data should be generated. We&#x27;ll dig more
+into that another day but for now, it suffices to say that both approaches help
+to drive out test cases you might not have imagined! I am in the habit of making
+my own regression suites from cases I find from either method, but you don&#x27;t
+&lt;em&gt;have&lt;/em&gt; to do this as some fuzzers and property-based testing libraries will keep
+a &quot;corpus&quot; of data that has failed that it can try again on future runs, but I
+find it helpful to have the regressions as unit tests so there is a fast way to
+verify earlier failures aren&#x27;t still happening.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

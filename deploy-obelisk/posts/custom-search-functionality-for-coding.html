@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Custom Search Functionality for Coding">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="This may not be revelatory to some, but it&#x27;s a cool trick I use daily and I thought I&#x27;d write about since it&#x27;s managed to surprise enough colleagues and friends when I&#x27;ve used it. Credit where credit is due, I was taught this trick two years ago by Charles O&#x27;Farrell.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Custom Search Functionality for Coding">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="This may not be revelatory to some, but it&#x27;s a cool trick I use daily and I thought I&#x27;d write about since it&#x27;s managed to surprise enough colleagues and friends when I&#x27;ve used it. Credit where credit is due, I was taught this trick two years ago by Charles O&#x27;Farrell.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Custom Search Functionality for Coding &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Custom Search Functionality for Coding</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;This may not be revelatory to some, but it&#x27;s a cool trick I use daily and I
+thought I&#x27;d write about since it&#x27;s managed to surprise enough colleagues and
+friends when I&#x27;ve used it. Credit where credit is due, I was taught this trick
+two years ago by Charles O&#x27;Farrell.&lt;/p&gt;
+&lt;p&gt;Firefox and Chrome both support this functionality but are setup differently.
+Let&#x27;s say you have a github codebase with a particular org (which are also,
+confusingly, demarcated as users in github search). You want to find a repo
+quickly; you can quickly go to your search bar and hit &lt;code&gt;repos a_project&lt;/code&gt; (or in
+the case of Chrome, &lt;code&gt;repos&amp;lt;tab&amp;gt; a_project&lt;/code&gt;), hammer the enter key and you wind
+up at &lt;code&gt;https://github.com/search?q&#x3D;user%3Aorg+a_project&lt;/code&gt;. How?&lt;/p&gt;
+&lt;p&gt;In both Chrome and Firefox, you can add a custom search engine by right-clicking
+on the search &#x27;bar&#x27; (form) you&#x27;d like to add, except in Firefox the mechanism
+works via bookmarks and Chrome has the functionality as it&#x27;s own thing (seems
+like a first class citizen). There &lt;em&gt;are&lt;/em&gt; custom search engines for Firefox you
+can add (I&#x27;ve noticed I can add them for things like crates.io, docs.rs, amazon,
+et. al.) out of the box given a specific version (I&#x27;m not sure which) of Firefox
+but you&#x27;ll still need to bookmark approach for most cases. Once you have the
+search URL you care about just replace the term you searched for with &lt;code&gt;%s&lt;/code&gt; and
+all is well, e.g. &lt;code&gt;https://github.com/search?q&#x3D;user%3Aorg+%s&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Some other examples of uses are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;code term&lt;/code&gt; - similar to the &lt;code&gt;repos&lt;/code&gt; keyword above but searches across all
+repositories of an org for &lt;code&gt;term&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;(docs.rs|crates.rs|younameit) &amp;lt;module&amp;gt;&lt;/code&gt; - looks for module documentation,
+listing in some large store of knowledge&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;rstd term&lt;/code&gt; - search for &lt;code&gt;term&lt;/code&gt; in the rust std lib (handy when paired with
+something like rust-tags so you can jump to definition inside of std in your
+editor)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The above are rust centric because it&#x27;s what I&#x27;ve been in the headspace of but
+you could easily set this up for things like hoogle, amazon, shortening things
+like youtube to &lt;code&gt;y&lt;/code&gt;, &lt;code&gt;hex.pm&lt;/code&gt;, and so on. Personally, it&#x27;s been empowering to
+gain a handle on parameterizing search functionality with your address bar.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How to pick stable, beta, or nightly Rust">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="It would seem natural to always pick stable Rust, but how much awesome new stuff do beta and nightly have and how unstable are they? It can be confusing that such a plethora of feature flags sits in nightly but we don&#x27;t want to sacrifice stability.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="How to pick stable, beta, or nightly Rust">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="It would seem natural to always pick stable Rust, but how much awesome new stuff do beta and nightly have and how unstable are they? It can be confusing that such a plethora of feature flags sits in nightly but we don&#x27;t want to sacrifice stability.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>How to pick stable, beta, or nightly Rust &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>How to pick stable, beta, or nightly Rust</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;It would seem natural to always pick stable Rust, but how much awesome new
+stuff do beta and nightly have and how unstable are they? It can be confusing
+that such a plethora of feature flags sits in nightly but we don&#x27;t want to
+sacrifice stability.&lt;/p&gt;
+&lt;p&gt;Stability is a guarantee that something won&#x27;t change. With that said, unstable
+features theoretically have no guarantees, but in practice there is generally a
+modicum of acceptable change and stability in nightly releases for most
+purposes.&lt;/p&gt;
+&lt;p&gt;Before we begin, I&#x27;ve condensed my thought process into a simple diagram:&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/pick-rust-toolchain-flowchart.png&quot;
+    alt&#x3D;&quot;a flowchart describing how to choose between rust toolchains&quot;
+    title&#x3D;&quot;A flowchart for choosing between stable, beta, and nightly toolchains&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;If you don&#x27;t need anything specifically from nightly or beta, stable should be
+your default option.&lt;/strong&gt; Cargo is quite good at mentioning what features you can
+possibly turn on to help guide you into nightly. If you want a full guide on all
+current and prior unstable features you can check out the &lt;a href&#x3D;&quot;https://doc.rust-lang.org/unstable-book/index.html&quot;&gt;unstable
+book&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;A way to run nightly with a slightly increased sense of stability is to use a
+pinned variant. Cargo supports finding &lt;code&gt;rust-toolchain&lt;/code&gt; files (the &lt;a href&#x3D;&quot;https://github.com/rust-lang/rustup#the-toolchain-file&quot;&gt;toolchain
+file&lt;/a&gt;, as it&#x27;s called)
+at the root of crates which specify the specific version to use when building
+the project. You can pin a nightly with a date, so something like&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;nightly-2020-01-01
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;will ensure the nightly released on January 1st, 2020 will be the toolchain
+picked.&lt;/p&gt;
+&lt;p&gt;In my own experience, when I encounter a bug in a pinned nightly I am using, I
+can usually bump the pinned version to the latest nightly and go on with my
+life. Although nightly Rust is still a moving target but in my experience it is
+a remarkably sturdy moving target! Having run Rust for work and personal uses,
+I&#x27;ve used pinned nightlies in both cases to great effect.&lt;/p&gt;
+&lt;p&gt;What&#x27;s the difference between beta and nightly? &lt;code&gt;beta&lt;/code&gt; is the first step before
+a stable release. Beta is continually improved as nightlies progress and
+regressions and features are discovered. The flow goes from nightly, to beta, to
+stable, as you can see here in the &lt;a href&#x3D;&quot;https://doc.rust-lang.org/book/appendix-07-nightly-rust.html&quot;&gt;Rust Programming Language Book Appendix
+G&lt;/a&gt;. As stated in
+the same appendix:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Most Rust users do not use beta releases actively, but test against beta in
+their CI system to help Rust discover possible regressions.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Or, another way of putting it; if you use stable, having beta and nightly builds
+can help point out failures to be raised with the Rust core team, i.e. beta
+should do everything stable does, and more. In the same vein, nightly should do
+everything beta does, and more, but with the caveat that unstable APIs are
+subject to change. Technically, one could try stable, then go to a pinned beta,
+then go to a pinned nightly if they really want to tracking changes to specific
+features.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

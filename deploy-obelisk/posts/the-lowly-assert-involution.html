@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="The Lowly Assert: Involution">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="As part of The Lowly Assert series I wanted to go over some mathematical patterns. Filling your arsenal of known properties helps with recognizing common ways functions, systems, etc. are, and should continue, to behave.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="The Lowly Assert: Involution">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="As part of The Lowly Assert series I wanted to go over some mathematical patterns. Filling your arsenal of known properties helps with recognizing common ways functions, systems, etc. are, and should continue, to behave.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>The Lowly Assert: Involution &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>The Lowly Assert: Involution</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;As part of &lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/the-lowly-assert.html&quot;&gt;The Lowly
+Assert&lt;/a&gt; series I
+wanted to go over some mathematical patterns. Filling your arsenal of known
+properties helps with recognizing common ways functions, systems, etc. are, and
+should continue, to behave.&lt;/p&gt;
+&lt;p&gt;Occasionally you&#x27;ll write functions that flip-flop: when you call the function
+multiple times in a row, chunks seem to cancel out. Mathematics calls these
+functions &lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Involution_(mathematics)&quot;&gt;&quot;involutive&quot;&lt;/a&gt;. Negating a number or a boolean twice gets you back
+to the original value. Involution is handy to recognize because it&#x27;s a simple
+assertion:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;x &#x3D;&#x3D; f(f(x))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The classic property based testing example of this is the
+&lt;code&gt;reverse(reverse(some_list))&lt;/code&gt; you&#x27;ll see in endless tutorials and getting
+started guides on the subject. When you reverse a list you expect to simply flip
+the contents one end to the other, but this may not be immediately applicable to
+day-to-day affairs. Here&#x27;s one: a function that opens a dialogue box has two
+states, open and closed, and is commonly tested for involutivity; if you didn&#x27;t
+have the toggling action you&#x27;d see no feedback after clicking!&lt;/p&gt;
+&lt;p&gt;But involution doesn&#x27;t have to be about functions applied exactly twice.
+Rotating around a point back to an original direction can be done with various
+divisions: two rotations of pi, four rotations of pi/2, and so on. Precisely,
+involution requires that the application be a single function, but we can
+sometimes be a bit less rigorous and claim that two or more actions that
+eventually cancel out are involutive: removing and adding an item in a
+collection or returning someone&#x27;s money in an exchange.&lt;/p&gt;
+&lt;p&gt;With this we can hopefully see the application isn&#x27;t on any end of the scale:
+from small to big, XORing bits to whole product flows that might &#x27;restart&#x27; the
+user in a funnel. Properties like these are worth their weight in gold because
+they are useful in almost any type of testing and are definitely a shining
+example of The Lowly Assert.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

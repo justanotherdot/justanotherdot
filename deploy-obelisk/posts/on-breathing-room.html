@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="On breathing room">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Change is inevitable, but need not be unsafe.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="On breathing room">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Change is inevitable, but need not be unsafe.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>On breathing room &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>On breathing room</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;You need to make changes to produce new states of the system you expose. Code
+change velocity is a metric people sometimes use to determine health of the
+platform. While a high change rate may seem good, it can also be a sign of a lot
+of churn. Change is inevitable, but need not be unsafe. To avoid releasing code
+you regret, try these approaches to making changes in the future.&lt;/p&gt;
+&lt;p&gt;At a macro level, any emergent change to the system consists of three fundamental phases:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;thinking, specification, communication, problem decomposition and solution synthesis&lt;/li&gt;
+&lt;li&gt;execution, cycle of design and implementation, discussion around issues where the rubber meets the road, preferably working in a way that avoids cleanup in the next step (“baggage”)&lt;/li&gt;
+&lt;li&gt;cleanup, tidying, ensuring work doesn&#x27;t need revisions or bug fixes in the future,  &lt;em&gt;preferably only&lt;/em&gt;ceremony around things being done such as communication and demoing&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The goal of these three phases is to produce work that is itself &lt;a href&#x3D;&quot;https://medium.com/@jamesacowling/stepping-stones-not-milestones-e6be0073563f&quot;&gt;a single stepping stone&lt;/a&gt;, allowing steady progress. Phases (1) and (3) can be thought of as &quot;bookends&quot;, allowing you to gain traction and wind down ensuring work is both thorough and complete by the time you leave it.&lt;/p&gt;
+&lt;p&gt;Making changes should support &lt;em&gt;breathing room&lt;/em&gt; where you feel comfortable making the switch from the old state of the system to the new one.&lt;/p&gt;
+&lt;h2&gt;Immutable Changes: The Default You Need&lt;/h2&gt;
+&lt;p&gt;Not all changes are backwards compatible, but most can be. When you work to push backwards compatibility as a principle of development, you gain the ability to easily move forward with new work without consistently carrying knowledge of the old system along with you. how is that possible when you are adhering to an older form of the system? In an immutable view of change, the new changes don’t have to be immediately, or ever, touching the old system. compatibility is contained naturally, without even holding in the thoughts of “how do i make this work with what is there?”. sometimes the thought must be there, especially when you are making changes mutably (more on this later), in general, with immutable changes we can focus instead on making the boundary compatible, rather than the union of all changes.&lt;/p&gt;
+&lt;p&gt;A rough sketch of what this looks like is:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Make a new target in isolation, lots of testing and verification&lt;/li&gt;
+&lt;li&gt;Provide means to make changes reversible, such as feature flagging, rapid deployments by decoupling releases as artifacts and deployment as the action.&lt;/li&gt;
+&lt;li&gt;Make the switch and observe&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Mental model: you are going from previous changes to new changes and allow &lt;em&gt;decisions to be reversible&lt;/em&gt;. Some changes are not going to be reversible and that&#x27;s ok! But with a framework in place to allow reversal, knowing when something can or cannot be reversed gets easier.&lt;/p&gt;
+&lt;p&gt;This system promotes flexibility. Want to try out three different rendering engines for performance? Treat the immutable approach as what others might call &quot;growth&quot; or experiment based. Remember: the stable state of the system is when all the flags are off, or, put another way, a flag should never be required on to make the system stable. That way if you lose the flag service, you still have the stable state of the system, hence releasing something eventually means pruning the need for the flag.&lt;/p&gt;
+&lt;p&gt;You also don&#x27;t need to lean heavily on flags. The new change could be pushed up “into the shadows” without any rigging, and the independent work of connecting everything can be done as it’s own switched behavior. Isolating surface area in this way is a great alternative to what else is possible, which is that you may want to run one or two adjacent implementations of large or whole parts of the system in parallel. &lt;a href&#x3D;&quot;http://www.sevangelatos.com/john-carmack-on-parallel-implementations/&quot;&gt;These could just as easily be forks of the codebase, where one split implementation is gong to win out.&lt;/a&gt; The problem with these massive changes is that people tend to prefer small, sectional changes to a codebase, thus the forks would continually need to absorb new changes as they come available, and deal with any shortcomings of the newly introduced code. Hence it is a good idea to focus forks on short-lived experiments, and why I feel immutable changes should be a default, but they may not be preferable given the sheer complexity of making the switch, therefore we sometimes do want to keep mutable changes in place where it is less error prone, either due to drastically reduced code or complexity involved with switching; anytime you see deeply embedded flags or &lt;em&gt;lots&lt;/em&gt; of usage for the same flag, you know that the changeover is going to involve a wide surface area that, although may be great to get the benefits of reversibility, may also mean it is harder, and longer, to get into place in general. As a guide, anytime things grow to a particular size, either in time or space, there is a tendency for that growth to continue rather than have a definite stop.&lt;/p&gt;
+&lt;h2&gt;Mutable Changes: Occasionally Avoiding Increased Complexity&lt;/h2&gt;
+&lt;p&gt;Occasionally changes are so massive that we don&#x27;t want to become a blocker for other&#x27;s making changes on the same system. When that happens it may be preferable to work on a mutable change, but this doesn&#x27;t mean introducing a massive PR. For every new line introduced in a PR is another line of code to have to worry about causing more trouble in production. Instead, with mutable changes, there is nothing wrong with raising a massive PR, so long as we harvest it for smaller, atomic changes we can introduce incrementally. These incremental changes, along with a good release system, allow us to mitigate failures and contain them to specific places. Five individual changes affecting different areas is more likely to have one change reversed as opposed to a change that affects all five changes simultaneously.&lt;/p&gt;
+&lt;p&gt;This process is noticeably more involved than the above, but you will see it is mostly a multi-pass process. In general:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Raise the massive PR that has all the changes holistically displayed&lt;/li&gt;
+&lt;li&gt;Identify all the add-only changes in the PR: these can be added in the shadows without having anything rigged up, similar to our immutable approach above.&lt;/li&gt;
+&lt;li&gt;Make precise changes to prior interfaces and running logic in pieces. Accompany these with &#x27;migration&#x27; tests that may or may not be permanent but nonetheless support hardening the platform by baking expected logic into place. When you introduce the change, the tests ought to verify that the old behavior / properties are upheld.&lt;/li&gt;
+&lt;li&gt;Start working on glue logic rigging up your new code to work. Sometimes steps (2), (3), and (4) have to be paired to ensure the system stays stable, and that&#x27;s fine. We are aiming to keep changes minimal and atomic.&lt;/li&gt;
+&lt;li&gt;At this point, your new code is in, the prior parts of the system have shifted over to their new shape(s), and old code can be deleted, but you needn&#x27;t rush to do this. In the same way adding codes into the shadows lets you decide when you want to make it public, unused code is simply harmless and living in the dank recesses of the shadows now, one day waiting to be swept up. If you are worried others may end up accidentally using it, add warnings, errors, or commentary to the code making it effectively useless, or just delete it on the spot. If you decide to delete on the spot, you may have to do a bit more work to bring it back into existence, rather than simply flipping out the glue change back to the way the old world was.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I detailed this process a bit more with the article &lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/harvesting-pull-requests.html&quot;&gt;Harvesting Pull Requests&lt;/a&gt;. I likely ought to do the same thing with a deeper dive on the immutable process above, as there are nuances and characteristics to it that intertwine with the problem at hand and what one has available to them to make shipping things safer.&lt;/p&gt;
+&lt;h2&gt;How do you decide which to pick?&lt;/h2&gt;
+&lt;p&gt;Whether to enact change immutably or mutably is a matter of deciding what will help you avoid sharp corners. We want breathing room when we make changes. Breathing room is where you don’t release a change with bated breath, crossing your fingers for the next hours, days, weeks, hoping that it won’t simply blow up and be a fiasco for everyone. Breathing room means that &lt;em&gt;when&lt;/em&gt; it blows up it will be easy to fix without having to rush at the ready, dropping everything, to perform a hotfix on the system. Hotfixes suck. They may sometimes be required to resolve an incident, but they will not help your mean time to resolution. If you can go back to a good known state in less than a minute with a good deployment system in place, and the changes you’ve imposed are backwards compatible, you will allow you and others on call or responsible to feel a bit less pressure, which in turn gives you more freedom to keep progressing towards your the goals that you &lt;em&gt;want&lt;/em&gt; to be dealing with rather than the goals you &lt;em&gt;have&lt;/em&gt; to be dealing with.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

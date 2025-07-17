@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="How To Return An Iterator From a Function">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Iterators are handy ways to describe the potential for looping over data but without eagerly evaluating it. In other words, we can describe the shape of looping over things but we only do work when we call something like &#x60;collect&#x60;. The compiler can do several optimizations around iterators and each &#x60;collect&#x60; needs to allocate memory to store our results. To avoid a lot of needless allocations it pays to returns iterators sometimes from functions.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="How To Return An Iterator From a Function">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Iterators are handy ways to describe the potential for looping over data but without eagerly evaluating it. In other words, we can describe the shape of looping over things but we only do work when we call something like &#x60;collect&#x60;. The compiler can do several optimizations around iterators and each &#x60;collect&#x60; needs to allocate memory to store our results. To avoid a lot of needless allocations it pays to returns iterators sometimes from functions.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>How To Return An Iterator From a Function &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>How To Return An Iterator From a Function</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Iterators are handy ways to describe the potential for looping over data but
+without eagerly evaluating it. In other words, we can describe the shape of
+looping over things but we only do work when we call something like &lt;code&gt;collect&lt;/code&gt;.
+The compiler can do several optimizations around iterators and each &lt;code&gt;collect&lt;/code&gt;
+needs to allocate memory to store our results. To avoid a lot of needless
+allocations it pays to returns iterators sometimes from functions.&lt;/p&gt;
+&lt;p&gt;Alright, that&#x27;s great but you&#x27;re hitting a wall returning one from a function.
+I&#x27;ll provide two ways you can do just that:&lt;/p&gt;
+&lt;p&gt;We could use the &lt;code&gt;impl Trait&lt;/code&gt; syntax where &lt;code&gt;Trait&lt;/code&gt; is the trait in question we
+want to return. In this case, we&#x27;d have:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn unboxed_iterator() -&amp;gt; impl Iterator&amp;lt;Item &#x3D; usize&amp;gt; {
+  (0..3).into_iter()
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is where the compiler will determine the exact type that is being returned
+and substitute that in. This approach, albeit with static dispatch, has its
+limits. You can read Bodil Stokke&#x27;s &lt;a href&#x3D;&quot;https://bodil.lol/parser-combinators/&quot;&gt;wonderful introduction to parser
+combinators&lt;/a&gt; as an example where the
+&lt;code&gt;impl Trait&lt;/code&gt; approach starts to get too complex and require turning to our next
+approach of &lt;code&gt;Box&lt;/code&gt;ing the iterators. This static approach also doesn&#x27;t work when
+we have anonymous types, such as with async functions. Marking a function as
+&lt;code&gt;async&lt;/code&gt; has support from the compiler to return the right type.&lt;/p&gt;
+&lt;p&gt;We could also use a &lt;code&gt;Box&lt;/code&gt;. It is the simplest way to package up an iterator but
+at the cost of allocation. Anything behind a &lt;code&gt;Box&lt;/code&gt; is allocated on the heap.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn boxed_iterator() -&amp;gt; Box&amp;lt;dyn Iterator&amp;lt;Item &#x3D; usize&amp;gt;&amp;gt; {
+  Box::new((0..3).into_iter())
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We have to pay the price of dereferencing a pointer each time we want to deal
+with this specific boxed iterator. We can manipulate both iterators in the same
+way because &lt;code&gt;Box&lt;/code&gt; implements &lt;code&gt;Deref&lt;/code&gt; which lets you access the methods
+underneath. So we can call &lt;code&gt;map&lt;/code&gt; and friends on the resulting &lt;code&gt;Box&lt;/code&gt;. Both of
+these forms can usually be used with one another, as, for example, we can chain
+both together since they both can be turned &lt;code&gt;IntoIterator&lt;/code&gt;s.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn unboxed_iterator() -&amp;gt; impl Iterator&amp;lt;Item &#x3D; usize&amp;gt; {
+  (0..3).into_iter()
+}
+
+fn boxed_iterator() -&amp;gt; Box&amp;lt;dyn Iterator&amp;lt;Item &#x3D; usize&amp;gt;&amp;gt; {
+  Box::new((0..3).into_iter())
+}
+
+fn main() {
+  dbg!(boxed_iterator().chain(unboxed_iterator()).collect::&amp;lt;Vec&amp;lt;_&amp;gt;&amp;gt;());
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The above prints:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[src/main.rs:10] boxed_iterator().chain(unboxed_iterator()).collect::&amp;lt;Vec&amp;lt;_&amp;gt;&amp;gt;() &#x3D; [
+    0,
+    1,
+    2,
+    0,
+    1,
+    2,
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You preferably want to use the &lt;code&gt;impl Trait&lt;/code&gt; approach as much as you can and
+fall back to the &lt;code&gt;Box&lt;/code&gt; approach when that starts to fail or become inordinately
+slow to compile. With time this restriction may go away as work on the compiler
+continues.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

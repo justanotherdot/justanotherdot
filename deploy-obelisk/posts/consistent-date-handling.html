@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Consistent Date Handling">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Date handling is the kind of funny where you sob from of the ways it can horribly cut you when you least expect it. Developers either pretend that _all_ date handling concerns can be shoved onto third-party libraries or that they don&#x27;t exist at all. Here&#x27;s a short, incomplete primer.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Consistent Date Handling">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Date handling is the kind of funny where you sob from of the ways it can horribly cut you when you least expect it. Developers either pretend that _all_ date handling concerns can be shoved onto third-party libraries or that they don&#x27;t exist at all. Here&#x27;s a short, incomplete primer.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Consistent Date Handling &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Consistent Date Handling</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Date handling is the kind of funny where you sob from of the ways it can
+horribly cut you when you least expect it. Developers either pretend that &lt;em&gt;all&lt;/em&gt;
+date handling concerns can be shoved onto third-party libraries or that they
+don&#x27;t exist at all. Here&#x27;s a short, incomplete primer.&lt;/p&gt;
+&lt;p&gt;There are two common formats for storage; as strings or as integers. Although
+integers have a history of heavy optimization on modern CPUs and compilers,
+strings can have reasonable performance with the right memory structure. This
+integer format is typically known as &lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Unix_time&quot;&gt;Unix Epoch
+Time&lt;/a&gt; and the start of the world for
+this format is January 1st, 1970; the birth of Unix. A 32-bit integer,
+expressing seconds since January 1st, 1970, ends at 19 January 2038. 64-bit Unix
+Epoch&#x27;s will end &lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Year_2038_problem#Possible_solutions&quot;&gt;292 billion years from now, at 15:30:08 UTC on Sunday, 4
+December 292,277,026,59&lt;/a&gt;.
+This is far after the estimated death of the universe and if your system is
+still running after that I think that deserves a nice pat on the back.&lt;/p&gt;
+&lt;p&gt;Where you are is your &lt;em&gt;time zone&lt;/em&gt; based on wobbly, vertical slices of the world.
+UTC is the &quot;base&quot; time zone and is such because it&#x27;s on the prime meridian (zero
+degrees longitude). Think &quot;base time zone&quot; where the offset is &lt;code&gt;00:00&lt;/code&gt;. Let&#x27;s
+pretend we are sitting in a lawn chair in this time zone, which is the same as
+GMT or &quot;Greenwich Mean Time&quot;, so, not a sunny day.&lt;/p&gt;
+&lt;p&gt;As you recline in the lawn chair time passes by but the earth&#x27;s rotations and
+the solar orbits are complicated things. Time doesn&#x27;t &lt;em&gt;just&lt;/em&gt; pass bit-by-bit. It
+does in a mathematical sense, sure, but time is a construct with ideas such as
+days, weeks, and years. To fit time into these relatively standard quantities,
+such as the number of days per given month or total days in year, we must make
+small adjustments to time, such as leap years, leap seconds, and daylight
+savings. Each of these &#x27;correct&#x27; some kind of drift. However, the Unix Epoch
+format doesn&#x27;t encode leap seconds, which is one type of correction.&lt;/p&gt;
+&lt;p&gt;Enter &lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/ISO_8601&quot;&gt;ISO8601&lt;/a&gt;. Among several nice
+properties but for starters, humans can read it! The timestamp,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&quot;2005-01-01T00:00:00&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;is equivalent to the Unix Epoch,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1104537600
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It&#x27;s far easier to quickly determine if an ISO8601 is suffering corruption than
+eyeballing integers. It&#x27;s also much easier to tell what ballpark of dates an
+ISO8601 is in. If you have a bunch of ISO8601 timestamps, you can sort them with
+default strings comparison (lexicographic) and they will naturally be in
+ascending order. I love this feature about them because it means I don&#x27;t need to
+rely on a library to order a bunch of well-formed ISO8601s. Opposed to our
+fixed-precision Unix Epoch integers, ISO8601 allows for variable granularity.
+You &lt;em&gt;can&lt;/em&gt; get finer granularity for time on Unix systems but I won&#x27;t go too far
+into that here. You can run &lt;code&gt;man 2 gettimeofday&lt;/code&gt; and &lt;code&gt;man 2 clock_gettime&lt;/code&gt; for a
+slightly deeper understanding of some options on Linux.&lt;/p&gt;
+&lt;p&gt;Back to our lawn chairs someplace in Sunny England, time zones are expressed
+officially as strings describing two parts separated by a forward slash, e.g.
+&lt;code&gt;Australia/Sydney&lt;/code&gt; or &lt;code&gt;America/Los_Angeles&lt;/code&gt;. If you have any formatting you need
+to do for a client reading data, you need to encode time zones. However, it is
+OK to not deal with time zones if you are dealing with an &quot;absolute time&quot; for a
+given data set that is fixed to a place. You then have a direct link between a
+set of timestamps and time zone.&lt;/p&gt;
+&lt;p&gt;ISO8601 has an optional time zone specifier. RFC3339 enforces that the timezone
+be specified but for the case of UTC you don&#x27;t need to specify the specific
+offset as it is implicit. Time zones tend to be exposed to many odd political
+changes. Offsets assume a timezone will &lt;em&gt;always&lt;/em&gt; be a particular amount, but
+this isn&#x27;t quite true. As recent as 2011, Samoa changed their time zone for
+trade reasons. Originally, &lt;code&gt;Pacific/Apia&lt;/code&gt; had an offset of UTC-11 (note the
+minus) but it changed for trade reasons and went to UTC+13 (note the plus).
+That&#x27;s a big jump! Thus, the timestamp:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;2013-01-02T12:00:00Z-11:00
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;is invalid for Somoa. However, if you didn&#x27;t specify the offset as part of the
+stored data, you could get away with looking up the time zone for &lt;code&gt;Pacific/Apia&lt;/code&gt;
+indexed by some granularity, say, year. This way you can record both offsets
+before and after 2011. We could encode the timestamp simply as&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;2013-01-01T01:00:00Z // UTC
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and the lookup for the year 2013 would reveal that &lt;code&gt;Pacific/Apia&lt;/code&gt; is &lt;code&gt;+13:00&lt;/code&gt;
+meaning we can now shift this date over properly for Samoans. In fact, you don&#x27;t
+even need to store the specific index as most time zone databases that third
+party libraries provide already extensively document this information.&lt;/p&gt;
+&lt;p&gt;Its important to keep your timestamps in a canonical timezone. In the case of
+Unix Epoch, by definition the seconds from midnight January 1st 1970 needs to be
+in UTC, similar to the default timezone for ISO8601. Picking a canonical time
+zone, specifically UTC, will save you a lot of time from painful sleuthing as
+two dates without timezone information &lt;em&gt;could&lt;/em&gt; be from different timezones.&lt;/p&gt;
+&lt;p&gt;Chat applications have to pay particular care to this. If someone is sending
+messages from San Francisco but another person is replying from Beijing, the
+time difference is an important part of the UI. How many hours are we off? When
+did they really read my message? Did they send it before or after me? Causality
+is its own can of worms for distributed systems, hence this is a bit of a
+hand-wavey argument that is ignoring some really critical (and nasty) aspects of
+time, but having most things stored as a single time zone and stashing client
+time zone preferences or figuring out what their device location is and using
+the time zone from that can save a &lt;em&gt;lot&lt;/em&gt; of grief.&lt;/p&gt;
+&lt;p&gt;As a recap here&#x27;s the basics:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Pick one format and stick to it&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Always store your timestamps in a single, canonical time zone&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Store time zone preferences for clients as a string rather than the
+offset&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;And that&#x27;s a short primer. Time can get a lot more nuanced, such as focusing on
+monotonically increasing time for servers and thinking through concerns like
+storage space, but most applications won&#x27;t need to care too much about these
+things. A little upfront focus on consistency will save you a lot of shed tears.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

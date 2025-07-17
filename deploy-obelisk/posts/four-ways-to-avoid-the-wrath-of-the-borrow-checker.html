@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Four Ways To Avoid The Wrath Of The Borrow Checker">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="You&#x27;ve likely tried to write a simple program using references that would normally have taken you an hour in C only to find yourself hours later still fussing about with the Rust compiler. If the borrow checker seems too restricting, here are four ways to loosen its grip!">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Four Ways To Avoid The Wrath Of The Borrow Checker">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="You&#x27;ve likely tried to write a simple program using references that would normally have taken you an hour in C only to find yourself hours later still fussing about with the Rust compiler. If the borrow checker seems too restricting, here are four ways to loosen its grip!">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Four Ways To Avoid The Wrath Of The Borrow Checker &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Four Ways To Avoid The Wrath Of The Borrow Checker</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Maybe you&#x27;ve tried to write a simple program in Rust using references that would
+normally have taken less than an hour in C only to find yourself &lt;em&gt;hours&lt;/em&gt; later
+still fussing about with the Rust compiler. If the borrow checker seems too
+restricting, here are four ways to loosen its grip.&lt;/p&gt;
+&lt;h3&gt;Shared Ownership with &lt;code&gt;Arc&lt;/code&gt; or &lt;code&gt;Rc&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Shared ownership is what most garbage collected languages support. This is done
+using a reference counting to objects in memory. We can mimic this in Rust with
+the wrapper type &lt;code&gt;Rc&lt;/code&gt;. If you plan on reference counting in multi-threaded code
+you can use &lt;code&gt;Arc&lt;/code&gt; where the &lt;code&gt;A&lt;/code&gt; stands for &lt;code&gt;Atomic&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Passing around an &lt;code&gt;Rc&lt;/code&gt; means that if someone wants to jointly own the data, they
+can simply call &lt;code&gt;clone&lt;/code&gt; on the &lt;code&gt;Rc&lt;/code&gt;. This can be used as a drop-in replacement
+for places where you would borrow. Since these reference bumps count as new
+owners there is no borrowing at all. However, now that we can express shared
+ownership we also express a &lt;em&gt;graph&lt;/em&gt; and graphs can have cycles (place where
+pointers loop back on themselves). A cycle in a graph means a value may never be
+deallocated, hence any self-referential structure poses a memory leak in our
+program. You can avoid this by having the pointer that &quot;ties the knot&quot; be a
+&lt;code&gt;Weak&lt;/code&gt; pointer, which just means it&#x27;s a non-owning pointer. A classic example is
+with a cache: you want to have entries in the cache to objects owned outside of
+the cache but you don&#x27;t want the entries to count towards owning anything,
+otherwise keeping the cache around means keeping all of the memory! Also, &lt;code&gt;Rc&lt;/code&gt;
+means you won&#x27;t be able to take mutable borrows to the contents. This is easily
+remedied with the use of &lt;code&gt;Rc&amp;lt;RefCell&amp;lt;T&amp;gt;&amp;gt;&lt;/code&gt; or even &lt;code&gt;RwLock&lt;/code&gt; as we&#x27;ll see later.&lt;/p&gt;
+&lt;p&gt;&quot;When in doubt, reference count&quot; is appropriate for places where laying out
+borrows and static lifetimes can be a pain and you want to get things passing
+quick. Places where you temporarily use an &lt;code&gt;Rc&lt;/code&gt; can easily be targeted for
+borrows, so going back to fix things is clear. It may take some jiggling to get
+things into place but at least it can happen later down the line when you&#x27;ve got
+the breathing room, perhaps.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;Rc&lt;/code&gt; can be particularly handy when you want to pass around function references
+in all sorts of ways. I used &lt;code&gt;Rc&lt;/code&gt; extensively when porting a functional library
+from F# and Haskell directly into Rust and needed to easily get mutual recursion
+working quickly where using direct references or owned trait generics (e.g. F:
+Fn(A) -&amp;gt; B). I was later able to swap out the calls to references, which meant
+the ergonomics of the first call simplified to borrowing rather than wrapping
+the closures in question in &lt;code&gt;Rc&lt;/code&gt;s.&lt;/p&gt;
+&lt;h3&gt;Interior Mutability with Cell or RefCell&lt;/h3&gt;
+&lt;p&gt;Exterior mutability (otherwise known as &quot;inherited mutability&quot;) is great because
+it lets us know what things are actually changing beneath us. But sometimes
+clients don&#x27;t care that some housekeeping state is changing underneath an
+operation. Perhaps we memoize the result of a function or manipulate a counter;
+in both of these cases, with exterior mutability, the function wrapping this
+action would have to be marked as mutable in some way, but if we want to keep
+things looking immutable on the surface, we can use &lt;code&gt;Cell&lt;/code&gt; or &lt;code&gt;RefCell&lt;/code&gt; instead.&lt;/p&gt;
+&lt;p&gt;To give a concrete example with memoization, you might have an expensive
+computation that you only want to do once and stash the result. As such, you
+have a function that only need to be mutable for this one time and can be
+immutable the rest of the time, so it doesn&#x27;t make sense to have it marked as
+&lt;code&gt;mut&lt;/code&gt;. Whatever the result type is, we can wrap that in a &lt;code&gt;Cell&lt;/code&gt; or &lt;code&gt;RefCell&lt;/code&gt;,
+depending on type: &lt;code&gt;Cell&lt;/code&gt; is generally for things that support &lt;code&gt;Copy&lt;/code&gt; and
+&lt;code&gt;RefCell&lt;/code&gt; for the rest.&lt;/p&gt;
+&lt;p&gt;As &lt;code&gt;RefCell&lt;/code&gt; uses dynamic borrow checking, it can panic if multiple mutable
+borrows are taken to the contents. &lt;code&gt;Cell&lt;/code&gt; doesn&#x27;t suffer from the same issue as
+it moves the values in and out of the internals of the &lt;code&gt;Cell&lt;/code&gt;. As such, you may
+want to use something like &lt;code&gt;RwLock&lt;/code&gt; if you are using an &lt;code&gt;Rc&amp;lt;RefCell&amp;lt;T&amp;gt;&amp;gt;&lt;/code&gt; for
+multi-threaded code. &lt;code&gt;Rc&amp;lt;RefCell&amp;lt;T&amp;gt;&amp;gt;&lt;/code&gt; is a common way to have a shared object,
+such as a &lt;code&gt;HashMap&lt;/code&gt;, across several owners, but still mutate it. If one used
+&lt;code&gt;Rc::get_mut&lt;/code&gt; one would need to mark the &lt;code&gt;HashMap&lt;/code&gt; itself as &lt;code&gt;mut&lt;/code&gt;.&lt;/p&gt;
+&lt;h3&gt;Duplicate the data&lt;/h3&gt;
+&lt;p&gt;Often people think that coming to Rust means programs should be completely
+devoid of &lt;code&gt;clone&lt;/code&gt; but if you think about the language you may be coming from,
+whatever &lt;code&gt;clone&lt;/code&gt;ing you are doing is in Rust probably pales in comparison.&lt;/p&gt;
+&lt;p&gt;You don&#x27;t need to feel bound to a &lt;code&gt;clone&lt;/code&gt;less program by default. By abandoning
+this idea of a slim program from the outset and move towards something far more
+flexible. This generally means having duplicate formats of a data structure for
+varying purposes such as one be a game map where walls are located whereas
+another could be where someone has explored and yet another could contain items
+on each tile, etc. It can also mean having a duplicate you want to make changes
+to, leaving the original in-tact. This is more of the pure approach functional
+programming languages tend to take, but these languages can also make particular
+optimizations around immutability such as persistent data structures or
+&quot;sharing&quot; of data since &lt;em&gt;everything&lt;/em&gt; is immutable by default. Here&#x27;s an example
+that having some duplication of data might help. Perhaps you are trying to
+iterate over a collection and mutate it:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let mut xs &#x3D; vec![1,2,3];
+for x in xs.iter_mut() {
+  if x % 2 &#x3D;&#x3D; 0 {
+    xs.push(x+1);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In fact, this fails because we are borrowing to &lt;code&gt;xs&lt;/code&gt; mutably twice! Once when we
+construct the iterator and another time when we push to the &lt;code&gt;Vec&lt;/code&gt;. This is a
+classic &quot;modify a data structure while you iterate over it&quot; issue. However, we
+could easily do this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let mux xs &#x3D; vec![1,2,3];
+let ys &#x3D; xs.clone();
+for x in xs.iter() {
+  if x % 2 &#x3D;&#x3D; 0 {
+    ys.push(x+1);
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and hum along. In fact, we can keep these allocations to be short-lived, which
+may or may not be a performance issue but that can always be addressed later
+with proper profiling.&lt;/p&gt;
+&lt;h3&gt;Single ownership and data pipelines&lt;/h3&gt;
+&lt;p&gt;Lastly, you can try to go away from references entirely. Ownership is ideal for
+the kinds of problems best described as transforming values into other kinds of
+values.&lt;/p&gt;
+&lt;p&gt;Pipelines have stages or steps. Steps may build up required changes or apply
+earlier changesets. Pipelines are useful for a variety of solutions. Parsers,
+compilers, streaming analysis, and so on, however that isn&#x27;t the end of it.
+Configuration could be seen as a stream that updates when new values are added.
+This isn&#x27;t to say all pipelines are pull models but it is to say the solutions
+are broad.&lt;/p&gt;
+&lt;p&gt;If the use of borrows is for performance (want to ensure a large structure isn&#x27;t
+&lt;code&gt;memcpy&lt;/code&gt;d to a function), this type of optimization should already happen behind
+the scenes with move semantics; an owned type will typically get passed by
+&lt;code&gt;memcpy&lt;/code&gt; for smaller sized objects and may be passed as a pointer for larger
+objects. This means that there is no mechanical difference for borrows besides
+marking the earlier variable as uninitialized meaning we always have no more
+than one owner of a value at a time.&lt;/p&gt;
+&lt;p&gt;When data flows through a pipeline, doing it all by mutable reference can
+achieve the same effect and the owner doesn&#x27;t relinquish control. Although this
+&lt;em&gt;might&lt;/em&gt; mean there are less allocations, it will mean each step of the way we
+are passing a pointer where copying an object might have actually been faster.
+This is also limiting in that we can only have on mutable borrow at a time! If
+callers allocate the objects they own and request they be transformed into a new
+shape, any number of threads could pass values into this pipeline for changes
+and be content that value changes will be isolated from one-another.&lt;/p&gt;
+&lt;h3&gt;Recap&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Use &lt;code&gt;Rc&lt;/code&gt; or &lt;code&gt;Arc&lt;/code&gt; when you want to quickly get past tricky borrow issues and
+want to convert back to borrows possibly later in time to reap the benefits
+they offer&lt;/li&gt;
+&lt;li&gt;Use &lt;code&gt;Cell&lt;/code&gt; or &lt;code&gt;RefCell&lt;/code&gt; when you have an API that doesn&#x27;t need to expose
+mutability to a client&lt;/li&gt;
+&lt;li&gt;Get comfortable with cloning data for multiple purposes to avoid conflicting
+borrows&lt;/li&gt;
+&lt;li&gt;Don&#x27;t borrow at all and create pipelines that pass ownership from step to
+step, producing a final, desired result&lt;/li&gt;
+&lt;/ol&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

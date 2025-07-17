@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="The Lowly Assert">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="There is one thing that ties all forms of testing together; assertions. The lowly assert humbly serves whether it&#x27;s as types, panics, automated tests, or any other glorious form. Regardless of how it manifests itself, it allows us to declare things about our systems or program and automatically check them.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="The Lowly Assert">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="There is one thing that ties all forms of testing together; assertions. The lowly assert humbly serves whether it&#x27;s as types, panics, automated tests, or any other glorious form. Regardless of how it manifests itself, it allows us to declare things about our systems or program and automatically check them.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>The Lowly Assert &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>The Lowly Assert</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;There is one thing that ties all forms of testing together; &lt;strong&gt;assertions&lt;/strong&gt;. The
+lowly assert humbly serves whether it&#x27;s as types, panics, automated tests, or
+any other glorious form. Regardless of how it manifests itself, it allows us to
+declare things about our systems or program and automatically check them.&lt;/p&gt;
+&lt;p&gt;But when people test they don&#x27;t tend to think about what they are asserting.
+I&#x27;ve met a great number of people who are taught testing as a mechanical
+practice, one that is simply followed because of the social expectation that a
+tested system is a &#x27;correct&#x27; system. But what is correctness?&lt;/p&gt;
+&lt;p&gt;Correctness is not merely the absence of bugs. &lt;strong&gt;Correctness is the assurance
+that a system is doing as is intended.&lt;/strong&gt; This can be business logic or even
+sterile concerns like if a function returns the right value given the right
+inputs (forms of unit tests). It can be about output or generated content
+looking the way it&#x27;s supposed to look (snapshot tests). It can be about multiple
+systems behaving when coupled (integration tests) or about whole flows of usage
+(end-to-end tests or possibly contract tests). The things we are testing &lt;em&gt;for&lt;/em&gt;
+and the ways to test for them is vast.&lt;/p&gt;
+&lt;p&gt;It helps to think about blocks of computation as black boxes: inputs go in and
+outputs come out. Assertions that need to be upheld,&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;while things are happening inside of the box are called &lt;strong&gt;invariants&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;before the box starts work are called &lt;strong&gt;preconditions&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;after the box has finished work are called &lt;strong&gt;postconditions&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are also a number of general properties the box can uphold:
+&lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Involution_(mathematics)&quot;&gt;involutivity&lt;/a&gt;,
+&lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Idempotence&quot;&gt;idempotence&lt;/a&gt;,
+&lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Partial_function#Total_function&quot;&gt;totality&lt;/a&gt;, etc.
+The specifics of each of these isn&#x27;t important but the idea is that there are
+reusable patterns for guarantees we can wish from our systems and programs.&lt;/p&gt;
+&lt;p&gt;This article is the start of many to describe how the varying forms of
+assertions lines up with their respective forms of testing. There are even
+meta-principles at play about asserting facts about systems that we should make
+elicit in the hopes they better our testing in general. These explorations
+aren&#x27;t going to be exhaustive but I am hoping they help expand your mind in the
+things you can ask your code enforce.&lt;/p&gt;
+&lt;p&gt;A quick journey and recap, if you will.&lt;/p&gt;
+&lt;p&gt;When you write a program, you might use a typed programming language. In this
+case you can use types to encode facts about your problem domain and structure
+of data. &lt;a href&#x3D;&quot;https://blog.janestreet.com/effective-ml-revisited/&quot;&gt;With types we can help make illegal states
+unrepresentable&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Later, you are writing a program and you want to know it acts the way you are
+expecting it to act. Compilation non-withstanding you start to run the program
+and check the results manually. &lt;a href&#x3D;&quot;https://landing.google.com/sre/sre-book/chapters/automation-at-google/&quot;&gt;But this sort of tedium is easily
+automated&lt;/a&gt;.
+&lt;strong&gt;Toil should infuriate you!&lt;/strong&gt; With this sentiment in mind you start writing a
+program to run your program in different circumstances, hence automated testing
+is born. Now that you have this tool in place, you can run tests on small things
+all the way up to big things. When the assertions in question fail, the tests
+fail.&lt;/p&gt;
+&lt;p&gt;When a system misbehaves, you might want to know immediately while you are
+coding and what faster way to know than to have your program halt when an
+assertion is not met. Perhaps a failure is even one which requires a process to
+abort while running in production (a fatal error). The difference between these
+two is the subject of recoverable versus unrecoverable errors, which I won&#x27;t
+indulge in here, but it suffices to say catching mistakes and misunderstandings
+sooner is always better than later by &lt;a href&#x3D;&quot;https://www.cs.tufts.edu/~nr/cs257/archive/jon-bentley/correct-programs.pdf&quot;&gt;attaching these sorts of assertions to
+forms of
+panics&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Now your test suite tests both small and large. As these tests get more
+complicated, assertions can be about &lt;em&gt;models&lt;/em&gt; of these systems; as state
+machines or even where the inputs are generated randomly. &lt;a href&#x3D;&quot;https://www.youtube.com/watch?v&#x3D;hXnS_Xjwk2Y&quot;&gt;Property based
+testing&lt;/a&gt; starts joining your
+repertoire for this reason. For verifying raw memory access you consider
+&lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Fuzzing&quot;&gt;fuzzing&lt;/a&gt;. Perhaps the end-to-end tests
+are brittle and always breaking which might lead you into &lt;a href&#x3D;&quot;https://docs.pact.io/&quot;&gt;contract
+testing&lt;/a&gt; two systems to ensure that the pre- and
+post-conditions (read: the contract) are being met. Maybe there are extremely
+complicated concerns such as concurrency and you write a
+&lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Formal_specification&quot;&gt;specification&lt;/a&gt; in something
+like TLA+ which can verify the model it describes as part of the tooling.
+Specify the system or program abstractly and test that, instead.&lt;/p&gt;
+&lt;p&gt;Like anything, there are diminishing returns. Finding assertions everywhere
+doesn&#x27;t mean proving your TODO-list single page application with a theorem
+prover or dependant types is worth the time, although if those processes were
+more lightweight it &lt;em&gt;would&lt;/em&gt; probably be worth it! &lt;strong&gt;Think of assertions as bets
+that pay off when code is introduced that violates them.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Systems come in all sizes but despite their mixed formats they are all guided by
+principles. &lt;strong&gt;Instead of thinking the path to correctness is forged by
+mindlessly coding and churning out fixes, try to think about the properties you
+want upheld, instead, and work to encode those in every possible assertion you
+can leverage within reason.&lt;/strong&gt;&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

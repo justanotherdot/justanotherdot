@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="What Makes Up a CPU?">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="If you&#x27;re feeling lost about hardware or low-level related discussions in software, then it pays to learn the foundations of how a CPU works. Modern CPUs are a beast with a maddening amount of complexity, but you don&#x27;t need to understand every iota of detail in order to build up a working mental model of their operation.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="What Makes Up a CPU?">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="If you&#x27;re feeling lost about hardware or low-level related discussions in software, then it pays to learn the foundations of how a CPU works. Modern CPUs are a beast with a maddening amount of complexity, but you don&#x27;t need to understand every iota of detail in order to build up a working mental model of their operation.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>What Makes Up a CPU? &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>What Makes Up a CPU?</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;I consider Ben Eater&#x27;s series on building an 8-bit CPU from scratch to be a
+remarkable learning journey that anyone keen enough to better understand the
+hardware they build software for should watch. I liked Ben&#x27;s course so much that
+I thought I&#x27;d write a little mini summary of it. This isn&#x27;t trying to be
+satisfactory replacement to Ben&#x27;s video course and I &lt;em&gt;strongly&lt;/em&gt; urge you to &lt;a href&#x3D;&quot;https://www.youtube.com/watch?v&#x3D;HyznrdDSSGM&amp;amp;list&#x3D;PLowKtXNTBypGqImE405J2565dvjafglHU&quot;&gt;go
+watch the whole thing from start to
+finish&lt;/a&gt;.
+For example, I won&#x27;t cover the details of circuit designs such as s-r latches, d
+latches, d flip-flops, and j-k flip-flops the way Ben does, but I will try to
+cover an overall view of the CPU as best as I remember and will also mention
+some meta things I liked that Ben did regarding the design and assembly of the
+CPU as a whole.&lt;/p&gt;
+&lt;h2&gt;The Core of a CPU&lt;/h2&gt;
+&lt;p&gt;Modern digital electronics are like irrigation networks for electricity. CPUs
+are no different. Data is stored either in memory that requires power (volatile,
+as it will disappear when the power is lost) or not (non-volatile, such as flash
+memory). Electricity flows to different parts of the system which I&#x27;ll call
+&lt;em&gt;units&lt;/em&gt; via the &lt;strong&gt;bus&lt;/strong&gt;, which simply holds some fixed size of data at a time.
+We might generally call this a &lt;em&gt;word&lt;/em&gt; and in this case a word is eight bits, as
+this is an eight-bit CPU. Units have to be gated to talk or read from the bus to
+avoid cross-talk. Data can be temporarily stored in &lt;strong&gt;registers&lt;/strong&gt;, of which
+Ben&#x27;s CPU has six, not including the register he uses to display numbers from
+binary, which he calls &quot;out&quot;, and the memory register on the 64 bytes of Random
+Access Memory, or &lt;strong&gt;RAM&lt;/strong&gt;, he builds up to store data and code for programs.&lt;/p&gt;
+&lt;p&gt;All the registers on the CPU are eight-bits wide. One of these registers is the
+&lt;strong&gt;instruction register&lt;/strong&gt; where instructions from RAM will be fetched and stored
+so they can be decoded into the actual bits that will control the various units
+by the &lt;strong&gt;control logic&lt;/strong&gt; unit. These bits enable or disable certain units, as
+well as configure them to do different things. The act of translating the
+instructions into these individual bits is called &lt;strong&gt;decoding&lt;/strong&gt;. Decoding
+instructions is merely the act of supplying the instruction as a key to a lookup
+table, which we will talk about more later, to get the resulting set of bits.
+This CPU is based on &lt;strong&gt;microcode&lt;/strong&gt; which means that the instruction plus a
+counter built into the control logic unit make up the key that is used for
+translation. Not all CPUs need microcode. For example, a CPU might translate
+directly to one set of bits rather than several broken up into steps; this is
+what RISC, or Reduce Instruction Set Computer, architectures are supposed to be
+like. The reality is that most modern RISC processors most likely include a bit
+of microcode.&lt;/p&gt;
+&lt;p&gt;The other two registers are for the Arithmetic Logic Unit or &lt;strong&gt;ALU&lt;/strong&gt;, which only
+supports addition and subtraction in Ben&#x27;s case. The registers are simply named
+&quot;A&quot; and &quot;B&quot;. Values stored in &quot;A&quot; and &quot;B&quot; are added or subtracted together and
+stored back into the &quot;A&quot; register. Ben later augments the ALU with flags to
+detect overflow and if an operation resulted in a zero so he can install
+conditional instructions, which is stored in a &quot;flags&quot; register. As part of the
+change, he also includes the flags as part of the key in the instruction
+decoding phase.&lt;/p&gt;
+&lt;p&gt;From a pedantic point of view, the RAM and the &quot;out&quot; register plus its
+associated display aren&#x27;t actually part of the core of a working CPU, but they
+help making writing programs easier by giving us a place to put data and code as
+well as visualizing the results of our calculations. The output display is
+actually rigged up using four seven-segment displays. With the instruction
+decoding phase and the display, Ben uses Electrically Erasable Programmable
+Read-only Memory, or &lt;strong&gt;EEPROMs&lt;/strong&gt;, as the look up tables we mentioned before; on
+one end he can feed some bit pattern and out the other end receive a result. A
+good mental model is that with an EEPROM we &#x27;select&#x27; some value in the memory
+given some provided key, even though this typically called an &quot;address&quot;. For the
+&quot;out&quot; display he can provide the binary value and receive a bit pattern that is
+just right for showing on one of the four seven segment displays. The display
+actually display one-by-one but display so rapidly (&quot;refresh&quot;) that the shift
+isn&#x27;t visible to the eyes.&lt;/p&gt;
+&lt;p&gt;Behind all of this is a pulse that goes &quot;high&quot;, i.e., it emits a five volt
+signal, at regular intervals, called the &lt;strong&gt;clock&lt;/strong&gt;. Clocks drive a CPU by
+breaking up actions into discrete steps. When the clock pulse is high, we might
+call that &lt;strong&gt;tik&lt;/strong&gt; and when the clock pulse is low we might call that &lt;strong&gt;tok&lt;/strong&gt;.
+Going tik, then tok, is called a &lt;strong&gt;cycle&lt;/strong&gt;. Imagine some crank that shows single
+images for a movie on a screen for every cycle. If you move the crank fast
+enough and the images look to be close enough together in time, you wind up with
+what looks like a fluid image, but you can also single-step the crank or move it
+more slowly and notice all individual images making up the movie.&lt;/p&gt;
+&lt;p&gt;A &lt;strong&gt;program counter&lt;/strong&gt; stores the next instruction that will execute on the
+CPU.You can either increment the counter by one or change it to some absolute
+value, which is how jump instructions, and therefore conditionals, work. All
+instructions have two initial steps which involve pulling a value from the
+program counter into the memory register on the RAM and then pulling the
+addressed value into the instruction register. This way the program can startup
+on any instruction but wind up back to where the program counter is pointing.
+The memory register is needed to ensure that whatever address is chosen to
+output or read into the RAM won&#x27;t change simply because the rest of the system
+has moved on, e.g., the bus value has changed.&lt;/p&gt;
+&lt;p&gt;Of notable mention is the reset switch he builds into the system, as well as an
+ability to stop the clock to emulate a HALT instruction. These make starting
+from the beginning of a program and stopping the program at a particular point
+easier than simply having the program &quot;spin&quot; at the end.&lt;/p&gt;
+&lt;h2&gt;The Design and Assembly&lt;/h2&gt;
+&lt;p&gt;There&#x27;s a lot of meta things Ben does I think are applicable to a wide range of
+projects.&lt;/p&gt;
+&lt;p&gt;If it&#x27;s not obvious, I like that Ben breaks the CPU into separate parts or
+units. This way Ben can focus on one thing at a time, building up earlier
+tools and units for re-use later, freeing up his ability to think on different
+problems without having to hold the whole of the CPUs design in his head at
+once.&lt;/p&gt;
+&lt;p&gt;He tends to build out units using bare circuits and simple transistors, first,
+moving onto integrated circuits, or ICs, later when things become tedious. Ben
+actively takes the time to build out initial circuits to demonstrate some
+essential electrical patterns. The way Ben leads up to d and j-k flip-flops
+based on his prior building and use of d and s-r latches informs a &lt;em&gt;lot&lt;/em&gt; of the
+circuitry across the whole of the computer. Knowing how data gets &quot;trapped&quot;,
+forming the basis of memory, and how this plays into how memory is &quot;gated&quot; on
+and off the bus, can help strip away whatever magic you might have left about
+what is going on under the hood. He does have some supplemental videos on how
+semiconductors, transistors, and diodes work that can help fill in fundamentals
+beyond what the primary playlist covers.&lt;/p&gt;
+&lt;p&gt;On a number of units Ben goes out of his way to make driving the unit by hand,
+such as allowing one to single-step the clock or program the RAM with
+dip-switches. Doing this allows him to rapidly smoke test or make quick tweaks
+on a given unit.&lt;/p&gt;
+&lt;p&gt;I like that he builds the EEPROM from scratch because it helps keep the attitude
+that &quot;there is no magic&quot;.&lt;/p&gt;
+&lt;p&gt;At several points he uses a multimeter and oscilloscope to visualize what is
+going on with the circuits. This really drives in the metaphor of the electrical
+current analogy and that the transistors and complicated logic are the gates,
+feeding data into and out of particular pools.&lt;/p&gt;
+&lt;p&gt;In the core explanation, I noted that the RAM and LED display weren&#x27;t crucial
+parts of a CPU, but it is good that Ben included them because they helped
+facilitate the process of building up the CPU, testing it, and making it useful
+beyond simply being a doormat that blinks.&lt;/p&gt;
+&lt;p&gt;Last, but not least, it&#x27;s a small thing but I like that Ben actively goes out of
+his way to build a number of programs for the CPU to run. This verifies the CPU
+is, indeed, working as intended, and helps highlight a bit of a discussion
+around &quot;what is Turing completeness?&quot;, or, more simply, how can a computer be
+deemed of enough general-use such that it can be used to compute anything we
+would generally hope for it to compute?&lt;/p&gt;
+&lt;h2&gt;Conclusions&lt;/h2&gt;
+&lt;p&gt;Ben&#x27;s courses are great. He covers a number of other topics, such as building up
+a basic computer using a 6502 chip, talking about networking internals, checking
+for reliability on a transmitted message, and he also has a pair of videos
+building up a video card from scratch.&lt;/p&gt;
+&lt;p&gt;The brilliance of all of this is that there isn&#x27;t any magic behind modern
+computers. There is a lot of complexity through many, &lt;strong&gt;many&lt;/strong&gt; layers of
+abstractions, responsibilities, code, data, hardware, and so on, but the overall
+view of things need not be that complex. Ben&#x27;s CPU isn&#x27;t the fastest or
+feature-complete, but it does give a mental model for a basis of a CPU.&lt;/p&gt;
+&lt;p&gt;Modern CPUs are a &lt;em&gt;beast,&lt;/em&gt; but you don&#x27;t need to know everything to feel like
+you know enough of a subject to be dangerous. Many modern-day, bootcamp-trained
+software developers have learned specific patterns that might aide them with
+particular stacks of technology, but I have helped mentor a number of these
+people who wish they could better understand just what is going on under the
+hood. Holding the idea that there isn&#x27;t any magic and you can continually
+unravel the layers and components to gain a deeper understanding &lt;em&gt;is&lt;/em&gt; possible
+and it is thoroughly rewarding. You don&#x27;t need to know everything at once,
+either! Understanding how a CPU works and some fundamentals of electronics both
+at a rudimentary level &lt;em&gt;will&lt;/em&gt; help guide you with other understanding other
+things, and with time you can refine that understanding.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>
