@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Idiomatic Argument Passing in Rust">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="If you&#x27;re coming from a language that supports automatically taking references to arguments you may wonder why Rust can&#x27;t do the same. Rust is all about giving developers a better control of the memory layout of the data in their programs.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Idiomatic Argument Passing in Rust">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="If you&#x27;re coming from a language that supports automatically taking references to arguments you may wonder why Rust can&#x27;t do the same. Rust is all about giving developers a better control of the memory layout of the data in their programs.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Idiomatic Argument Passing in Rust &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Idiomatic Argument Passing in Rust</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;If you&#x27;re coming from a language that supports automatically taking references
+to arguments you may wonder why Rust can&#x27;t do the same. Rust is all about giving
+developers a better control of the memory layout of the data in their programs.
+Since Rust has the notion of ownership, we don&#x27;t have to worry about large
+objects being copied into a function when the arguments to a function are owned.
+Instead, they are moved (pass-by-move), and when I first started writing Rust I
+assumed the idiom was to always use owned types for function arguments. For
+clarity, we call something an &quot;owned&quot; typed when it isn&#x27;t behind a reference
+(&lt;code&gt;&amp;amp;&lt;/code&gt;). When an argument is behind a reference, we call that a &quot;borrowed&quot; type.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;tl;dr&lt;/strong&gt;
+&lt;em&gt;Idiomatic Rust functions ought to borrow arguments unless a function needs to
+completely own an argument for ergonomics (say, method chaining) or allocation
+(the caller won&#x27;t need to re-use the data, perhaps).&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;What&#x27;s the case against owned types for function arguments as the default? All
+data in Rust must have an owner and that owner is a variable. Function arguments
+are variables. This means that when you give a function an owned type, you force
+a caller to give away ownership of the data it has allocated and probably wanted
+to use further down the line. If the function doesn&#x27;t give back the value, it is
+lost to the caller, and the memory will be de-allocated at the end of the call&#x27;s
+scope. Often callers &lt;em&gt;do&lt;/em&gt; want to keep ownership of the values they pass into
+functions.&lt;/p&gt;
+&lt;p&gt;Immutable borrows let functions decide if they want to make selective
+allocations but that does mean a function may be allocating when the caller may
+want to know all allocations upfront. Owned types are a good fit for this as it
+is the caller&#x27;s responsibility to allocate and give up ownership to the function
+for its use. &lt;em&gt;Alternatively&lt;/em&gt;, if a function wants to make a change (mutate) an
+argument, it will be clear to the caller that data may change signaled by adding
+&lt;code&gt;mut&lt;/code&gt; after the &lt;code&gt;&amp;amp;&lt;/code&gt;. The common practice in C is to take pointers to
+non-primitive values. This is done so large objects don&#x27;t get copied on each
+function call. However, with this approach of using raw pointers there is no way
+to clarify when a pointer is simply going to read data and when it is going to
+change it. With borrowed types in Rust we get this clarity at the syntactic
+level.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Idiomatic Rust functions borrow arguments unless it truly needs to own the
+values or they are primitives.&lt;/strong&gt; Rust copies primitive values as they are part
+of the &lt;code&gt;Copy&lt;/code&gt; trait. And this isn&#x27;t to say you should &lt;em&gt;never&lt;/em&gt; take owned
+arguments. The &lt;a href&#x3D;&quot;https://doc.rust-lang.org/1.0.0/style/ownership/builders.html&quot;&gt;builder
+pattern&lt;/a&gt;
+explicitly takes ownership and gives it back at each method call, allowing us to
+chain together calls prior to a &lt;code&gt;let&lt;/code&gt; assignment. If we used &lt;code&gt;&amp;amp;mut self&lt;/code&gt; instead
+we&#x27;d need to first assign the value with &lt;code&gt;let mut&lt;/code&gt; and make the calls
+separately.&lt;/p&gt;
+&lt;p&gt;This leads us to an interesting example: How would we write the inside of this
+function?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn thin_air() -&amp;gt; &amp;amp;Vec&amp;lt;i32&amp;gt; {
+    unimplemented!()
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We could try to allocate and take a reference to the allocation?&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn thin_air() -&amp;gt; &amp;amp;Vec&amp;lt;i32&amp;gt; {
+    &amp;amp;vec![]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But the borrow checker will refuse this program because our &lt;code&gt;Vec&lt;/code&gt; only exists
+for the scope of &lt;code&gt;thin_air&lt;/code&gt; and if we held a reference after the point it was
+dropped (its memory is freed) we&#x27;d be holding a pointer to garbage which is not
+safe to read or write to. Thus, if we want to return a borrowed type, we must
+also take a borrowed type or something that holds a borrowed type.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct&amp;lt;&#x27;a&amp;gt; Data {
+  integers: &amp;amp;&#x27;a Vec&amp;lt;i32&amp;gt;
+}
+
+fn thin_air(data: Data) -&amp;gt; &amp;amp;Vec&amp;lt;i32&amp;gt; {
+  data.integers
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To recap, Rust cares about memory safety and layout a fair amount and puts the
+work on the programmer to decide when references to arguments should be taken.
+Choosing immutable borrows by default means you won&#x27;t cause any unintended
+consequences besides maybe some stray allocations. If you want to change the
+content that the caller owns and, hence, has allocated, switch to a mutable
+borrow. Lastly, if you know the caller won&#x27;t need the argument anymore or if it
+wants to return an owned type in exchange of the passed in argument(s), the
+function ought to take ownership.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Error Handling With Closures In Iterators">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Iterators give us a wonderful array of functional-style combinators. Past readability, the rust compiler can occasionally optimize iterators better than it can for-loops, too. However, as iterators work by taking closures it can be confusing on how to best handle them compared to using classic for-loops. Here&#x27;s a toy example:">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Error Handling With Closures In Iterators">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Iterators give us a wonderful array of functional-style combinators. Past readability, the rust compiler can occasionally optimize iterators better than it can for-loops, too. However, as iterators work by taking closures it can be confusing on how to best handle them compared to using classic for-loops. Here&#x27;s a toy example:">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Error Handling With Closures In Iterators &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Error Handling With Closures In Iterators</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Iterators give us a wonderful array of functional-style combinators. Past
+readability, the rust compiler can occasionally optimize iterators better than
+it can for-loops, too. However, as iterators work by taking closures it can be
+confusing on how to best handle them compared to using classic for-loops. Here&#x27;s
+a toy example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn parse_str_of_i32(input: &amp;amp;str) -&amp;gt; Vec&amp;lt;i32&amp;gt; {
+    input.split(&quot;,&quot;)
+        .map(|char| char.parse().unwrap()) // &#x60;unwrap&#x60;!
+        .collect()
+}
+
+let input &#x3D; &quot;1,2,3,4,5,6,7,8,9,0&quot;;
+let numbers &#x3D; parse_str_of_i32(input);
+assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This works but it has an &lt;code&gt;unwrap&lt;/code&gt; which means that if callers pass invalid
+strings, such as &lt;code&gt;&quot;oh boy, here we go again&quot;&lt;/code&gt;, it will panic, which gives
+callers of this code little control when things go wrong. How can we convert
+this to use &lt;code&gt;Result&lt;/code&gt; and be more ergonomic? Consider the for-loops variant,
+first:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;use std::num::ParseIntError;
+
+fn parse_str_of_i32(input: &amp;amp;str) -&amp;gt; Result&amp;lt;Vec&amp;lt;i32&amp;gt;, ParseIntError&amp;gt; {
+    let mut numbers &#x3D; vec![];
+    for char in input.split(&quot;,&quot;) {
+        numbers.push(char.parse()?)
+    }
+    Ok(numbers)
+}
+
+let input &#x3D; &quot;1,2,3,4,5,6,7,8,9,0&quot;;
+let numbers &#x3D; parse_str_of_i32(input).unwrap();
+assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You might think this means if you want to use error handling while iterating you
+need to have a for-loop instead of using Iterator but you can still have an
+Iterator and have get the same type signature above for our parser!&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;use std::num::ParseIntError;
+
+fn parse_str_of_i32(input: &amp;amp;str) -&amp;gt; Result&amp;lt;Vec&amp;lt;i32&amp;gt;, ParseIntError&amp;gt; {
+    input.split(&quot;,&quot;)
+        .map(|char| char.parse())
+        .collect()
+}
+
+let input &#x3D; &quot;1,2,3,4,5,6,7,8,9,0&quot;;
+let numbers &#x3D; parse_str_of_i32(input).unwrap();
+assert_eq!(numbers, vec![1,2,3,4,5,6,7,8,9,0]);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;How does this work? &lt;code&gt;collect&lt;/code&gt; knows how to take an Iterator of &lt;code&gt;Result&lt;/code&gt;s and
+turn it into an &lt;code&gt;Result&amp;lt;Vec&amp;lt;A&amp;gt;, B&amp;gt;&lt;/code&gt;. At the first sight of an &lt;code&gt;Err&lt;/code&gt; the whole
+expression will become the &lt;code&gt;Err&lt;/code&gt; case but if everything works out with &lt;code&gt;Ok&lt;/code&gt; then
+the Iterator will take all the values into their own &lt;code&gt;Vec&lt;/code&gt; and return &lt;code&gt;Ok&lt;/code&gt; of
+the enclosing &lt;code&gt;Vec&lt;/code&gt;. This is sometimes referred to as a &quot;transpose&quot; and you can
+see similar &#x27;inside-out&#x27; behaviour elsewhere, including &lt;code&gt;Result&lt;/code&gt;
+&lt;a href&#x3D;&quot;https://doc.rust-lang.org/std/option/enum.Option.html#method.transpose&quot;&gt;itself&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can also specify collections other than &lt;code&gt;Vec&lt;/code&gt;. If &lt;code&gt;A&lt;/code&gt; is something that can
+be &lt;code&gt;collect&lt;/code&gt;ed into some container &lt;code&gt;V&lt;/code&gt;, then an &lt;code&gt;Iterator&amp;lt;Item&#x3D;Result&amp;lt;V, B&amp;gt;&amp;gt;&lt;/code&gt; is
+possible. Have a poke around the &lt;code&gt;FromIterator&lt;/code&gt; &lt;a href&#x3D;&quot;https://doc.rust-lang.org/std/iter/trait.FromIterator.html&quot;&gt;trait
+docs&lt;/a&gt; to get a
+better sense of what &lt;code&gt;collect&lt;/code&gt; can roll up!&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

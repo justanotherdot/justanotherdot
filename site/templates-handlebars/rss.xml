@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>justanotherdot</title>
+    <link>{{domain}}</link>
+    <atom:link href="{{domain}}{{url}}" rel="self" type="application/rss+xml" />
+    <description>Personal blog of Ryan James Spencer</description>
+    <category>Technology</category>
+    <copyright>2018 Ryan James Spencer</copyright>
+    <language>en-us</language>
+    {{#each posts}}
+    <item>
+      <title>{{title}}</title>
+      <author>Ryan James Spencer</author>
+      <link>{{domain}}{{url}}</link>
+      <guid>{{domain}}{{url}}</guid>
+      <pubDate>{{date_rfc822}}</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        {{{content}}}
+        ]]></content:encoded>
+    </item>
+    {{/each}}
+  </channel>
+</rss>

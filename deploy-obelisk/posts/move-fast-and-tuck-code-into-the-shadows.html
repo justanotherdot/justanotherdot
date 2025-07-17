@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Move Fast and Tuck Code Into the Shadows">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Migrations are a part of life as a dev. They help cut down tech debt but they can be risky. It&#x27;s always less risky merging in new and different sets of changes rather than changing code in-place. This buys you time. You gain the control over the switch granted switching doesn&#x27;t adversely affect some shared, mutable store of data.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Move Fast and Tuck Code Into the Shadows">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Migrations are a part of life as a dev. They help cut down tech debt but they can be risky. It&#x27;s always less risky merging in new and different sets of changes rather than changing code in-place. This buys you time. You gain the control over the switch granted switching doesn&#x27;t adversely affect some shared, mutable store of data.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Move Fast and Tuck Code Into the Shadows &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Move Fast and Tuck Code Into the Shadows</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Migrations are a part of life as a dev. They help &lt;a href&#x3D;&quot;https://lethain.com/migrations/&quot;&gt;cut down tech
+debt&lt;/a&gt; but they can be risky. It&#x27;s always less
+risky merging in &lt;em&gt;new&lt;/em&gt; and &lt;em&gt;different&lt;/em&gt; sets of changes rather than changing code
+in-place. This buys you time. &lt;em&gt;You&lt;/em&gt; gain the control over the switch granted
+switching doesn&#x27;t adversely affect some shared, mutable store of data.&lt;/p&gt;
+&lt;p&gt;The &lt;a href&#x3D;&quot;http://sevangelatos.com/john-carmack-on-parallel-implementations/&quot;&gt;parallel implementation
+approach&lt;/a&gt; is
+brilliance incarnate; you keep a functional reference implementation and you
+copy it as your &#x27;experimental&#x27; version whose sole aim is to eventually replace
+(and hence become) the new reference. However, Carmack hits a good point,&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;It is often tempting to shortcut this by passing in some kind of option flag
+to existing code, rather than enabling a full parallel implementation. It is
+a grey area, but I have been tending to find the extra path complexity with
+the flag approach often leads to messing up both versions as you work, and
+you usually compromise both implementations to some degree.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I am keen to start experimenting more with the Carmack approach, though. Some
+things I&#x27;ve already thought about:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Having a duplicated directories messes up navigation for a lot of editors and
+is unnecessary bloat&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git flow&lt;/code&gt; styled approaches and any vcs-based approach will never work
+because it lends into the &#x27;change in place&#x27; idea by merging the reference with
+the experiment&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Otherwise, there are many ways to define clear boundaries between the reference
+and experimental implementation. The most popular solution out of many is
+feature flag services but I recommend switching between whole modules rather
+than having a lot of logic caked into modules to check flags. Keeping flags
+macro and mutually exclusive is important because it means changes are kept
+cohesive and conflict free. One thing people tend to forget about is the
+original feature-flag: versioning. In the end it doesn&#x27;t matter which technique
+you employ so long as you can 1. &lt;strong&gt;toggle between changes&lt;/strong&gt; and 2. &lt;strong&gt;keep
+differences clear&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;You can start something similar to this approach by focusing on leaving written
+code in a disconnected state but being aggressive about it finding its way to
+master. This is healthy because it will change the incumbent attitude of
+&quot;production means done&quot; to &quot;production means refinement&quot;. I like this approach
+and do it as often as I can remember to because it means PRs are kept small
+(great for code review) and when I finally do want to rig everything up I can
+focus squarely on the plumbing, rather than juggling the correctness of the core
+implementation &lt;em&gt;and&lt;/em&gt; the coupling to the rest of the system.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

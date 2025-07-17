@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Stdout is Forever">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Debuggers are worth their weight in gold but stdout is the diamond in the rough. All the tools we have to pinpoint problems such as REPLs, automatic tracing, stacktraces, and even printing to stdout wind up being about two things: poking and prodding.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Stdout is Forever">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Debuggers are worth their weight in gold but stdout is the diamond in the rough. All the tools we have to pinpoint problems such as REPLs, automatic tracing, stacktraces, and even printing to stdout wind up being about two things: poking and prodding.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Stdout is Forever &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Stdout is Forever</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Debuggers are worth their weight in gold but stdout is the diamond in the rough.
+All the tools we have to pinpoint problems such as REPLs, automatic tracing,
+stacktraces, and even printing to stdout wind up being about two things:
+&lt;strong&gt;poking&lt;/strong&gt; and &lt;strong&gt;prodding&lt;/strong&gt;.&lt;/p&gt;
+&lt;h2&gt;A useful macro or two&lt;/h2&gt;
+&lt;p&gt;Rust has the &lt;code&gt;dbg!&lt;/code&gt; macro and I love it. It&#x27;s short enough to type and it shows
+you what file you are in, line you are on, and how the code looks plus its
+value after evaluation. e.g. &lt;code&gt;dbg!(dbg!(12) &#x3D;&#x3D; dbg!(1 + 11))&lt;/code&gt; will print&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[src/main.rs:2] 12 &#x3D; 12
+[src/main.rs:2] 1 + 11 &#x3D; 12
+[src/main.rs:2] dbg!(12) &#x3D;&#x3D; dbg!(1 + 11) &#x3D; true
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Two important quirks with this are,&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;No arguments passed means you just get the file and line number&lt;/li&gt;
+&lt;li&gt;The code still behaves the way it used to except now you have tracing&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This gives us just enough information to be lethal. This is possible because
+this expands at compile time and can be replicated in other languages that have
+macro support. This is a source transformation and we can&#x27;t easily use a
+function because our line number will always be the line number of the function,
+not the calling site. As such, one option is to write it as some repeated action
+in your editor of choice. Imagine you have the following go code in front of
+you,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;func AddOne(x Int) Int {
+  return x + 1
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;and you want to lay down some tracing so you highlight the &lt;code&gt;x + 1&lt;/code&gt; and hit a
+keyboard shortcut which transforms the code into the following,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;func AddOne(x Int) Int {
+  fmt.Printf(&quot;[src/main.go:8] x + 1: %#v&quot;, x + 1)
+  return x + 1
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We could have also used the
+&lt;a href&#x3D;&quot;https://golang.org/pkg/runtime/#Caller&quot;&gt;&lt;code&gt;runtime.Caller&lt;/code&gt;&lt;/a&gt; function to get
+filename and line number but we can get that spliced in via our editor to avoid
+an import. If you are curious what the &lt;code&gt;runtime.Caller&lt;/code&gt; code looks like here it
+is (and, yes, I&#x27;m ignoring error handling here since this is intentionally
+throwaway code):&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;func AddOne(x Int) Int {
+  _, file, line, _ :&#x3D; runtime.Caller(0)
+  fmt.Printf(&quot;[%v:%v] x + 1: %#v\n&quot;, file, line, x+1)
+  return x + 1
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The advantage with the above is now we can take our print lines and move them
+around at will and we won&#x27;t have to tweak the filename/lineno combo.&lt;/p&gt;
+&lt;h2&gt;Poking&lt;/h2&gt;
+&lt;p&gt;Sometimes the fastest way to get at a problem is by writing test cases that flex
+assertions about the functionality in question. Other times that&#x27;s not as fast
+because the logic might rely on other systems, e.g. integration tests. In those
+cases, if you have stacktrace support you might find it useful to panic/throw if
+particular assertions aren&#x27;t met. When that fails you are probably interfacing
+with code that is covering up exceptions or panics, say a piece of library code
+that takes your code as a callback. You could try stubbing in your own forked
+version of the code (scripting languages tend to make this easy) or you could
+turn to building your own stacktrace. You iteratively apply print statements in
+the following fashion,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn foo() {
+  dbg!() # beginning
+  &amp;lt;snip&amp;gt;
+  dbg!() # middle
+  &amp;lt;snip&amp;gt;
+  dbg!() # end
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With &lt;code&gt;dbg!&lt;/code&gt; this is really easy because I don&#x27;t have to think
+about what to pass to the printing function since &lt;code&gt;dbg!()&lt;/code&gt; simply
+emits the filename and line number. In languages that may not have this I&#x27;ve
+done &lt;code&gt;printf(X)&lt;/code&gt; where X &#x3D; &quot;A&quot;, &quot;B&quot;, &quot;C&quot;, and so on.&lt;/p&gt;
+&lt;p&gt;With this format in place you can use binary search to figure out where you need
+to apply more printing statements on each subsequent run. If, however, your
+tests or program take a long while to run it can pay to do upfront work but
+perhaps limiting yourself to an arbitrary depth to avoid spending too much time
+on tracing that won&#x27;t pay off.&lt;/p&gt;
+&lt;h2&gt;Prodding&lt;/h2&gt;
+&lt;p&gt;You can load your &lt;a href&#x3D;&quot;https://jvns.ca/blog/2018/04/28/debugging-a-segfault-on-linux/&quot;&gt;core
+dumps&lt;/a&gt; into
+&lt;code&gt;gdb&lt;/code&gt; and explore the call stack after a segfault among all sorts of other cool
+things that debuggers allow you to do, or you can rig up systems to
+automatically provide tracing, such as in &lt;a href&#x3D;&quot;http://erlang.org/doc/man/dbg.html&quot;&gt;erlang or
+elixir&lt;/a&gt; but hopefully this article has shown
+that stdout gives you powerful debugging functionality since we already have
+access to executing the program and manipulating its source. We can print
+assertions to see if they hold up or mess around with alternative solutions that
+may work if the problem is clear. Stdout isn&#x27;t always the fastest but it&#x27;s
+&lt;em&gt;lightweight&lt;/em&gt; which makes it invaluable as it can circumvent a lot of
+preparatory work. You can pair this approach into a feedback loop, too, to
+reduce duplicated work such as running the tests or program over and over again.
+In a future article I&#x27;ll discuss ways to do this in a range of languages and
+environments but at least we&#x27;ve set the tone for some thinking about how to
+improve what we spit out while you hack to give you a better understanding of
+what&#x27;s going on under the hood.&lt;/p&gt;
+&lt;h4&gt;Acknowledgements&lt;/h4&gt;
+&lt;p&gt;&lt;em&gt;The name of this post is inspired from &lt;a href&#x3D;&quot;https://twitter.com/bodil/status/878563460233277440?s&#x3D;20&quot;&gt;Bodil
+Stokke&lt;/a&gt; when
+responding to what &quot;What are everyone&#x27;s fave debugging tools for languages you
+write code in?&quot;&lt;/em&gt;&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

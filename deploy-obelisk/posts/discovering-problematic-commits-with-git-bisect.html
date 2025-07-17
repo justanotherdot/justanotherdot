@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Discovering Problematic Commits With Git Bisect">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Find out how to search through your git history to find first instances of any sort of behavior or characteristic with your code using git and a hacked-together program or script.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Discovering Problematic Commits With Git Bisect">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Find out how to search through your git history to find first instances of any sort of behavior or characteristic with your code using git and a hacked-together program or script.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Discovering Problematic Commits With Git Bisect &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Discovering Problematic Commits With Git Bisect</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;A problem has happened due to some offending code landing on your main,
+production branch. You use &lt;code&gt;git&lt;/code&gt; and your best bet is to keep rolling back
+commits until the system finds itself in a steady state. You come late into this
+picture and you&#x27;re unsure how far back you need to go.&lt;/p&gt;
+&lt;p&gt;Firstly, you ought to be using something that alleviates the need for running
+through out an entire CI pipeline in order to produce a deploy. I&#x27;ve talked a
+bit about this in the past on my &lt;a href&#x3D;&quot;https://www.youtube.com/playlist?list&#x3D;PLG8S6YrJRoYI3CIUqvGX4NBSaMWZxe9in&quot;&gt;screencasts about setting up a
+CI&lt;/a&gt;
+regarding the distinction between a deployment and a release. If you have
+something like this, rolling back a fair few number of releases is probably
+trivial to attempt.&lt;/p&gt;
+&lt;p&gt;However, if you don&#x27;t have this in place or you really do need to roll through
+an entire CI pipeline, then you can still using something like &lt;code&gt;git bisect&lt;/code&gt; to
+find the first offending commit.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;git bisect&lt;/code&gt; runs a binary search across a span of commits. The general
+framework for running a &lt;code&gt;git bisect&lt;/code&gt; is the following:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;git bisect start FROM_COMMIT TO_COMMIT&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Test the commit, determine if it is good or bad, and tell &lt;code&gt;git&lt;/code&gt; with &lt;code&gt;git bisect good&lt;/code&gt; or &lt;code&gt;git bisect bad&lt;/code&gt;. You can also skip commits with &lt;code&gt;git bisect skip&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The trick to finding the first offending commit isn&#x27;t to run the same steps your
+CI pipeline would; you should have all those builds available for review and
+they will tell you whether or not a build truly succeeded, unless you can&#x27;t
+trust your CI and, in that case, you have other issues on your hand. Crafting
+your own test and running it each time in (2) will help guide you in the
+decision to making a choice for whether or not the commit is &lt;code&gt;good&lt;/code&gt; or &lt;code&gt;bad&lt;/code&gt; in
+light of what you are trying to find.&lt;/p&gt;
+&lt;p&gt;You can alleviate the tedium of (2) by using &lt;code&gt;git bisect run&lt;/code&gt; and supplying a
+program. If the script fails or you ever want to abandon your search midway, you
+can always run &lt;code&gt;git bisect reset&lt;/code&gt; and start over again. There are some tricks to
+how you can craft the exit codes from the script you write for &lt;code&gt;git bisect run&lt;/code&gt;
+that really make this process a lot faster. To give a sense of the range of use
+for &lt;code&gt;git bisect&lt;/code&gt; as a general search tool, let&#x27;s call our test script
+&lt;code&gt;predicate&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-bash&quot;&gt;#!/bin/sh -eux
+
+# NB.
+# exiting with 125 tells &#x60;git bisect run&#x60; to skip this commit.
+# exiting with 0 means the commit is &#x60;good&#x27;.
+# exiting with 1 means the commit is &#x60;bad&#x27;.
+
+cargo build || exit 125 # skip failed builds.
+target/debug/program &amp;gt; /tmp/program.out
+[ ! diff /tmp/program.out /tmp/program.snapshot ] &amp;amp;&amp;amp; exit 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You&#x27;ll need to place this script somewhere outside of the current git repository
+as it will mess up checkouts between commits, and, as always, ensure it is
+executable. Another pitfall that can hurt is how you structure your git history;
+if you use merge styled commits, as is the default for GitHub, then you will
+probably not care if the commits in between the merge commits fail. You can do
+one of two things: output the list of all merge commits that match a particular
+pattern, e.g., the way GitHub does it, or you could also, if your history is
+clean enough, use &lt;code&gt;git show --no-patch --format&#x3D;&quot;%P&quot; &amp;lt;commit hash&amp;gt;&lt;/code&gt; to determine
+if a commit has more than one parent; you&#x27;ll see more than one hash noted in the
+output. You can find quick version I hacked together filtering out commits with
+the GitHub styled subject lines you can tweak at &lt;a href&#x3D;&quot;https://gist.github.com/justanotherdot/d587f5bea0f6937ef7f7bda53f23ac56&quot;&gt;this
+gist&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In the above example I show testing against a snapshot given some program
+output, but really the predicate could be &lt;em&gt;anything&lt;/em&gt;. Using &lt;code&gt;git bisect&lt;/code&gt; to
+drive things like textual search has better alternatives like the &quot;pickaxe&quot; with
+&lt;code&gt;-S&lt;/code&gt; in &lt;code&gt;git log&lt;/code&gt;, but if you want to find the first commit where something
+happened and it isn&#x27;t part of the data that git saves, such as program behavior,
+then &lt;code&gt;git bisect&lt;/code&gt; will let you find it far faster. I&#x27;ve also used this in the
+past to whip up quick, minimal tests that I can inject after the checkout and
+run some test suite against. &lt;code&gt;git bisect run&lt;/code&gt; takes any binary, too, meaning you
+don&#x27;t &lt;em&gt;have&lt;/em&gt; to use a shell script like I have in the example above. The real
+aim is not to think of the &lt;code&gt;predicate&lt;/code&gt; script or program as something that has
+to be about failures; you can easily use it to discover first instances of any
+kind of particular behavior a program may exhibit, as long as it is reproducible
+locally.&lt;/p&gt;
+&lt;p&gt;Granted, a system may be so complex in it&#x27;s operation that there is no way for
+you to locally verify the offending commit. Mitigating or &quot;stopping the
+bleeding&quot; is something that needs to happen quick. With that said, &lt;code&gt;git bisect&lt;/code&gt;
+might be a better tool for analysis later, when the pressure is low and you can
+better craft a test or predicate to find where the fault first occurred, but if
+you haven&#x27;t spent a lot of time with release engineering or you are in a place
+where it could use some improvements, running &lt;code&gt;git bisect&lt;/code&gt; in this matter might
+help save you precious time, and even if you do have good release engineering in
+place, it might help save you a pulling out a lot of hair finding the place
+where code has effectively broken down.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

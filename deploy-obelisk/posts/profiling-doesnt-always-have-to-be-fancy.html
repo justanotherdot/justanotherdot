@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Profiling Doesn&#x27;t Always Have To Be Fancy">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Not all profilers offer a frictionless approach to collecting data. Sometimes doing the crude approach works wonders.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Profiling Doesn&#x27;t Always Have To Be Fancy">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Not all profilers offer a frictionless approach to collecting data. Sometimes doing the crude approach works wonders.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Profiling Doesn&#x27;t Always Have To Be Fancy &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Profiling Doesn&#x27;t Always Have To Be Fancy</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Not all profiling experiences are alike. Some are filled with friction around the tooling. Others are around doubt about whether or not intermediate layers are inflating or shifting numbers in unfair ways. Perhaps you work in a security or data-compliance critical environment and all you want is numbers on what is running in production without having to breach agreements by downloading live data to your work environment. Benchmarks are fantastic for tracking numbers of common or pathological cases over time, but they may still be unrealistic in comparison to the undiscovered cases in prod. When I find that I can&#x27;t easily wedge in a profile, I get a bit sad and then turn to crude solutions.&lt;/p&gt;
+&lt;p&gt;Admittedly, performance counters with tools like &lt;code&gt;perf&lt;/code&gt; can far better track the performance of resource usage rather than wall times. A wall time may include all the time taken during a context switch out to other running processes, for example, but wall times are important because they are the latency humans feel when they use a user interface to a system or tool.&lt;/p&gt;
+&lt;p&gt;The simplest way to crudely examine timings is to do what benchmark tooling does; record the wall time before and after the code runs. Benchmarks can track different measures of &quot;center&quot; and calculate statistics around outliers and deviations from these markers of center, but ultimately they take two times and output the difference. I want to reduce friction as much as possible, and as such I&#x27;ll write this as a macro to do the code generation around the value and still return the value. &lt;a href&#x3D;&quot;https://doc.rust-lang.org/src/std/macros.rs.html#285-305&quot;&gt;This is exactly what &lt;code&gt;dbg&lt;/code&gt; does&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-rust&quot;&gt;macro_rules! time {
+    ($val:expr) &#x3D;&amp;gt; {
+        let beg &#x3D; std::time::Instant::now();
+        match $val {
+            tmp &#x3D;&amp;gt; {
+                let end &#x3D; std::time::Instant::now();
+                let time &#x3D; (end - beg);
+                println!(
+                    &quot;[{}:{}] &#x60;{}&#x27; took {:?}&quot;,
+                    std::file!(),
+                    std::line!(),
+                    std::stringify!($val),
+                    time
+                );
+                tmp
+            }
+        }
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We print out the timings given the file number, line number, expression under timing, and time taken, just like &lt;code&gt;dbg&lt;/code&gt; does. You&#x27;ll note that I am using the &lt;code&gt;Debug&lt;/code&gt; format specifier for the time itself and not converting the time into a canonical format such as nanoseconds. I do this because the formatting is usually clearer this way; if we always returned milliseconds but the code under inspection took only a handful of nanoseconds, I&#x27;d have to go back and change the code again, or if the code is taking several seconds, then telling me the nanoseconds will require me to do the math in my head to convert.&lt;/p&gt;
+&lt;p&gt;Times like this are handy for things such as router endpoints. This same stopwatch style is what is also used for distributed tracing libraries. A library will start a clock on function entry, and on exit calculate the result, create a &quot;span&quot;, and add it to a list of spans. Normally spans are identified by some unique trace id and have parent/child identifiers allowing you to shove all the spans up to an aggregator and let them figure out how to stitch the values together, saving you the cost of doing it on the application.&lt;/p&gt;
+&lt;p&gt;With this macro, we can  go from this code:&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-rust&quot;&gt;use std::time::Instant;
+
+#[get(&quot;/resource&quot;)]
+fn index() -&amp;gt; Result&amp;lt;Json&amp;lt;Resource&amp;gt;, HttpError&amp;gt; {
+    let beg &#x3D; Instant::now();
+    let rsrc &#x3D; resource().map(|x| Json(x));
+    let end &#x3D; Instant::now();
+    // or, dump as json to logger, stdout, etc. for aggregation...
+    eprintln!(&quot;/resource took {} ms&quot;, (beg - end).as_millis());
+    rsrc
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;to this code:&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-rust&quot;&gt;#[get(&quot;/resource&quot;)]
+fn index() -&amp;gt; Result&amp;lt;Json&amp;lt;Resource&amp;gt;, HttpError&amp;gt; {
+    time!(resource().map(|x| Json(x)))
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;If you wanted to you could change the macro to dump structured logs rather than free text, or you could push metrics out to a provider under a name. Regardless of where you aggregate the values for inspection, making this like &lt;code&gt;dbg&lt;/code&gt; means we are being unobtrusive with our code, allowing us to put in timings and take them out when ready, which is especially handy when you are trying to check the time of a particular chunk of code while developing.&lt;/p&gt;
+&lt;p&gt;To be complete to the &lt;code&gt;dbg&lt;/code&gt; implementation, maybe you want to pass several things separated by commas to the &lt;code&gt;time&lt;/code&gt; macro in the same way you can pass multiple things to &lt;code&gt;dbg&lt;/code&gt;. Taking a note from the source code of the dbg macro we can see what to add &lt;a href&#x3D;&quot;https://doc.rust-lang.org/src/std/macros.rs.html#302-304&quot;&gt;near the end&lt;/a&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-rust&quot;&gt;macro_rules! time {
+    ($val:expr) &#x3D;&amp;gt; {
+        {
+            let beg &#x3D; std::time::Instant::now();
+            match $val {
+                tmp &#x3D;&amp;gt; {
+                    let end &#x3D; std::time::Instant::now();
+                    let time &#x3D; (end - beg);
+                    println!(&quot;[{}:{}] &#x60;{}&#x27; took {:?}&quot;, std::file!(), std::line!(), std::stringify!($val), time);
+                    tmp
+                }
+            }
+        }
+    };
+    ($($val:expr),+ $(,)?) &#x3D;&amp;gt; {
+        ($(time!($val)),+,)
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This change uses the repeat pattern matches of macros to consistently repeat a pattern for as many times as it is mentioned. what this pattern says is &quot;there may be several (thus the + sign) comma separated expressions, followed finally by an optional (thus the ? sign) comma&quot;. then, when you use the plus sign in the body, it will repeat the same number of times as the pattern was found. The body says &quot;do the time macro on each captured value for as many times the patterns were captured and put them all in a tuple that fits them, followed by a comma just in case there are is only one value passed and this pattern fires&quot;, at least that&#x27;s how I read that last comma.&lt;/p&gt;
+&lt;p&gt;You can push this idea further if you want by &lt;a href&#x3D;&quot;https://gist.github.com/justanotherdot/fe4bf2024d2c13e3eace4f8d6730c3d1&quot;&gt;writing a benchmark macro&lt;/a&gt; that did the timing across runs, perhaps including mean average and standard devation and maybe even warmups. The point is not to get lost in recreating a benchmark or profiling suite inside of macros but to find ways to unobtrusively provide results in such a way that you can quickly get relative sizes between elements in a system or program. Also, be aware that timings can blow out if you are timing the code that also has timing code in it. Ideally you time independent segments of a function.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

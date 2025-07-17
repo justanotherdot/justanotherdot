@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="When to move, copy, or clone?">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Do you understand ownership and borrowing in theory but find it hard in practice? Do the differences between things like &#x60;iter&#x60; and &#x60;into_iter&#x60; still confuse you? Is the difference between &#x60;Copy&#x60; and &#x60;Clone&#x60; still unclear? I will shed some light on practical examples that should help you gain a better grip on owning and borrowing values.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="When to move, copy, or clone?">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Do you understand ownership and borrowing in theory but find it hard in practice? Do the differences between things like &#x60;iter&#x60; and &#x60;into_iter&#x60; still confuse you? Is the difference between &#x60;Copy&#x60; and &#x60;Clone&#x60; still unclear? I will shed some light on practical examples that should help you gain a better grip on owning and borrowing values.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>When to move, copy, or clone? &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>When to move, copy, or clone?</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Do you understand ownership and borrowing in theory but find it hard in
+practice? Do the differences between things like &lt;code&gt;iter&lt;/code&gt; and &lt;code&gt;into_iter&lt;/code&gt; still
+confuse you? Maybe the difference between &lt;code&gt;Copy&lt;/code&gt; and &lt;code&gt;Clone&lt;/code&gt; is still unclear? I
+will shed some light on practical examples that should help you gain a better
+grip on owning and borrowing values.&lt;/p&gt;
+&lt;p&gt;As you may know, all values in Rust need an owner. &lt;em&gt;Owners are about
+responsibility&lt;/em&gt;; some resource, usually, but not always, memory, is allocated and
+the responsibility for releasing it is up to the owner. Ownership, or rather,
+responsibility, is only transferred on a move, hence borrowing, not counting
+towards releasing resources, is a &lt;em&gt;view&lt;/em&gt; into the data. Rust&#x27;s borrowing rules
+mimic the solution to the readers-writers problem of concurrency; there may be
+any number of readers but no writers and only ever one writer and no readers.
+These two states are the same as immutable borrows and mutable borrows,
+respectively.&lt;/p&gt;
+&lt;p&gt;When we rebind values that aren&#x27;t &lt;code&gt;Copy&lt;/code&gt;, by default we use move semantics and
+transfer ownership to the new identifier. However, if somthing is &lt;code&gt;Copy&lt;/code&gt; this
+action now performs a bit-wise copy of the contents. An &lt;code&gt;i64&lt;/code&gt; that is
+re-assigned to a new variable will be a bit-wise copy. Contrast this to &lt;code&gt;Clone&lt;/code&gt;
+where the copying is explicit with the call to &lt;code&gt;Clone&lt;/code&gt;. &lt;em&gt;Thus both &lt;code&gt;Clone&lt;/code&gt; and
+&lt;code&gt;Copy&lt;/code&gt; signify copying of some kind, whether cheap or expensive, but the choice
+is dependent on when the copying is preferred.&lt;/em&gt;&lt;/p&gt;
+&lt;h3&gt;tl;dr&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;I borrow values to avoid producing new values. In other words, I re-use
+values that are already hanging around so as not to be wasteful with
+allocations.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I copy/clone based on how I want to reduce allocations in the face of needing
+to duplicate data, picking to allocate automatically or explicitly respectively.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I own values when I want total control of the data in question. I like to
+think of this as &lt;em&gt;data recycling&lt;/em&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Here&#x27;s some examples centered around iterators to give you a sense in practice.&lt;/p&gt;
+&lt;h3&gt;When to borrow&lt;/h3&gt;
+&lt;p&gt;Firstly, we can make a Vec of references, since the owner still lives while the
+references live we don&#x27;t need to allocate any new data.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct Wrapper {
+  id: i64,
+}
+
+let values: Vec&amp;lt;Wrapper&amp;gt; &#x3D; vec![
+    Wrapper { id: 1 },
+    Wrapper { id: 2 },
+    Wrapper { id: 3 },
+];
+let xs: Vec&amp;lt;&amp;amp;Wrapper&amp;gt; &#x3D; values.iter().collect();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;When to clone or copy&lt;/h3&gt;
+&lt;p&gt;Next up, we might want to keep two copies of our &lt;code&gt;values&lt;/code&gt;, if we change the
+&lt;code&gt;Wrapper&lt;/code&gt; to derive &lt;code&gt;Clone&lt;/code&gt; we can use &lt;code&gt;cloned&lt;/code&gt; on our iterator which is
+functionally the same as &lt;code&gt;.map(|x| x.clone())&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[derive(Clone)]
+struct Wrapper {
+  id: i64,
+}
+
+let values: Vec&amp;lt;Wrapper&amp;gt; &#x3D; vec![
+    Wrapper { id: 1 },
+    Wrapper { id: 2 },
+    Wrapper { id: 3 },
+];
+let xs: Vec&amp;lt;Wrapper&amp;gt; &#x3D; values.iter().cloned().collect();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;By default, most primitives are &lt;code&gt;Copy&lt;/code&gt; because it&#x27;s easy enough and usually
+performant for the compiler to bitwise copy them. Since our &lt;code&gt;Wrapper&lt;/code&gt; type in
+the previous examples is just wrapping up a primitive &lt;code&gt;i64&lt;/code&gt; integer, we can make
+it also derive &lt;code&gt;Copy&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[derive(Copy)]
+struct Wrapper {
+  id: i64,
+}
+
+let values: Vec&amp;lt;Wrapper&amp;gt; &#x3D; vec![
+    Wrapper { id: 1 },
+    Wrapper { id: 2 },
+    Wrapper { id: 3 },
+];
+let xs: Vec&amp;lt;Wrapper&amp;gt; &#x3D; values.iter().copied().collect();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You might use &lt;code&gt;copied&lt;/code&gt; if you don&#x27;t want to write &lt;code&gt;.map(|x| *x)&lt;/code&gt; if you happen
+to have a collection of borrowed values at your disposal (imagine you are passed
+a &lt;code&gt;Vec&amp;lt;&amp;amp;Wrapper&amp;gt;&lt;/code&gt;), this could be handy. The same logic stands for &lt;code&gt;cloned&lt;/code&gt;. The
+case is a little bit different for &lt;code&gt;Copy&lt;/code&gt;, though. If we can own the iterator
+with &lt;code&gt;into_iter&lt;/code&gt; then any move of the values will result in a bitwise copy. This
+is why you will sometimes see the rust compiler complain that a value is moved
+and doesn&#x27;t implement the &lt;code&gt;Copy&lt;/code&gt; trait: it can&#x27;t make a copy for you and it also
+can&#x27;t re-use a moved value.&lt;/p&gt;
+&lt;h3&gt;When to own&lt;/h3&gt;
+&lt;p&gt;Ownership is the basis of why we don&#x27;t need garbage collection in Rust. Passing
+an owned value across several different method calls could make copies or pass
+pointers depending on what optimizations the compiler wishes to perform, hence
+they could be &lt;code&gt;memcpy&lt;/code&gt;s or as copied pointers. Regardless of how they work under
+the hood, they prevent a host of bugs by ensuring &lt;em&gt;only one thing&lt;/em&gt; has the
+responsibility of finalizing the release of memory.&lt;/p&gt;
+&lt;p&gt;Expecting owned values is a nice way to push the decision to allocate on the
+caller. If the caller wants to keep the value it owns, it must clone the value
+itself, instead of guessing if a clone is happening elsewhere. More importantly,
+writing code that expects values to be owned exposes the intent that I want to
+have full control over the memory to do as I please, rather than trying to work
+around what may already exist. This is why anytime you want to transform
+something from one shape to another and don&#x27;t care much or at all about the
+original shape, taking ownership is the right choice.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[derive(Copy)]
+struct Wrapper {
+  id: i64,
+}
+
+let values: Vec&amp;lt;Wrapper&amp;gt; &#x3D; vec![
+    Wrapper { id: 1 },
+    Wrapper { id: 2 },
+    Wrapper { id: 3 },
+];
+let values: Vec&amp;lt;Wrapper&amp;gt; &#x3D; values.into_iter().collect();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note how I re-assign &lt;code&gt;values&lt;/code&gt; after the transformation; albeit not necessary, it
+does let me think a bit less about re-naming the original binding that I can&#x27;t
+use anymore.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

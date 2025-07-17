@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="A Love Letter to Composition">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Using composition gives you superpowers. It is by far the most practical experimentation tool I know.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="A Love Letter to Composition">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Using composition gives you superpowers. It is by far the most practical experimentation tool I know.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>A Love Letter to Composition &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>A Love Letter to Composition</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Using composition gives you superpowers. It is by far the most practical
+experimentation tool I know.&lt;/p&gt;
+&lt;p&gt;The &lt;a href&#x3D;&quot;http://hackage.haskell.org/package/base-4.12.0.0/docs/Data-Function.html#v:.&quot;&gt;dot (.)
+operator&lt;/a&gt;
+is my favorite infix operator in Haskell. Statically typed languages help ensure
+that &lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Function_composition&quot;&gt;function composition&lt;/a&gt;
+is structurally sound before anything is run. Composition of two functions means
+the type of the output of the first function must equal the type of the input of
+the next function. Many languages now have a pipe operator which is the
+composition operator in reverse. Some even use pipe or dot to write flow of
+execution top-to-bottom or bottom-to-top, given how you can stack the calls.&lt;/p&gt;
+&lt;p&gt;This isn&#x27;t just an article about the usefulness and specifics around function
+composition itself. Composition as a concept forms a basis of for problem
+solving and systems of proof. By decomposing a system or problem into parts we
+can scrutinize and, thus, verify them for use in constructing the same or
+potentially different solutions, proofs, and so on. Having solid building blocks
+means we can play around with different arrangements. Playing around with these
+building blocks and assumptions is how
+&lt;a href&#x3D;&quot;https://www.goodreads.com/book/show/192221.How_to_Solve_It&quot;&gt;mathematics&lt;/a&gt; and
+&lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/may-you-be-the-author-of-two-to-the-n-programs.html&quot;&gt;experimentation&lt;/a&gt;
+works at its core.&lt;/p&gt;
+&lt;p&gt;Composition also forms part of the basis of a fascinating branch of mathematics
+known as &lt;a href&#x3D;&quot;https://github.com/hmemcpy/milewski-ctfp-pdf&quot;&gt;category theory&lt;/a&gt;.
+Envision a type of mathematics that encodes any arbitrary concept as a
+graph-like diagram to explore general structures and relationships. Having a
+&lt;a href&#x3D;&quot;https://rs.io/why-category-theory-matters/&quot;&gt;mechanism for encoding general
+topics&lt;/a&gt; empowers you with the
+ability to play with structure and assumptions and study the structure and
+implications of those arrangements. Caveat emptor; I am not saying composition
+&lt;em&gt;requires&lt;/em&gt; category theory to be useful! In fact, having too complicated a
+system defeats the purpose of having a
+&lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/lightweight-is-beautiful.html&quot;&gt;lightweight&lt;/a&gt;
+guide.&lt;/p&gt;
+&lt;p&gt;Architecturally, the common phrase that &quot;systems are the sum of their parts&quot; is
+a farce. If systems were some linear combination then removing individual
+elements would merely reduce the size of the system, but removal can mean total
+system failure, no change whatsoever, and possibly improvement in the system as
+a whole!&lt;/p&gt;
+&lt;p&gt;It is rare to find a mental tool so broadly applicable and yet so uncomplicated
+in nature. I&#x27;ll reiterate strongly here; you don&#x27;t necessarily need to be
+pedantic about the shape of things to reap these benefits. Nor do you need to
+understand category theory to its &lt;a href&#x3D;&quot;http://eugeniacheng.com/wp-content/uploads/2017/02/cheng-lauda-guidebook.pdf&quot;&gt;highest levels of
+complexity&lt;/a&gt;
+to piece together solutions. In my mind the &lt;em&gt;broad&lt;/em&gt; steps are always the same:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Take, or produce, components&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scrutinize the components&lt;/strong&gt; as you may be able to
+i. break things down further (1)
+ii. see how things connect
+iii. or verify the parts are sound&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Experiment with arrangements of components&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I see composition as a framework for experimentation with no added consequence
+of increased complexity from the use of the framework itself. Experimentation
+allows us to explore new connections. Exploring new connections means finding
+solutions to problems in any domain. Discoveries are the bedrock of learning.
+Rapid experimentation increases rate of knowledge acquisitions as well as
+improved retention of knowledge. This is why composition is a superpower.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

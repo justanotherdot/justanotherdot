@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="System&#x27;s Thinking: A Primer">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Are you confused about what to learn when it comes to the fundamentals of programming? Do you constantly get told that algorithms and data structures are the gold standard for what will help propel your understanding? How do you get better at designing solutions rather than operating preexisting ones?">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="System&#x27;s Thinking: A Primer">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Are you confused about what to learn when it comes to the fundamentals of programming? Do you constantly get told that algorithms and data structures are the gold standard for what will help propel your understanding? How do you get better at designing solutions rather than operating preexisting ones?">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>System&#x27;s Thinking: A Primer &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>System&#x27;s Thinking: A Primer</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Are you confused about what to learn when it comes to the fundamentals of programming? Do you constantly get told that algorithms and data structures are the gold standard for what will help propel your understanding? How do you get better at designing solutions rather than operating preexisting ones?&lt;/p&gt;
+&lt;p&gt;Most of what people try to shill as fundamentals does not end up empowering people with a framework around problem solving. People assume that instead of having the ability to solve problems themselves, they instead need to learn a grab-bag of tool-oriented prior knowledge. This taints one&#x27;s arc of learning with the idea that it is all about gobbling up technical arcana, all the while reliant on others to find just which mystery to focus on next.&lt;/p&gt;
+&lt;p&gt;Mathematics and systems thinking has helps me build mental models of almost everything around me, aiding me in how I navigate the world and make decisions. You are likely carrying around &lt;em&gt;lots&lt;/em&gt; of mental models with you already. Strong mental models that refine over time give you the ability to understand different programming languages without having to read entire books, immerse yourself in new code you&#x27;ve never seen before without having to ask a number of it&#x27;s inventors who may have left little to no documentation, or, perhaps, how to reason about a market you are creating as part of a business. &lt;strong&gt;Models describe the essence of these things; them being &quot;mental&quot; is merely a matter of keeping them in your head.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Modeling is about describing systems. While a collection holds all the items contained, a system augments this with descriptions of how the items interrelate. &lt;strong&gt;At it&#x27;s essence, a system is a collection of shapes, usually boxes or circles, representing distinct entities, and arrows describing the relationships between these entities.&lt;/strong&gt; If you&#x27;re mathematically inclined a system is a graph with nodes (the shapes) and edges (the arrows).&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/systems-thinking-a-primer-pdp11.jpg&quot;
+    alt&#x3D;&quot;A functional block diagram of the PDP-11 computer&quot;
+    title&#x3D;&quot;A functional block diagram of the PDP-11 computer&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;The shapes in the graph expressed should &lt;strong&gt;not&lt;/strong&gt; be thought of as black boxes. Instead, &lt;strong&gt;think of a systems diagram as merely a view of the system at a particular scale.&lt;/strong&gt; It is not that we should never see the details of the entities in the system, as the popular notions around encapsulation may lead us to think, but that we are simply ignoring them when discussing the system at this level of detail.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/systems-thinking-a-primer-555-timer.jpg&quot;
+    alt&#x3D;&quot;A schematic for a 555 timer integrated circuit&quot;
+    title&#x3D;&quot;A schematic for a 555 timer integrated circuit&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;Systems that describe the flux of some unit, continuous or discrete, often refer to the unit flowing across the connections as a &lt;strong&gt;stock&lt;/strong&gt;. &lt;strong&gt;Taps&lt;/strong&gt; adjust the rate of flow of the stocks along the arrows. It&#x27;s is a good practice to not overload the usage of what an arrow means by having it describe verbs &lt;em&gt;or&lt;/em&gt; the inlet and outlet of stocks, but not both.&lt;/p&gt;
+&lt;p&gt;Systems inevitably end up describing repetitive actions, otherwise known as &lt;strong&gt;loops&lt;/strong&gt;. A loop may consist of a way to communicate necessary changes to some other entity in the loop which we call &lt;strong&gt;feedback&lt;/strong&gt;. A loop with finely-tuned feedback mechanism will seek some state of equilibrium while a loop whose feedback is disregarded or misaligned will self-reinforce in some general trend. If a stock is involved, you can see how producers and consumers are affecting the quantity of the stock in this system with a behavior-over-time graph.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/systems-thinking-a-primer-feedback-loops.jpg&quot;
+    alt&#x3D;&quot;A systems diagram showing the basics of feedback loops. Author: Kjell Magne Fauske licensed under CC BY 2.5&quot;
+    title&#x3D;&quot;A systems diagram showing the basics of feedback loops. Author: Kjell Magne Fauske licensed under CC BY 2.5&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;When we talk about misalignment of feedback in loops, we tend to mean the amount of delay of some message or action. &lt;strong&gt;All loops have some delay in their communications&lt;/strong&gt;, but the tuning of that delay is important. Given the context of the system or loop, a short delay may be just as bad as a long delay. A system describing the supply and demand of a widget may want a certain sized delay so that demands for manufacture do not lead to oversupply.&lt;/p&gt;
+&lt;p&gt;An example of a system seeking a state of equilibrium may be a thermostat connected to a heater. If the heater reaches a target point on the thermostat, the heater stops until the thermostat drops below the target point. If the thermostat didn&#x27;t exist, there would be no feedback and the heater would continue to increase over time. If there was a substantial delay in the feedback of the thermostat to the unit that controls whether or not the heater is on, the heat would also continue to grow up until a point. If you include a cooling system, you may get finer control of both directions of temperature. It&#x27;s worth mentioning that most systems of growth have a saturation point, but that point may be functionally quite high in the context of use!&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/systems-thinking-a-primer-aircon.jpg&quot;
+    alt&#x3D;&quot;A systems diagram showing the parts of an air conditioner. Author: Controlsystemintro licensed under CC BY-SA 4.0&quot;
+    title&#x3D;&quot;A systems diagram showing the parts of an air conditioner. Author: Controlsystemintro licensed under CC BY-SA 4.0&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;State machines also make up the basis of a system; the boxes are states, the arrows transitions between states, and the use of a state machine includes tracking the current state of where an agent in the state machine might be. This type of thinking is highly underappreciated when designing transactional systems such as network requests, payment flows, and so on. State machines help clarify if the flow of logic has any odd behavior, such as winding up in invalid states or transitions that lead to inescapable states.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/systems-thinking-a-primer-state-machine.jpg&quot;
+    alt&#x3D;&quot;A state machine describing the TCP/IP control flow. Author: Ivan Griffin licensed under CC BY 2.5&quot;
+    title&#x3D;&quot;A state machine describing the TCP/IP control flow. Author: Ivan Griffin licensed under CC BY 2.5&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;The best way to get better at systems thinking is to start drawing out systems diagrams. Drawing by hand in a journal is my preferred route, but there are also many services that make doing these easily. For example, here&#x27;s an incredibly rough sketch of a diagram I copied from Richard Hamming&#x27;s classic &quot;The Art of Doing Science and Research&quot; showing the essence of a CPU.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/systems-thinking-a-primer-cpu.jpg&quot;
+    alt&#x3D;&quot;A hand-drawn diagram of the essential parts of a CPU, based on
+    Richard Hammings work in The Art of Doing Science and Engineering&quot;
+    title&#x3D;&quot;A hand-drawn diagram of the essential parts of a CPU, based on
+    Richard Hammings work in The Art of Doing Science and Engineering&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;It also helps to see other people building up systems, as I&#x27;ve included some examples here. Functional block diagrams are my favorite but if you see any type of graph you could, theoretically, coerce that into the idea of a system and think about its causal relationships, how time plays a part of the system and the states that it may be in, how the author of the diagram has chosen to render distinct parts of the system, or maybe combine both the flow of units &lt;em&gt;as well as&lt;/em&gt; the actions between nodes and see how confusing that gets. There are lots of places like the &lt;a href&#x3D;&quot;https://archive.org/&quot;&gt;Internet Archive&lt;/a&gt; and &lt;a href&#x3D;&quot;http://bitsavers.org/&quot;&gt;Bitsavers&lt;/a&gt; that have scanned copies of old computer reference manuals with plenty of circuit and functional block diagrams that are great places to start, and an article discussing architectural changes is worth it&#x27;s weight in gold, &lt;a href&#x3D;&quot;https://www.honeycomb.io/blog/secondary-storage-to-just-storage/&quot;&gt;like this one by Charity Majors&lt;/a&gt;. &lt;em&gt;Don&#x27;t worry about system diagrams being perfect; in the same way that writing can help you refine your thoughts, systems diagrams can help refine your thinking around a system.&lt;/em&gt;&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Think Spatially to Grok Lifetimes">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Lifetimes and, hence, borrowing can be confusing, but a lot of that confusion can be cleared up by thinking about where values live as spaces and remembering that references must be able to reach values that still exist.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Think Spatially to Grok Lifetimes">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Lifetimes and, hence, borrowing can be confusing, but a lot of that confusion can be cleared up by thinking about where values live as spaces and remembering that references must be able to reach values that still exist.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Think Spatially to Grok Lifetimes &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Think Spatially to Grok Lifetimes</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Have you ever felt like you could use some sort of lifetime visualizer or
+debugger for tricky borrow checker issues in Rust? Has building up a mental model
+for complex lifetime interactions and their rules felt like one of the hardest
+things about writing Rust? I am by no means impervious to particularly tricky
+borrow checking woes, but I have built up a way of thinking about lifetimes and
+borrowing that I want to share with you that has helped me reason about a wide
+variety of borrow checking cases and I think is simple enough to keep in your
+head.&lt;/p&gt;
+&lt;p&gt;programs represent a &lt;strong&gt;space&lt;/strong&gt;.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-01.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;this space may contain other spaces, values, and &lt;strong&gt;bindings&lt;/strong&gt;.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-02.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting bindings.&quot;
+    title&#x3D;&quot;A diagram depicting bindings.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;a binding &lt;em&gt;binds&lt;/em&gt; or &lt;em&gt;associates&lt;/em&gt; a name to a value. we use values in functions, operations, in data structures, and so on, by their name or by their value directly. in order to use a value we must &lt;strong&gt;move&lt;/strong&gt; it into place. when values move they are never in both places at the same time, hence &lt;em&gt;original&lt;/em&gt; values in Rust can be moved exactly zero or one times. this requirement allows us to track where values are used in a program.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-03.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;we could duplicate a value, but such a &lt;strong&gt;clone&lt;/strong&gt; would not increase the number of times we can use the value, it simply has created a new, distinct value that can move around independent of the other. Some families of values automatically clone when they move, but this isn’t the norm. if we truly want to &lt;strong&gt;reuse&lt;/strong&gt; an original value, we can create a &lt;strong&gt;reference&lt;/strong&gt; to it. values do not live outside of the space where they are defined, unless they are moved to another space explicitly for use.&lt;/p&gt;
+&lt;p&gt;When a value is left behind in a space and we can no longer reach it, we say that it has been &lt;strong&gt;dropped&lt;/strong&gt;.   in Rust, we can only take references to values that have not been dropped. in other words, if the value resides in a space that &lt;em&gt;contains&lt;/em&gt; or &lt;em&gt;is equal&lt;/em&gt; to the space where a reference will live, then we can create the reference. a similar analogy might be talking to someone in a house; you can only talk to the person if they still exist and are living in the same space or some attached space where they can hear or see you. This is in contrast to languages where a references is entirely valid if it points to something that no longer exists.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-04.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;if the intent is to &lt;em&gt;change&lt;/em&gt; a value through a reference, you can only have one reference at a time, but if the intent is purely to &lt;em&gt;view&lt;/em&gt; a referent, the value being referenced, then you can have as many references as you like. we call these &lt;strong&gt;mutable&lt;/strong&gt; and &lt;strong&gt;immutable&lt;/strong&gt; references respectively. Containment isn’t always required for references, though; sometimes the use of a reference can be elastic, meaning that the compiler understands the use is only for a given period of time and no longer. This elasticity comes from a property of references you may hear called &lt;strong&gt;non-lexical lifetimes&lt;/strong&gt;, AKA &lt;strong&gt;NLL&lt;/strong&gt;, meaning the space of the reference isn&#x27;t tied to the space where the binding happened.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-11.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;the most obvious definition of space is with blocks using curly brackets, but functions, data types, and loops all define space. functions hide away space like a fold on a piece of paper. loops define space by compressing several spaces into what looks like the space of one. closures and data structures are portable spaces that &lt;em&gt;capture&lt;/em&gt; or &lt;em&gt;close over&lt;/em&gt; values and references to values. As we saw before, each space tends to also provide ways for values to be bound to names.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-05.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;the space of the entire program is not the same space of the &lt;code&gt;main&lt;/code&gt; function. we call the space of the entire program a specific label, &lt;code&gt;&#x27;static&lt;/code&gt;. other threads may run to completion well &lt;em&gt;after&lt;/em&gt; the main thread has finished, for example, meaning we can not spin up threads that take references to original values in another thread. again, the static label is special in that it is &lt;em&gt;not&lt;/em&gt; a placeholder but rather the name of a specific space.&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-06.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;otherwise, these labels are placeholders which are &lt;em&gt;generic&lt;/em&gt; names of spaces that will get filled in based on the context of where they are mentioned. because spaces are like spans describing where a value lives, along with some sense of time, as the program executes, we call these labels &lt;strong&gt;lifetimes&lt;/strong&gt;. we say that original values are &lt;strong&gt;owned&lt;/strong&gt; as the name owns the value it was bound to. since values have owners, we say that a reuse of a value through a reference is a &lt;strong&gt;borrow&lt;/strong&gt; since the value will be given back.&lt;/p&gt;
+&lt;p&gt;Rust will assume that all references in function arguments point to the same space. this is known as &lt;strong&gt;elision&lt;/strong&gt; as the labels of the spaces do not need mentioning and are removed (elided). however, sometimes you want to make it clear that each reference points to different spaces. we can declare these differences using explicit lifetime labels on the type or function in question that we tend to call &lt;strong&gt;annotations&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;when you run into a borrowing or a lifetime issue it can help to think &lt;em&gt;spatially&lt;/em&gt;.&lt;/strong&gt; consider how the spaces look unpacked across your code. this can be tricky, but you can practice by occasionally inlining code directly from a function or unrolling a loop to help visualize the spaces in question. as with this article, drawing out the spaces can help abstract away a lot of the other noise that code may supply.  Here are some examples of spaces inclined into larger spaces:&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-07.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-08.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-09.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/think-spatially-to-grok-lifetimes-10.jpg&quot;
+    alt&#x3D;&quot;A diagram depicting a program.&quot;
+    title&#x3D;&quot;A diagram depicting a program.&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;lastly, you should generally make lots of small programs to learn the ins and outs of fundamentals, and making minimally reproducible cases of borrows and moves is no different. Running &lt;code&gt;cargo new&lt;/code&gt; is cheap, and so is going to the Rust playground when you want to scratch an itch about a question you have.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

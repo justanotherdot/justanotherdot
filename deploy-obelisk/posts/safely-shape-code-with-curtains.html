@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Safely Shape Code With Curtains">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Once upon a time I studied photography at an art school. It was there that I learned the importance of separation between tones in an image. If the separation, tone or color, between objects in my images wasn&#x27;t quite right I&#x27;d have to redo all my work in order to get a grade. Separation is how we often define our mental maps of the world. For this article, I&#x27;ll call anything that is distinct from other things an &quot;entity&quot;.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Safely Shape Code With Curtains">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Once upon a time I studied photography at an art school. It was there that I learned the importance of separation between tones in an image. If the separation, tone or color, between objects in my images wasn&#x27;t quite right I&#x27;d have to redo all my work in order to get a grade. Separation is how we often define our mental maps of the world. For this article, I&#x27;ll call anything that is distinct from other things an &quot;entity&quot;.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Safely Shape Code With Curtains &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Safely Shape Code With Curtains</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Once upon a time I studied photography at an art school. It was there that I
+learned the importance of separation between tones in an image. If the
+separation, tone or color, between objects in my images wasn&#x27;t quite right I&#x27;d
+have to redo all my work in order to get a grade. &lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Gestalt_psychology&quot;&gt;Separation is how we often
+define our mental maps of the
+world.&lt;/a&gt; For this article, I&#x27;ll
+call anything that is distinct from other things an &quot;entity&quot;.&lt;/p&gt;
+&lt;p&gt;Entities have edges. They may have eddies of communication or arrows of
+connection through these edges. Edges may be incidental, e.g. defined by people
+you don&#x27;t know or from natural consequences, or they may be intentional, i.e.
+the result of deliberate planning and execution. Entities have non-zero surface
+area, otherwise they wouldn&#x27;t exist, but that doesn&#x27;t mean they cannot be
+relatively invisible.&lt;/p&gt;
+&lt;p&gt;Clarifying (edges) means simpler mental maps. Simpler mental maps means easier
+to reason about systems and programs. Simpler systems and programs means
+increased velocity for progress and experimentation. Each of these examples
+could be their own posts, but for now it suffices to say that examples of this
+type of organization (clarification) are,&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Serialization to the wire (network), disk, and internal datatype definitions
+&lt;em&gt;individually&lt;/em&gt; go into their respective modules&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Core logic that performs calculations versus reading from disk, e.g.
+application level versus storage engine logic, are separated&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Munging layers, or what some call an adapter, that transform data to the
+shape you so desire are not tied into (1). This is bidirectional; it&#x27;s
+equally fair to have the adapting layer work on outbound and inbound
+interfaces.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Most of this might feel a bit obvious: things have edges and that&#x27;s how
+we tell they are distinct, but how does this relate to coding?&lt;/p&gt;
+&lt;p&gt;It&#x27;s common to think that programming &lt;em&gt;has&lt;/em&gt; to be a balancing act between
+progress (by accepting breakage) and stability (by leaving things alone). I&#x27;ve
+talked a bit before about &lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/may-you-be-the-author-of-two-to-the-n-programs.html&quot;&gt;how vital constant experimentation
+is&lt;/a&gt;,
+but this balancing act is not the &lt;em&gt;only&lt;/em&gt; way to go about things. Yes, things
+break when they have production data running through their digital veins and
+having instrumentation to gain visibility into your running code in production
+is crucial to combat this statistic of failure, but let&#x27;s consider another
+approach to the development side of correctness.&lt;/p&gt;
+&lt;p&gt;Although it may seem strange for me to use the term &lt;em&gt;artificial&lt;/em&gt; when all the
+boundaries discussed here seem planned by ourselves or by others, I use the term
+&quot;curtain&quot; here to denote &lt;em&gt;artificial&lt;/em&gt; delineations we establish to avoid working
+in &lt;em&gt;slices&lt;/em&gt;. A sliced approach to development means we attempt to get all
+working functionality, from front to back, one slice at a time. In the following
+diagram the red boxes are slices of features whereas non-sliced functionality is
+stable:&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/sliced-development-example.png&quot;
+    alt&#x3D;&quot;a diagram depicting &#x27;sliced&#x27; development&quot;
+    title&#x3D;&quot;An example of &#x27;sliced&#x27; development&quot;&gt;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;We can define &quot;curtains&quot; (again: artificial edges for the purposes of
+development) to retain stability in all areas &quot;exterior&quot; to the curtain.
+&quot;Exterior&quot; may very well be &quot;interior&quot; code! Setting up curtains can be done
+with &lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/move-fast-and-tuck-code-into-the-shadows.html&quot;&gt;feature-flags, parallel
+implementations&lt;/a&gt;
+or even creating new surfaces where interaction will be performed and migrating
+after the fact when everything seems settled. As long as the &quot;exterior&quot; to the
+curtain go on its life as if nothing is wrong, a curtain serves its purpose. Per
+the example above it might look like this:&lt;/p&gt;
+&lt;figure&gt;
+  &lt;img
+    src&#x3D;&quot;/assets/images/curtained-development-example.png&quot;
+    alt&#x3D;&quot;a diagram depicting &#x27;curtained&#x27; development&quot;
+    title&#x3D;&quot;An example of &#x27;curtained&#x27; development&quot;
+  &lt;/img&gt;
+&lt;/figure&gt;
+&lt;p&gt;In this diagram, you could be setting up the curtain to keep the core of the
+application stable or the client and interfaces the client talks to stable. A
+curtain based approach by no means requires having a layered architecture or
+thinking in that manner. The fact that a curtain is malleable and artificial
+means we can define its boundaries, but a curtain becomes a slice when it
+overlaps too many real edges in a system. Why is this any better than a sliced
+approach?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Curtains buy you breathing room.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There is always an implicit countdown when you keep things stable but don&#x27;t make
+progress. &quot;Where is the business value they are adding?&quot; squawks the manager. If
+you are making a lot of progress but breaking things the countdown timer is time
+to completion but in the face of churn, top-down pressure, peer-pressure, and so
+on. &lt;strong&gt;Breathing room gives you space to think. Space to think means you can buy
+yourself breathing room. This helps build healthy systems with reduced
+complexity and healthy systems means higher rates of progress and
+experimentation.&lt;/strong&gt;&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="An Opinionated Guide To Structuring Rust Projects">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Cargo&#x27;s initial project layout is good for bootstrapping a project but as time goes on there is a growing need to automate chores, wrestle with compile times, and increase discoverability for maintainers and contributors.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="An Opinionated Guide To Structuring Rust Projects">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Cargo&#x27;s initial project layout is good for bootstrapping a project but as time goes on there is a growing need to automate chores, wrestle with compile times, and increase discoverability for maintainers and contributors.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>An Opinionated Guide To Structuring Rust Projects &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>An Opinionated Guide To Structuring Rust Projects</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Cargo&#x27;s initial project layout is good for bootstrapping a project but as time
+goes on there is a growing need to automate chores, wrestle with compile times,
+and increase discoverability for maintainers and contributors. I&#x27;ve previously
+written about &lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/structuring-rust-projects-with-multiple-binaries.html&quot;&gt;how I personally orchestrate chores on a Rust
+project&lt;/a&gt;
+but this article will focus on the latter two points.&lt;/p&gt;
+&lt;p&gt;The highest leverage act you can do with structuring a Rust project is to break
+it into independent crates. Chunks of logic that have shown stability over a
+window of time are immediate candidates for splitting into a crate, as well as
+semantic boundaries between concepts in a given codebase. For example, you may
+want to keep sets of types distinct from one crate to the next in the same
+project or you might want to enforce that driver logic should be as minimal as
+possible with only some glue tying together other core logic libraries. Keeping
+things cleanly separated means clustered concepts are easier to locate while we
+can aggressively cache crates that don&#x27;t change much. In terms of naming I
+prefer each crate to be in kebab-case and to use the project&#x27;s name as the
+prefix for the sub crate. If our project name was &quot;foo&quot; then each crate would be
+prefaced with &quot;foo-*&quot;. You can tie all of these crates into a workspace for a
+central place to build the entirety of the project. If our project had three
+crates in it, we could put a &lt;code&gt;Cargo.toml&lt;/code&gt; at the root of our project with the
+contents:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[workspace]
+members &#x3D; [
+  &quot;foo-core&quot;,
+  &quot;foo-cli&quot;,
+  &quot;foo-benchmark&quot;,
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The general advice for build times is to first use something like &lt;code&gt;cargo check&lt;/code&gt;
+and move to &lt;code&gt;cargo test&lt;/code&gt; and finally some form of &lt;code&gt;cargo build&lt;/code&gt; with or without
+options. A way to drive down build times is to keep building all the time as you
+make changes. I prefer to run multiple loops with various subcommands specified
+while I code. You can get around locking issues on the same &lt;code&gt;.cargo&lt;/code&gt; and
+&lt;code&gt;target&lt;/code&gt; directories by changing these with &lt;code&gt;CARGO_HOME&lt;/code&gt; and &lt;code&gt;CARGO_TARGET_DIR&lt;/code&gt;
+respectively. This means you can spin up several &lt;code&gt;watchex&lt;/code&gt;, &lt;code&gt;cargo-watch&lt;/code&gt;, or
+&lt;code&gt;entr&lt;/code&gt; loops as shell jobs or in separate terminals. To give an example I will
+sometimes do &lt;code&gt;cargo watch&lt;/code&gt;, which does &lt;code&gt;cargo check&lt;/code&gt; by default, and then will
+specify &lt;code&gt;CARGO_HOME&#x3D;/tmp CARGO_TARGET_DIR&#x3D;/tmp/target cargo watch -x test&lt;/code&gt; to
+get test information as it shows up.&lt;/p&gt;
+&lt;p&gt;If you&#x27;re using a CI and can afford it, pushing jobs off to a remote server to
+build at the same is yet another extension to this &quot;build all the time&quot;
+mentality. When you&#x27;re happy with your changes you are closer to merging. If you
+pair this with something like &lt;code&gt;sccache&lt;/code&gt; for caching crates across projects, you
+can see some nice gains on compile times across several build bots or, if you
+run a similar environment to your build bots, you can even share crates from
+both local development machine and build bots at the same time. Once &lt;code&gt;sccache&lt;/code&gt;
+is installed, you can export &lt;code&gt;RUSTC_WRAPPER&#x3D;$(which sccache)&lt;/code&gt; and check if it&#x27;s
+running across builds with &lt;code&gt;sccache -s&lt;/code&gt;. I&#x27;m unsure what gains you&#x27;d see over
+&lt;code&gt;cargo&lt;/code&gt; on a single machine as I&#x27;ve yet to dive into the core of how &lt;code&gt;sccache&lt;/code&gt;
+works under the hood but it&#x27;s harmless to run for a try.&lt;/p&gt;
+&lt;p&gt;You have the option to be disciplined and keep all crates on the same version to
+make downstream consumption easier, such that if you want to install &lt;code&gt;foo&lt;/code&gt; and
+&lt;code&gt;foo-bar&lt;/code&gt; you could know that version &lt;code&gt;2.0.0&lt;/code&gt; is valid for both crates. You can
+also setup the installation as a transitive thing from some &#x27;central&#x27; crate that
+could always install the &quot;right&quot; version of &lt;code&gt;foo-bar&lt;/code&gt; given some build feature
+flag. You may want more flexibility in what version of &lt;code&gt;foo-bar&lt;/code&gt; you use,
+however, and as long as &lt;code&gt;foo&lt;/code&gt; doesn&#x27;t also depend on &lt;code&gt;foo-bar&lt;/code&gt; you shouldn&#x27;t
+have to do any juggling.&lt;/p&gt;
+&lt;p&gt;I&#x27;ve left some stray tricks for last in the possibility that they may help your
+specific case. You can try linking with &lt;code&gt;lld&lt;/code&gt; or &lt;code&gt;gold&lt;/code&gt; instead of the standard
+linker. You can do this with &lt;code&gt;RUSTFLAGS&#x3D;&quot;-C link-arg&#x3D;-fuse-ld&#x3D;lld&quot;&lt;/code&gt; to use &lt;code&gt;lld&lt;/code&gt;
+at least on linux but I don&#x27;t always see speedups from this. Setting
+&lt;code&gt;CARGO_BUILD_JOBS&lt;/code&gt; to a number higher than the number of capabilities (cores)
+you have on your system is likely to &lt;em&gt;increase&lt;/em&gt; compile times, but you could
+split your test, check, and build jobs across lower number of cores, such as two
+cores for &lt;code&gt;test&lt;/code&gt; and another two for &lt;code&gt;check&lt;/code&gt; on a four-core machine. If you are
+truly desparate you can try gimmicks like building to a less intense target.
+I&#x27;ve written a shell script that will build all possible cross-compile targets
+&lt;code&gt;rustc&lt;/code&gt; can attempt and report build times in the event that they succeed. You
+can find the gist
+&lt;a href&#x3D;&quot;https://gist.github.com/justanotherdot/ca1f163754e9a90f6c6b9dfb25a0598f&quot;&gt;here&lt;/a&gt;
+and can invoke it with &lt;code&gt;x-compile-test&lt;/code&gt;. You can also narrow down which targets
+you want to use with a regex by specifying &lt;code&gt;FILTER&#x3D;x86_64 x-compile-test&lt;/code&gt;.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

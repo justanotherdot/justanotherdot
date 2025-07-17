@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Building An Intuition for Pattern Matching">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Building An Intuition for Pattern Matching">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Building An Intuition for Pattern Matching &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Building An Intuition for Pattern Matching</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;&lt;em&gt;What&#x27;s the point of pattern matching if we already have conditionals and
+variable assignment in a language?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Pattern matching helps tease apart values and construct control flow using the
+shape of data rather than bespoke logic, methods on types, or special fields on
+a struct. For example, in languages that don&#x27;t have first-class support for sum
+types, enums in Rust, you&#x27;d have to encode the variant as a unique tag on
+something like a struct, e.g.,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct Option {
+    tag: String, // maybe one of &#x27;Some&#x27; or &#x27;None&#x27;.
+    // and so on.
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Then the &lt;code&gt;tag&lt;/code&gt; field can be checked by traditional control flow. This is precisely
+how it is done in languages like TypeScript, but in Rust, where sum types are
+supported, we have no unique &lt;code&gt;tag&lt;/code&gt; field to check and, since the compiler hides
+this information away from us, we can&#x27;t write a method to describe which variant
+we have in our hands. It would be a bit clumsy if the compiler generated methods
+for us as we might want to have methods with the same name!&lt;/p&gt;
+&lt;p&gt;Any kind of syntactic sugar used to construct a value is known as a
+&lt;strong&gt;constructor&lt;/strong&gt;, such as building values for structs, enums, tuples, and so on.
+Pattern matching gives us a way to describe the shape of data using constructors
+to match on and what to do if the value matches. This analogy isn&#x27;t perfect, but
+I like to think of patterns as mirrors with outlines; if the reflection matches
+the outline of a constructor, we go down that path of logic, possibly with some
+new values drawn out of the data. Here are some common patterns for
+constructors:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pub struct S {
+    field: i64,
+}
+
+pub enum E {
+    FirstVariant,
+    SecondVariant,
+}
+
+pub fn main() {
+    // Tuples.
+    let a &#x3D; (&quot;Fizz&quot;, &quot;Buzz&quot;);
+    match a {
+        (p, q) &#x3D;&amp;gt; println!(&quot;{}&quot;, format!(&quot;{}{}&quot;, p, q)),
+    }
+
+    // Numeric literals.
+    let b &#x3D; 123;
+    match b {
+        std::i32::MIN..&#x3D;99 &#x3D;&amp;gt; println!(&quot;under one-hundred&quot;),
+        100 &#x3D;&amp;gt; println!(&quot;exactly one-hundred&quot;),
+        101..&#x3D;std::i32::MAX &#x3D;&amp;gt; println!(&quot;above one-hundred&quot;),
+    }
+
+    // Strings.
+    let c &#x3D; &quot;A string.&quot;;
+    match c {
+        &quot;A string.&quot; &#x3D;&amp;gt; println!(&quot;it&#x27;s _the_ string.&quot;),
+        _ &#x3D;&amp;gt; println!(&quot;some other string.&quot;),
+    }
+
+    // Enums.
+    let x &#x3D; E::SecondVariant;
+    match x {
+        E::FirstVariant &#x3D;&amp;gt; println!(&quot;first variant of E&quot;),
+        E::SecondVariant &#x3D;&amp;gt; println!(&quot;second variant of E&quot;),
+    }
+
+    // Structs.
+    let y &#x3D; S { field: 100 };
+    match y {
+        S { field } &#x3D;&amp;gt; println!(&quot;field is: {}&quot;, field),
+    }
+
+    // Slices.
+    let z &#x3D; vec![1, 2, 3];
+    match *z { // we need * to dereference Vec to a slice.
+        [a, b] &#x3D;&amp;gt; println!(&quot;{} + {} &#x3D; {}&quot;, a, b, a + b),
+        [a, b, c] &#x3D;&amp;gt; println!(&quot;{} + {} * {} &#x3D; {}&quot;, a, b, c, a + b * c),
+        _ &#x3D;&amp;gt; println!(&quot;any other unmatched vector&quot;),
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;483dd9713719d848f7e221047961e8c8&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Where can we put patterns?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;match&lt;/code&gt; is the traditional way of doing pattern matching but not the only way.
+Matches work top-to-bottom, and they ensure that every case is handled, known as
+&lt;strong&gt;exhaustivity checking&lt;/strong&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;enum Val {
+    Integer(i64),
+    Float(f64),
+}
+
+match {
+    Val::Integer(x) &#x3D;&amp;gt; println!(&quot;It&#x27;s an integer: {}&quot;, x), // one &quot;arm&quot; or &quot;case&quot;
+    // without anything else, this is non-exhaustive; it doesn&#x27;t include Val::Float!
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which fails to compile with the following error:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;error[E0004]: non-exhaustive patterns: &#x60;Float(_)&#x60; not covered
+ --&amp;gt; src/main.rs:8:11
+  |
+1 | / enum Val {
+2 | |     Integer(i64),
+3 | |     Float(f64),
+  | |     -- not covered
+4 | | }
+  | |_- &#x60;Val&#x60; defined here
+...
+8 |       match v {
+  |             ^ pattern &#x60;Float(_)&#x60; not covered
+  |
+  &#x3D; help: ensure that all possible cases are being handled, possibly by adding wildcards or more match arms
+
+error: aborting due to previous error
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;65e0688f852c45e4c1712f2481ef2231&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Pattern matches in &lt;code&gt;let&lt;/code&gt;s and function arguments will also work but must be
+&lt;strong&gt;irrefutable&lt;/strong&gt;, which is a fancy way of saying that the pattern can never fail.
+Any pattern that covers all possible values of a type is irrefutable. It could
+be literal like a range or with a variable, which will always capture a value
+and, therefore, match.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// works.
+pub fn f((x, y): (i32, i32)) -&amp;gt; i32 {
+    x + y
+}
+
+// does not work.
+//pub fn g((1, 2): (i32, i32)) {
+// fails on anything other than g(1, 2).
+// the compiler rejects this as a refutable pattern
+// which is in place where only an irrefutable pattern can be.
+//}
+
+pub fn main() {
+    //let 12 &#x3D; 12; // fails.
+    let x &#x3D; 12; // succeeds.
+    f((x, x));
+    let std::i32::MIN..&#x3D;std::i32::MAX &#x3D; 12; // succeeds, covers all values.
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;d21343054645f8500c7701fdcc174171&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;With functions, this is a bit different from other functional languages like
+Erlang or Haskell. In those languages, you can write multiple function
+declarations, each with their pattern match, and the function that matches the
+pattern will be the one that executes. You can think of this like match
+expressions but for functions! Rust, unfortunately doesn&#x27;t have this, but it&#x27;s
+still fine to take the full value from the argument and make the entire function
+body a &lt;code&gt;match&lt;/code&gt;. So this in Elixir:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;def f(1) do
+  // first case.
+end
+
+def f(2) do
+  // first case.
+end
+
+def f(x) do
+  // final, irrefutable case.
+end
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;could be expressed as:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pub fn f(x) {
+    match x {
+        1 &#x3D;&amp;gt; , // first case.
+        2 &#x3D;&amp;gt; , // second case.
+        x &#x3D;&amp;gt; , // final, irrefutable case.
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;em&gt;Isn&#x27;t this a bit tedious? What if you don&#x27;t care about particular portions of a
+shape?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Ignoring particular values is easy with the &lt;code&gt;_&lt;/code&gt; variable, or we can prefix a
+variable name with &lt;code&gt;_&lt;/code&gt; if we want to keep the name but ensure it can&#x27;t be used.
+This is formally known as a &lt;strong&gt;wildcard&lt;/strong&gt;, but informally known as the &quot;don&#x27;t
+care&quot; variable. The equivalent for structs is &lt;code&gt;..&lt;/code&gt; where we can specify only the
+fields we care about and ignore the rest. These two dots, a bit like an
+ellipse, must be mentioned in the last place of the struct.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct S {
+    field: i32,
+    property: (i32, i64),
+}
+
+pub fn main() {
+    let s &#x3D; S {
+        field: 42,
+        property: (12, 13),
+    };
+    match s {
+        S { property: (12, _), .. } &#x3D;&amp;gt; println!(&quot;{}&quot;, 12),
+        S { field, .. } &#x3D;&amp;gt; println!(&quot;{}&quot;, field),
+        // or &#x60;S { field, property: _ } &#x3D;&amp;gt; println!(&quot;{}&quot;, field),&#x60;
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;5045a6587c31f5d954ab52467b735d67&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;What if I want to describe some nested shape, but match on the whole thing?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;To do this you can use &lt;code&gt;@&lt;/code&gt; in front of the pattern, known informally as the
+&quot;as-pattern&quot;. As of this writing, binding both the whole pattern plus parts of
+the pattern isn&#x27;t allowed.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[derive(Debug)]
+struct S {
+    field: i32,
+}
+
+pub fn main() {
+    let s &#x3D; S { field: 42 };
+    match s {
+        S { field: x @ 10..&#x3D;100, } &#x3D;&amp;gt; println!(&quot;{:?}&quot;, x),
+        S { field } &#x3D;&amp;gt; println!(&quot;{}&quot;, field),
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;c0afcb3477a7e0b66e2aaa1a1912abf8&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;What if you don&#x27;t want to specify literals or bind to variables?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;If you want to do more complicated checking on bound variables, you can use a
+match guard. A guard is introduced with an &lt;code&gt;if&lt;/code&gt; after the pattern, but before
+the fat arrow &lt;code&gt;&#x3D;&amp;gt;&lt;/code&gt;, and the resulting value must be a boolean value, as would be
+the case for other conditionals. You can&#x27;t use guards on &lt;code&gt;let&lt;/code&gt; and function
+argument patterns.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[derive(Debug)]
+struct S {
+    field: i32,
+}
+
+pub fn main() {
+    let s &#x3D; S { field: 42 };
+    match s {
+        S { field } if field % 2 &#x3D;&#x3D; 0 &#x3D;&amp;gt; println!(&quot;only executes when field is even&quot;),
+        _ &#x3D;&amp;gt; println!(&quot;all remaining values go here&quot;),
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;41ed619c36361f7c9481df2c2c6b9ccc&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;What about cases where you might want to combine several possible patterns into
+one match arm?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;You can combine patterns using what is known as an &lt;code&gt;or-pattern&lt;/code&gt; by using a &lt;code&gt;|&lt;/code&gt;
+to try several patterns in a row. This way you can compress several patterns
+into one match arm.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;enum Enum {
+    A,
+    B,
+}
+
+pub fn main() {
+    let x &#x3D; Enum::A;
+    match x {
+        Enum::A | Enum::B &#x3D;&amp;gt; println!(&quot;matches&quot;),
+    };
+
+    // or possibly in an if/while-let pattern match.
+    let x &#x3D; Some(12);
+    if let Some(13) | Some(12) &#x3D; x {
+        println!(&quot;works&quot;);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;3727a37c698f041316e3b382b11fb3ab&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;What if I want to check a pattern but I don&#x27;t want all of the machinery of a
+&lt;code&gt;match&lt;/code&gt; statement?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;matches!&lt;/code&gt; macro lets us write a test to see if a supplied pattern will
+match a given value. The macro doesn&#x27;t allow you to bind values, but it can
+allow you to extend a pattern using guards which is another handy use I&#x27;ve found
+for it (see the quirks later for more details on a precise application).&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pub fn main() {
+    assert_eq!(matches!(12, std::i32::MIN..&#x3D;100), true);
+    assert_eq!(matches!(None, Some(42)), false);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;f523c33e7bf8b893a4253b41c78eb7b3&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;And now you know the bulk there is to pattern matching in Rust! As a recap,
+patterns are tested on a value, and if they line up, they will execute some branch of
+logic or bind some values to identifiers, or both! You can check
+complicated logic with guards, ignore portions of patterns with wildcards, bind
+whole matches with as-patterns, combine patterns with or-patterns, and
+test for pattern matches with the &lt;code&gt;matches!&lt;/code&gt; macro. You also can use patterns in
+a number of places outside of &lt;code&gt;match&lt;/code&gt; and the relevant control flow expressions
+such as in &lt;code&gt;let&lt;/code&gt; bindings and function arguments.&lt;/p&gt;
+&lt;h3&gt;Quirks&lt;/h3&gt;
+&lt;p&gt;These quirks are more around ergonomic uses of patterns rather than any
+dealbreakers for writing production-grade code. You can happily skip this
+section if you are still processing the information from above.&lt;/p&gt;
+&lt;p&gt;First up, nested or-patterns or in other locations, such as function arguments,
+are unstable and require the &lt;code&gt;#![feature(or_patterns)]&lt;/code&gt; attribute. Another way
+around the nested or-patterns is to use the &lt;code&gt;matches!&lt;/code&gt; macro in a guard:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#[derive(Debug)]
+struct Container(Possibly);
+
+#[derive(Debug)]
+enum Possibly {
+    A,
+    B,
+}
+
+fn main() {
+    let container &#x3D; Container(Possibly::A);
+    match container {
+        // Container(Possibly::A | Possibly::B) &#x3D;&amp;gt; // won&#x27;t work
+        Container(inner) if matches!(inner, Possibly::A | Possibly::B) &#x3D;&amp;gt; {
+            dbg!(inner);
+        }
+        _ &#x3D;&amp;gt; {
+            dbg!(&quot;won&#x27;t happen unless Possibly changes&quot;);
+        }
+    };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;stable&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;3c204e9bed56ff5c292d1d84e80226bb&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Exclusive ranges for matching against numbers that aren&#x27;t literals can be
+enabled with &lt;code&gt;#![feature(exclusive_range_pattern)]&lt;/code&gt;. As it stands, you can
+only express inclusive ranges:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn main() {
+    let std::i32::MIN..&#x3D;std::i32::MAX &#x3D; 12; // works.
+    //let std::i32::MIN..std::i32::MAX &#x3D; 12; // refuses to compile.
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And lastly, bindings after &lt;code&gt;@&lt;/code&gt; aren&#x27;t supported unless you turn them on with
+&lt;code&gt;#![feature(bindings_after_at)]&lt;/code&gt;. This is a bit tricky anyway given ownership
+and borrowing semantics and how that plays into binding both the top-level value
+and the values inside of them.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#![feature(bindings_after_at)]
+
+#[derive(Debug)]
+struct S {
+    field: (i32, i32),
+}
+
+fn main() {
+    let x &#x3D; S { field: (1, 2) };
+    match x {
+        S {
+            field: tuple @ (ref a, ref b),
+        } &#x3D;&amp;gt; println!(&quot;{:?}, {} + {} &#x3D; {}&quot;, tuple, a, b, a + b),
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href&#x3D;&quot;https://play.rust-lang.org/?version&#x3D;nightly&amp;amp;mode&#x3D;debug&amp;amp;edition&#x3D;2018&amp;amp;gist&#x3D;2b605ec39ed4884bb4ab92b5c3cc69bc&quot;&gt;Playground&lt;/a&gt;&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

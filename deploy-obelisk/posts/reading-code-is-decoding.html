@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Reading Code is Decoding">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Early this January I finished reading Coders at Work and in each interview there is a recurring question of “how do you read code?” Here’s a rough summary of some styles mentioned I found particularly useful.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Reading Code is Decoding">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Early this January I finished reading Coders at Work and in each interview there is a recurring question of “how do you read code?” Here’s a rough summary of some styles mentioned I found particularly useful.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Reading Code is Decoding &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Reading Code is Decoding</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Roger Antonsen says in his Ted Talk &lt;a href&#x3D;&quot;https://www.ted.com/talks/roger_antonsen_math_is_the_hidden_secret_to_understanding_the_world&quot;&gt;&lt;em&gt;Mathematics is
+the Secret to Understanding the
+World&lt;/em&gt;&lt;/a&gt;,
+mathematics, or rather the act of understanding, is largely about:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Discovering patterns&lt;/li&gt;
+&lt;li&gt;Devising language(s) to express said patterns&lt;/li&gt;
+&lt;li&gt;Making assumptions&lt;/li&gt;
+&lt;li&gt;Playing around with all of the above&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Early this January I finished reading &lt;em&gt;Coders at Work&lt;/em&gt; and in each interview
+there is a recurring question of “how do you read code?” Here’s a rough summary
+of some styles mentioned I found particularly useful:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Get the code building early and often and make various changes to study
+connections&lt;/li&gt;
+&lt;li&gt;Read it like literature whether printed out or jumping around&lt;/li&gt;
+&lt;li&gt;Rewrite the code into a version optimised for legibility&lt;/li&gt;
+&lt;li&gt;Puzzle through it the same way one would tackle a mathematical problem&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It turns out I had previously read &lt;a href&#x3D;&quot;http://www.gigamonkeys.com/code-reading/&quot;&gt;a post from Peter
+Seibel&lt;/a&gt;, the book’s author, who had
+tried on several occasions to start code reading groups at his places of work,
+in which he states:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;It was sometime after that presentation that I finally realized the obvious:
+code is not literature. We don’t read code, we decode it. We examine it. A
+piece of code is not literature; it is a specimen.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;He goes on to quote a passage (my favourite in the book) of his interview with
+Knuth (emphasis added by me):&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Knuth: But it’s really worth it for what it builds in your brain. So how do I
+do it? There was a machine called the Bunker Ramo 300 and somebody told me
+that the Fortran compiler for this machine was really amazingly fast, but
+nobody had any idea why it worked. I got a copy of the source-code listing
+for it. I didn’t have a manual for the machine, so I wasn’t even sure what
+the machine language was.&lt;/p&gt;
+&lt;p&gt;But I took it as an interesting challenge. I could figure out &lt;code&gt;BEGIN&lt;/code&gt; and
+then I would start to decode. The operation codes had some two-letter
+mnemonics and so I could start to figure out “This probably was a load
+instruction, this probably was a branch.” And I knew it was a Fortran
+compiler, so at some point it looked at column seven of a card, and that was
+where it would tell if it was a comment or not.&lt;/p&gt;
+&lt;p&gt;After three hours I had figured out a little bit about the machine. Then I
+found these big, branching tables. So it was a puzzle and I kept just making
+little charts like I’m working at a security agency trying to decode a secret
+code. But I knew it worked and I knew it was a Fortran compiler—it wasn’t
+encrypted in the sense that it was intentionally obscure; it was only in code
+because I hadn’t gotten the manual for the machine.&lt;/p&gt;
+&lt;p&gt;Eventually I was able to figure out why this compiler was so fast.
+Unfortunately it wasn’t because the algorithms were brilliant; it was just
+because they had used unstructured programming and hand optimized the code to
+the hilt.&lt;/p&gt;
+&lt;p&gt;It was just basically the way you solve some kind of an unknown puzzle—make
+tables and charts and get a little more information here and make a
+hypothesis. In general when I’m reading a technical paper, it’s the same
+challenge. I’m trying to get into the author’s mind, trying to figure out
+what the concept is. &lt;strong&gt;The more you learn to read other people’s stuff, the
+more able you are to invent your own in the future, it seems to me.&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Alas, if we’re to treat literacy in a human language as the combined skills of
+writing &lt;em&gt;and&lt;/em&gt; reading, why do we place so much emphasis on the former when it
+comes to teaching how to code? I now actively seek out code to read for the
+same reason Knuth mentions early in his interview; dispelling magic is an
+invaluable skill we crucially need to keep improving. Treating things as a
+black box may sometimes help reasoning but it doesn’t mean we should keep the
+covers on until the end of the universe.&lt;/p&gt;
+&lt;p&gt;Take my &lt;a href&#x3D;&quot;https://j2kun.svbtle.com/mathematicians-are-chronically-lost-and-confused&quot;&gt;favourite mathematical
+post&lt;/a&gt;
+by Jeremy Kun in which he discusses, with a wonderful supporting analogy from
+Andrew Wiles about stumbling around a dark house looking for light switches,
+that feeling lost is far more common and acceptable than the enlightened state
+we assume intelligent role models seem to possess. These role models have
+simply learned to live with and accept the discomfort of being lost because
+that’s what it means to be in a process of learning and growing!&lt;/p&gt;
+&lt;p&gt;Simon Peyton Jones is well known for stating how important it is to simply
+&lt;em&gt;do&lt;/em&gt;, no matter how humble the project in question may be. This is fantastic
+advice for coding literacy; Writing this blog post involved an initial sit down
+of a roughly one-thousand word brain dump followed thereafter by approximately
+two days of refinements, with lots of rereading, simply honing in on the main
+theme. It’s important to get fingers moving and code executing, but it’s just
+as important to advocate to new starters that reading is something they should
+be pouring time and attention into.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

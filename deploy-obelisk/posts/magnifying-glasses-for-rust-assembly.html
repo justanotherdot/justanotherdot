@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Magnifying Glasses for Rust Assembly">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Compilers are complex beasts. Our high level source code goes through many transformations until it winds up becoming machine code that runs on real or virtual hardware. Assembly is the final destination before machine code and it doesn&#x27;t have to be menacing! **Whether you intend to write assembly directly or not, knowing how your code translates to assembly can drastically improve your ability to analyze programs from the standpoint of performance.**">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Magnifying Glasses for Rust Assembly">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Compilers are complex beasts. Our high level source code goes through many transformations until it winds up becoming machine code that runs on real or virtual hardware. Assembly is the final destination before machine code and it doesn&#x27;t have to be menacing! **Whether you intend to write assembly directly or not, knowing how your code translates to assembly can drastically improve your ability to analyze programs from the standpoint of performance.**">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Magnifying Glasses for Rust Assembly &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Magnifying Glasses for Rust Assembly</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Compilers are complicated beasts. Our high-level source code goes through many
+transformations until it winds up becoming machine code that runs on real or
+virtual hardware. Assembly is the final destination before machine code, and it
+doesn&#x27;t have to be menacing! &lt;strong&gt;Whether you intend to write assembly directly or
+not, knowing how your code translates to assembly can drastically improve your
+ability to analyze programs from the standpoint of performance.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Yes, we need numbers to guide us towards improvements, and yes, that means
+having benchmarks. &lt;strong&gt;Arguments over performance that don&#x27;t include data are
+conjecture but understanding assembly gives you a magnifying glass to help guide
+you in your optimization adventures.&lt;/strong&gt; With some experience, we can learn how to
+look at assembly and determine such things as whether or not the assembly
+contains efficient instructions, chunks of code are replaced with constant
+values, and so on. Benchmarks and analyzing assembly can go hand in hand, but
+how do you even get at the assembly in the first place?&lt;/p&gt;
+&lt;p&gt;If you want to look at Rust&#x27;s assembly in your project using just &lt;code&gt;cargo&lt;/code&gt;, there
+are two ways. You can call&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cargo rustc --release -- --emit asm &amp;lt;ARGS&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;--release&lt;/code&gt; is optional here. The primary argument that&#x27;s needed is &lt;code&gt;--emit asm&lt;/code&gt;. &lt;code&gt;ARGS&lt;/code&gt; is the list of arguments you want to pass to &lt;code&gt;rustc&lt;/code&gt; that might
+influence compilation. By default, &lt;code&gt;rustc&lt;/code&gt; generates AT&amp;amp;T syntax. Still, you can
+change to Intel syntax if that&#x27;s what you prefer by passing &lt;code&gt;-C llvm-args&#x3D;--x86-asm-syntax&#x3D;intel&lt;/code&gt;, which may not matter to you if this is your
+first foray into analyzing assembly, but it can be fun to see as an experiment!&lt;/p&gt;
+&lt;p&gt;If you want a good starting point for flags, try using:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;snip&amp;gt;
+-C target-cpu&#x3D;native -C opt-level&#x3D;3
+&amp;lt;snip&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;These two codegen options instruct the compiler to emit code specifically for
+the processor it guesses you are running the compiler on as well as using all
+optimizations. You can also pass &lt;code&gt;opt-level&#x3D;z&lt;/code&gt; or &lt;code&gt;opt-level&#x3D;s&lt;/code&gt; if you want to
+optimize for total disk space, instead. &lt;strong&gt;As a note, fewer instructions doesn&#x27;t
+necessarily mean efficient code.&lt;/strong&gt; A short set of instructions may end up taking
+more cycles than the more verbose alternative.&lt;/p&gt;
+&lt;p&gt;If, instead, you want to call the standard &lt;code&gt;cargo build&lt;/code&gt;, you can pass all these
+arguments with the &lt;code&gt;RUSTFLAGS&lt;/code&gt; environment variable. For example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ RUSTFLAGS&#x3D;&quot;--emit asm -C opt-level&#x3D;3 -C target-cpu&#x3D;native&quot; cargo build --release
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When the build finishes, the assembly will live in a file with the suffix of&lt;code&gt;.s&lt;/code&gt;
+under &lt;code&gt;target/debug/deps/CRATE_NAME-HASH.s&lt;/code&gt;
+or&lt;code&gt;target/release/deps/CRATE_NAME-HASH.s&lt;/code&gt;, depending on whether or not you
+builtwith the &lt;code&gt;--release&lt;/code&gt; flag. If I run the above command on a crate with the
+name&lt;code&gt;project&lt;/code&gt; I&#x27;ll get something like the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ find . -name &quot;*.s&quot; -type f
+./target/release/deps/project-1693e028130a9fa3.s
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Keep in mind that there may be several of these outputs. If you are confused,
+which is the latest, you can try &lt;code&gt;cargo clean&lt;/code&gt; and building fresh. By default,
+the names are going to look pretty weird in the output due to mangling!
+&lt;strong&gt;Mangling&lt;/strong&gt; ensures that names for identifiers are unique across the process of
+compilation. You can try feeding the resulting assembly into
+&lt;a href&#x3D;&quot;https://github.com/luser/rustfilt&quot;&gt;rustfilt&lt;/a&gt; to get cleaner names:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ find . -name &quot;*.s&quot; -type f | xargs cat | rustfilt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ok, this is great if you have a project going, but maybe you have some transient
+code in the &lt;a href&#x3D;&quot;https://play.rust-lang.org/&quot;&gt;Rust playground&lt;/a&gt; and want to know what
+the assembly is there. You can emit assembly there, too! If you click on the
+ellipses next to the &lt;code&gt;Run&lt;/code&gt; button, you&#x27;ll get a menu that has several options.
+Select &lt;code&gt;ASM&lt;/code&gt; for assembly output in another tab. There isn&#x27;t much control over
+compilation options with the Rust playground approach besides picking stable,
+beta, or nightly. A more fully-featured web version for picking apart assembly
+is &lt;a href&#x3D;&quot;https://godbolt.org/&quot;&gt;godbolt&lt;/a&gt;, describes itself as a &quot;compiler explorer&quot;
+and provides a &lt;em&gt;lot&lt;/em&gt; of features to aid you in exploration over the above
+bare-bones approaches. Advantage of using godbolt include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Viewing highlighted segments of our source code and where they line up to the assembly&lt;/li&gt;
+&lt;li&gt;Access to a bevy of compilers from a wide variety of languages, even  selecting which version of Rust you want to use&lt;/li&gt;
+&lt;li&gt;Passing arbitrary flags to influence how the generated output is produced&lt;/li&gt;
+&lt;li&gt;Diffing changes in assembly between source code assembly&lt;/li&gt;
+&lt;li&gt;Looking up the documentation for instructions on the fly&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;You now know three ways to emit assembly, whether it&#x27;s on your machine, the Rust
+playground, or godbolt! To the uninitiated, this can be overwhelming, but
+opening the hood can be liberating and allow us to start exploring the various
+instructions and how they all tie together.&lt;/p&gt;
+&lt;p&gt;To reiterate, you don&#x27;t always have to look at assembly to guide performance
+optimization. Benchmarks are crucial at guiding us towards real-world results.
+Try to make it a habit to look at assembly when you&#x27;re curious about what&#x27;s
+going on under the hood. If you start optimizing, it can be interesting to
+compare how assembly changes as you make high-level changes. If things seem to
+speed up, try to explore how the assembly itself has changed!&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Update May 4 2020, 2:12PM&lt;/strong&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;u/ibeforeyou&lt;/code&gt; on
+&lt;a href&#x3D;&quot;https://www.reddit.com/r/rust/comments/gd1wtd/magnifying_glasses_for_rust_assembly/fpf4grv/&quot;&gt;Reddit&lt;/a&gt;
+mentioned &lt;a href&#x3D;&quot;https://github.com/gnzlbg/cargo-asm&quot;&gt;&lt;code&gt;cargo-asm&lt;/code&gt;&lt;/a&gt; to help alleviate a
+lot of the pain of dumping out the raw assembly above with &lt;code&gt;cargo&lt;/code&gt;. By default,
+it will produce Intel syntax, and it can even overlay the rust code over the
+lines of assembly. The twist is that you need to give a path to the assembly you
+want to see dumped. If you want to see function &lt;code&gt;foo&lt;/code&gt; of the crate &lt;code&gt;crate_name&lt;/code&gt;,
+you could specify the path:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cargo asm --rust crate_name::foo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I did have to shuffle around the flags to get it to emit AT&amp;amp;T syntax for me, in
+the end, this ended up working:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ cargo asm --rust --asm-style att crate_name::foo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Running &lt;code&gt;cargo asm&lt;/code&gt; dumps all the available paths that you can list, which is
+pretty neat if you&#x27;re confused about which path to put down. What I like about
+this is you can jam it into a &lt;a href&#x3D;&quot;https://www.justanotherdot.com/posts/a-love-letter-to-feedback-loops.html&quot;&gt;feedback
+loop&lt;/a&gt;
+using something like &lt;code&gt;cargo-watch&lt;/code&gt; or &lt;code&gt;entr&lt;/code&gt;. This way you can make changes on
+an individual function and watch how the benchmarks and assembly change without
+having to invoke commands manually!&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

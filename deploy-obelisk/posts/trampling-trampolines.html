@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Trampling Trampolines">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="There are some interesting ways to mimic tail-call optimization in languages that don’t have native support for it. We discuss a few approaches.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Trampling Trampolines">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="There are some interesting ways to mimic tail-call optimization in languages that don’t have native support for it. We discuss a few approaches.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Trampling Trampolines &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Trampling Trampolines</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;h2&gt;Continuation Passing Style&lt;/h2&gt;
+&lt;p&gt;or CPS for short, is a way to ‘continue’ a function call by calling into another function. The simplest example would be:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function cps(x, return) {
+  return(x);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The important thing is the callback is passed and it is called at the ‘completion’ of the function, passing things along.&lt;/p&gt;
+&lt;p&gt;CPS is not a problem in languages where Last Call Optimisation is commonplace. What these languages do (normally of eager evaluation) is collapse the stack frame and call the function call so long as there is nothing else beyond the function. &lt;a href&#x3D;&quot;http://erlang.org/pipermail/erlang-questions/2016-October/090663.html&quot;&gt;Here’s a fun rant by Joe Armstrong regarding the implementation and implication of Tail/Last Call Optimisation&lt;/a&gt;. Of note is how he is careful not to say this is the same as Tail Call Optimisation, or TCO, as that typically implies a recursive call.&lt;/p&gt;
+&lt;h2&gt;DIY&lt;/h2&gt;
+&lt;p&gt;Languages that don’t collapse the stack or represent functions in a form that is conducive to fusion are subject to ‘blowing the stack’ (exceeding it’s maximum size) when writing a recursive function. The function may be correct, but for particular values it may grow too large and too many stack frames will be pushed onto the program’s stack.&lt;/p&gt;
+&lt;p&gt;There are some &lt;a href&#x3D;&quot;http://chrispenner.ca/posts/python-tail-recursion&quot;&gt;interesting ways to mimic TCO&lt;/a&gt; in languages that don’t have native support for it. JavaScript does, technically, but implementation seems spotty across engines.  A clever way to mimic TCO in JavaScript is to rewrite your function to return a continuation, of sorts, and then wrapping it in another, generic, function (the trampoline) that knows about this arrangement in order to collapse the stack itself, for example:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let ackermannGo &#x3D; (n, m) &#x3D;&amp;gt; {
+  if (m &#x3D;&#x3D;&#x3D; 0) {
+    return n+1;
+  } else if (m &amp;gt; 0 &amp;amp;&amp;amp; n &#x3D;&#x3D;&#x3D; 0) {
+    return ackermannGo(m-1, 1);
+  } else if (m &amp;gt; 0 &amp;amp;&amp;amp; n &amp;gt; 0) {
+    return ackermannGo(m-1, ackermannGo(m, n-1));
+  } else {
+    throw new Error(&#x60;ERROR: unhandled case m: ${m} and n: ${n}&#x60;);
+  }
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I’ve chosen the &lt;a href&#x3D;&quot;https://en.wikipedia.org/wiki/Ackermann_function&quot;&gt;Ackermann function&lt;/a&gt; here as it’s a golden standard for testing recursive functionality in programming languages since its value grows rapidly even for small digits. I’m also using the convention of naming things as &lt;code&gt;go&lt;/code&gt; to specify recursive helper functions with arguments we don’t care about. A common counterpart to &lt;code&gt;go&lt;/code&gt; you might see (particularly popular in LISPs) is &lt;code&gt;do&lt;/code&gt; .&lt;/p&gt;
+&lt;p&gt;If you play around with this function you should quickly find it exceeding the allotted call stack size. Let’s fix this with a trampoline:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let trampoline &#x3D; fn &#x3D;&amp;gt; (...args) &#x3D;&amp;gt; {
+  let rv &#x3D; fn(...args);
+  while (typeof rv &#x3D;&#x3D;&#x3D; &#x27;function&#x27;) {
+    rv &#x3D; rv();
+  }
+  return rv;
+};
+
+ackermannGo &#x3D; (n, m) &#x3D;&amp;gt; {
+  if (m &#x3D;&#x3D;&#x3D; 0) {
+    return n+1;
+  } else if (m &amp;gt; 0 &amp;amp;&amp;amp; n &#x3D;&#x3D;&#x3D; 0) {
+    return () &#x3D;&amp;gt; ackermannGo(m-1, 1);
+  } else if (m &amp;gt; 0 &amp;amp;&amp;amp; n &amp;gt; 0) {
+    return () &#x3D;&amp;gt; ackermannGo(m-1, ackermannGo(m, n-1));
+  } else {
+    throw new Error(&#x60;urk: unhandled case m: ${m} and n: ${n}&#x60;);
+  }
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Note the zero-arity functions we are returning in order to signal that the return value can be applied (specifically lines 13 and 15). What kind of functions will &lt;code&gt;trampoline&lt;/code&gt; fail on given it’s current implementation? When you’ve given it some thought, consider this case:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let higherOrderFunc &#x3D; (n, acc, offset) &#x3D;&amp;gt; {
+  if (n &amp;lt; 1) {
+    return offset &#x3D;&amp;gt; acc+offset;
+  }
+  return () &#x3D;&amp;gt; higherOrderFunc(n-1, acc+n, offset);
+}
+
+let hof &#x3D; trampoline(higherOrderFunc);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Although this will terminate, it won’t give us the correct result. We want a closure in the end, but here we will wind up with &lt;code&gt;NaN&lt;/code&gt; since that is the result of adding any number in JavaScript to &lt;code&gt;undefined&lt;/code&gt;, and since we are calling the result value, &lt;code&gt;rv&lt;/code&gt;, with no arguments, we are technically passing &lt;code&gt;undefined&lt;/code&gt; to this final value.&lt;/p&gt;
+&lt;p&gt;A &lt;em&gt;structural&lt;/em&gt; type system is one which cares only about the form of given values, whereas a &lt;em&gt;nominal&lt;/em&gt; type system cares about the &lt;em&gt;names&lt;/em&gt; that values have in the system. In a language like Haskell, we’d use what’s known as a “data constructor” to declare a type. Consider:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;data Cont a &#x3D; Stop a | Cont (() -&amp;gt; Cont a)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This says “for any given value of &lt;code&gt;a&lt;/code&gt;, I can either be a &lt;code&gt;Stop&lt;/code&gt; value wrapping some given value of &lt;code&gt;a&lt;/code&gt;, or I can be a &lt;code&gt;Cont&lt;/code&gt; wrapping a function which takes &lt;code&gt;unit&lt;/code&gt; (the &lt;code&gt;()&lt;/code&gt;, or, in other words, no arguments that matters) to another &lt;code&gt;Cont&lt;/code&gt; value”&lt;/p&gt;
+&lt;p&gt;We can, again, mimic something similar using a &lt;code&gt;tag&lt;/code&gt; field on an object, a la:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;higherOrderFunc &#x3D; (n, acc, offset) &#x3D;&amp;gt; {
+  if (n &amp;lt; 1) {
+    return {
+      tag: &#x27;stop&#x27;,
+      val: offset &#x3D;&amp;gt; acc+offset
+    };
+  }
+  return {
+    tag: &#x27;cont&#x27;,
+    val: () &#x3D;&amp;gt; higherOrderFunc(n-1, acc+n, offset)
+  };
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Which we can leverage in a new definition of &lt;code&gt;trampoline&lt;/code&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;trampoline &#x3D; fn &#x3D;&amp;gt; (...args) &#x3D;&amp;gt; {
+  let rv &#x3D; fn(...args);
+  while (rv.tag &#x3D;&#x3D;&#x3D; &#x27;cont&#x27;) {
+    rv &#x3D; rv.val();
+  }
+  return rv.val; // Of tag &#x27;stop&#x27;.
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We only have two cases for our ‘type’, so when we no longer have a &lt;code&gt;cont&lt;/code&gt; tag, we must have a &lt;code&gt;stop&lt;/code&gt;, and with this we get the correct result: a function!&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;In mathematics it is just as important to reason about the types of objects we are dealing with as it is to reason about their values. The same is no different in programming. Even though you may say “I hack in a dynamically typed language, I don’t need to think about types”, the inverse is actually the truth! Hacking in a dynamically typed environment means juggling these notions around in your head rather than allowing the type checker make sense of the form of things for you.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;food for thought:&lt;/em&gt; What we’ve done by tagging these values is upgrade a &lt;code&gt;union&lt;/code&gt; type into a &lt;code&gt;discriminated union&lt;/code&gt;. A &lt;code&gt;discriminated unions&lt;/code&gt; is also sometimes known as a &lt;code&gt;sum&lt;/code&gt; type. The power of passing around sum types is that we can reason about the cases in our code: recursion itself is similar to mathematical induction, and both are forms of breaking down data whereas their duals, co-recursion and co-induction, build up data. This is an important notion because it means that when we write things recursively in this form with inductive-like types (e.g. sums) we can ‘pattern match’ on their values and know something about each case. In the above examples we knew that &lt;code&gt;cont&lt;/code&gt; always contained a function that took no arguments and returned another &lt;code&gt;cont&lt;/code&gt; or &lt;code&gt;stop&lt;/code&gt; tagged object. When we finally got a &lt;code&gt;stop&lt;/code&gt; we knew we had our final result we could return, and since there were only two values we could be sure that those were the only two cases worth exploring (show exhaustivity checking as well as case analysis). As is common with FP, some languages give you the power of actually statically checking this; ensuring that you’ve considered all cases, whereas in others you’ll be left to discipline or libraries to replicate this, just like trampolines.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

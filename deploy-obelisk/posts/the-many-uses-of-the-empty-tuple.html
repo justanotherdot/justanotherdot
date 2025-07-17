@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="The Many Uses Of The Empty Tuple">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="For newcomers to Rust unfamiliar with the empty tuple (&#x60;()&#x60;), it can be a confusing type; what&#x27;s the point of this thing and how can I use it idiomatically rather than having to endure its presence? Here are some common patterns where unit actually plays a helpful role in both guiding program construction, helping with readability, and even reducing unnecessary memory allocations.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="The Many Uses Of The Empty Tuple">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="For newcomers to Rust unfamiliar with the empty tuple (&#x60;()&#x60;), it can be a confusing type; what&#x27;s the point of this thing and how can I use it idiomatically rather than having to endure its presence? Here are some common patterns where unit actually plays a helpful role in both guiding program construction, helping with readability, and even reducing unnecessary memory allocations.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>The Many Uses Of The Empty Tuple &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>The Many Uses Of The Empty Tuple</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;For newcomers to Rust unfamiliar with the empty tuple (&lt;code&gt;()&lt;/code&gt;), it can be a
+confusing type; what&#x27;s the point of this thing and how can I use it
+idiomatically rather than having to endure its presence? Here are some common
+patterns where unit actually plays a helpful role in both guiding program
+construction, helping with readability, and even reducing unnecessary memory
+allocations.&lt;/p&gt;
+&lt;h3&gt;A Primer&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;If you feel comfortable with unit or don&#x27;t really care about the nuances, feel
+free to skip this section, but it is short and recommended as it informs the
+tips below.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The empty tuple (&lt;code&gt;()&lt;/code&gt;), sometimes affectionately, and historically, referred to
+as &lt;code&gt;unit&lt;/code&gt;, as I will call it for the rest of this article, describes the type of
+something that &lt;em&gt;does&lt;/em&gt; have a value, but a value you don&#x27;t care about. The empty
+tuple is perfect for these situations because it can never carry any information
+with it, but it is different to the &lt;code&gt;never&lt;/code&gt; (&lt;code&gt;!&lt;/code&gt;) type in Rust because the
+&lt;code&gt;never&lt;/code&gt; type designates the type of things that can never be constructed (hence
+the name). Thus, functions that may never return are technically &lt;code&gt;!&lt;/code&gt;, but
+functions that perform some sort of effect are &lt;code&gt;()&lt;/code&gt;. The &lt;code&gt;void&lt;/code&gt; keyword fills a
+similar role to unit in C-derived languages, but unit has the advantage of being
+usable in type annotations, which we&#x27;ll see come in handy later.&lt;/p&gt;
+&lt;p&gt;For starters, &lt;code&gt;()&lt;/code&gt; is both the type and the value of the type. Sometimes unit is
+implicit, such as when you write a function with no return type, or when you
+slap a semicolon on an expression. In Rust, a great many things are expressions,
+which means they have values and therefore have types. For example, assigning to
+an assignment, such as in the case &lt;code&gt;let x &#x3D; let y &#x3D; 12;&lt;/code&gt; gives us &lt;code&gt;y &#x3D; 12&lt;/code&gt; and
+&lt;code&gt;x &#x3D; ()&lt;/code&gt; as an assignment expression itself has type unit. For each example we
+don&#x27;t care about the value and only care about the action that took place (the
+action of the function invoked or the expression that was run, the act of
+assigning a value to a variable name, and so on.)&lt;/p&gt;
+&lt;h3&gt;Why Use An If-Let?&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;if-let&lt;/code&gt; let&#x27;s us combine both the niceties of pattern matching with a &lt;code&gt;match&lt;/code&gt;
+statement, without having to be explicit about fall-through cases. If you are
+pattern matching only to perform some action at the end, you can be more concise
+and simply turn this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn side_effect() {
+  println!(&quot;a side effect&quot;);
+}
+
+let connection &#x3D; socket.accept();
+
+match connection {
+  Ok(_) &#x3D;&amp;gt; side_effect(),
+  _ &#x3D;&amp;gt; (),
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Into this:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;fn side_effect() {
+  println!(&quot;a side effect&quot;);
+}
+
+let connection &#x3D; socket.accept();
+
+if let Ok(_) &#x3D; connection {
+  side_effect();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Given that we used a semicolon on &lt;code&gt;side_effect&lt;/code&gt; it would have compiled just as
+fine if we had a return value from &lt;code&gt;side_effect&lt;/code&gt;, unless you use &lt;code&gt;Result&lt;/code&gt; which
+is marked as &lt;code&gt;must_use&lt;/code&gt; in the compiler, forcing you to deal with the errors
+that may crop up. In that case, if you truly wanted to ignore a return value of
+a function, you could do &lt;code&gt;let _ &#x3D; side_effect();&lt;/code&gt; instead.&lt;/p&gt;
+&lt;h3&gt;Clarifying The Presence And Reason Of Why Things Failed&lt;/h3&gt;
+&lt;p&gt;One common mistake that newbies will make is to avoid error handling with
+&lt;code&gt;Result&lt;/code&gt; in favor of simply having functions that return &lt;code&gt;()&lt;/code&gt; and panicking via
+&lt;code&gt;expect&lt;/code&gt; or &lt;code&gt;unwrap&lt;/code&gt; et. al. &lt;code&gt;()&lt;/code&gt; tends to designate that things are &lt;em&gt;not&lt;/em&gt; going
+to blow up at runtime, and so this type is actually the wrong thing to signal to
+other peers. Rust has a type called &lt;code&gt;!&lt;/code&gt; or &quot;never&quot; that implies that something
+may never return or fail (&quot;infallible&quot;).&lt;/p&gt;
+&lt;p&gt;A simple flow chart for choosing a type for error handling could go something
+like this:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Nothing obvious in the code path in question is going to fail, including via
+panics, e.g. with &lt;code&gt;unwrap&lt;/code&gt;, &lt;code&gt;expect&lt;/code&gt;, etc.: use &lt;code&gt;()&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I know this might fail and I&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Want to know why: use &lt;code&gt;Result&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Only care about the presence or absence of something: use &lt;code&gt;Option&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;I know this is going to live forever and never return (like a socket
+connection): use &lt;code&gt;!&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Although I don&#x27;t commonly see the third case used as often as the prevalence of
+the first and second cases, I do think it is useful to signal to others that
+something is going to loop indefinitely, replace the current process with
+&lt;code&gt;exec&lt;/code&gt;, and so on. It currently requires a crate attribute, which may be enough
+to keep you away from using it until it lands on stable without the need for the
+annotation.&lt;/p&gt;
+&lt;h3&gt;The Traverse Trick&lt;/h3&gt;
+&lt;p&gt;There is a common pattern in Haskell called &lt;code&gt;traverse&lt;/code&gt;. A way to think about it
+is like turning a collection of things inside out. For example, if we have a
+&lt;code&gt;Vec&amp;lt;Result&amp;lt;T, E&amp;gt;&amp;gt;&lt;/code&gt; we can &#x27;traverse&#x27; on this collection, treating it&#x27;s values
+as inputs to a function, and turn it into a &lt;code&gt;Result&amp;lt;Vec&amp;lt;T&amp;gt;, E&amp;gt;&lt;/code&gt; instead. This is
+wildly useful, and you can extend this pattern for your own types and
+collections, too, but one common use case is a function that returns &lt;code&gt;Result&amp;lt;T, E&amp;gt;&lt;/code&gt; that we want to run over several elements:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct Error;
+
+fn may_fail(x: i32) -&amp;gt; Result&amp;lt;i32, Error&amp;gt; {
+  Ok(x)
+}
+
+fn main() {
+  let inputs &#x3D; vec![1, 2, 3];
+  let outputs: Result&amp;lt;Vec&amp;lt;i32&amp;gt;, Error&amp;gt; &#x3D; inputs.into_iter().map(may_fail).collect();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What if we didn&#x27;t want the outputs? What if all we wanted to do was to run
+&lt;code&gt;may_fail&lt;/code&gt; for the effects it produces? We could change this around:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct Error;
+
+fn may_fail(x: i32) -&amp;gt; Result&amp;lt;i32, Error&amp;gt; {
+  Ok(x)
+}
+
+fn main() {
+  let inputs &#x3D; vec![1, 2, 3];
+  Result&amp;lt;Vec&amp;lt;i32&amp;gt;, Error&amp;gt; &#x3D;
+  inputs.into_iter().map(|i| { may_fail(i).map(|_| ()) }).collect::&amp;lt;Result&amp;lt;Vec&amp;lt;()&amp;gt;, Error&amp;gt;&amp;gt;();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But now we are allocating a vector just to fill in all the units. Let&#x27;s fix
+that:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;struct Error;
+
+fn may_fail(x: i32) -&amp;gt; Result&amp;lt;i32, Error&amp;gt; {
+  Ok(x)
+}
+
+fn main() {
+  let inputs &#x3D; vec![1, 2, 3];
+  Result&amp;lt;Vec&amp;lt;i32&amp;gt;, Error&amp;gt; &#x3D;
+  inputs.into_iter().map(|i| { may_fail(i); }).collect::&amp;lt;Result&amp;lt;(), Error&amp;gt;&amp;gt;();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This version is specialized as it will never allocate; no collection is being
+created and each &lt;code&gt;()&lt;/code&gt; type can be optimized away by the compiler as having no
+bearing on program semantics.&lt;/p&gt;
+&lt;p&gt;You can similarly do this for Option, and, as mentioned, can implement the same
+trick for your own custom types.&lt;/p&gt;
+&lt;h3&gt;Figuring Out Types With Invalid Annotations&lt;/h3&gt;
+&lt;p&gt;This one is particularly helpful if you are not using something like
+&lt;code&gt;rust-analyzer&lt;/code&gt; or the like. If you prefer to simply run the compiler in a loop,
+such as with &lt;code&gt;cargo watch&lt;/code&gt;, you can get immediate feedback on the type of
+something by assigning the value to an invalid type, such as:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;main() {
+  let x: () &#x3D; mystery();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You just want to use some type of annotation you are absolutely sure this thing
+is &lt;em&gt;not&lt;/em&gt;, and &lt;em&gt;most&lt;/em&gt; things are &lt;em&gt;not&lt;/em&gt; unit. If unit doesn&#x27;t work, you can switch
+it up to other unlikely things: &lt;code&gt;u128&lt;/code&gt;, &lt;code&gt;!&lt;/code&gt; (requires crate attribute), and on
+and on. If you know the thing is a collection, try a scalar value. Usually it
+doesn&#x27;t take much guesswork to get the compiler to spit something out, but you
+will wind up with something like the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;   Compiling playground v0.0.1 (/playground)
+error[E0308]: mismatched types
+ --&amp;gt; src/main.rs:6:17
+  |
+6 |     let x: () &#x3D; mystery();
+  |            --   ^^^^^^^^^ expected &#x60;()&#x60;, found struct &#x60;BTreeSet&#x60;
+  |            |
+  |            expected due to this
+  |
+  &#x3D; note: expected unit type &#x60;()&#x60;
+                found struct &#x60;BTreeSet&amp;lt;i32&amp;gt;&#x60;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Above we see what we claimed was the real type and what the compiler inferred or
+realized is the real type. You can flip this trick on the head, too. With
+generics it can be easy for types to become things you didn&#x27;t quite intend
+simply by how they got used in other contexts, hence it can be helpful to
+sprinkle around annotations in code to be really clear on precisely what final
+shape(s) you are expecting to deal with.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

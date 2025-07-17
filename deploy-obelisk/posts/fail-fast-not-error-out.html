@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Fail Fast not Error Out">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="The notion of &#x27;failing fast&#x27; in programming details finding faults at the earliest possible time; when the application developer is fitting out the code! This seems to be sensible, but is often strangely antithetical to the notion of &#x27;the only true test of code is production data&#x27;; how can we fail fast and catch a ton of bugs when the truly icky bugs we want to smash are after we&#x27;ve done some kind of deployment?">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Fail Fast not Error Out">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="The notion of &#x27;failing fast&#x27; in programming details finding faults at the earliest possible time; when the application developer is fitting out the code! This seems to be sensible, but is often strangely antithetical to the notion of &#x27;the only true test of code is production data&#x27;; how can we fail fast and catch a ton of bugs when the truly icky bugs we want to smash are after we&#x27;ve done some kind of deployment?">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Fail Fast not Error Out &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Fail Fast not Error Out</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;&lt;strong&gt;tl;dr&lt;/strong&gt; Static analysis is a form of &#x27;failing fast&#x27; that does not consist of
+leaving error based exit strategies (which should be reserved for situations
+where the program simply cannot transition to a new state) in code that will
+eventually be shipped to production.&lt;/p&gt;
+&lt;p&gt;The notion of &#x27;failing fast&#x27; in programming details finding faults at the
+earliest possible time; when the application developer is fitting out the code!
+This seems to be sensible, but is often strangely antithetical to the notion of
+&#x27;the only true test of code is production data&#x27;; how can we fail fast and catch
+a ton of bugs when the truly icky bugs we want to smash are after we&#x27;ve done
+some kind of deployment? Clearly the distinction here is to find bugs, in any
+context, as soon as possible, production or otherwise, but that does mean the
+concept can be carried over to production, where failing fast could mean major
+problems (payments not being processed, account information being leaked, etc).&lt;/p&gt;
+&lt;p&gt;Ops people have devised all sorts of methods to roll out code in deployment to
+handle situations like this; blue-green deployments, canary deployments, et.
+al. all focus on testing code on a much smaller subset (on some segment of
+traffic) accepting &lt;em&gt;some&lt;/em&gt; failure as an acceptable loss to know if the code is
+ok enough to push to 100% of the traffic. Percentage deployments put a lot of
+focus on monitoring and logging. Essentially, people have to watch the metrics
+after the roll out to make sure everything is ok.&lt;/p&gt;
+&lt;p&gt;A computation does not need to crash the program in order to fail fast:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Errors are for irrecoverable states of program transition; the program
+depends on writing to disk for some critical task, and the disk has been ripped
+out of the server rack and can no longer be accessed via the kernel drivers.
+The kernel tells us something very bad is up, and we die. This is fine, because
+there&#x27;s no sensible state to transition to in this scenario.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Exceptions are for situations where something bad happened, but it&#x27;s not bad
+enough to cause us to fail completely, i.e. we can do something to transition
+to another sensible step. The general frame of mind is that exceptions can be
+problematic when they are not caught, but can be a pain to constantly look out
+for (this is the source of the &#x27;checked exceptions&#x27; controversy in the Java
+community). The primary problem with exceptions is that if an exception is not
+&#x27;checked&#x27; or &#x27;caught&#x27;, then it will bubble up to the main function (entry
+point) of the program and cause it to error out as above. Exceptions are said
+to be sensible if they preserve &lt;strong&gt;progress&lt;/strong&gt; and &lt;strong&gt;preservation&lt;/strong&gt;, meaning that
+they are able to move forward and they don&#x27;t manipulate the types of
+expressions where they are thrown. In most languages, however, we can&#x27;t be sure
+if something is going to throw an exception, so many programmers are told to be
+defensive and paranoid; hardly the kinds of things you&#x27;d want out of people who
+need to also be innovative.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In most pure functional programming languages, we know less about lurking
+exceptions, and this is of particular importance. When we have a type system,
+which is effectively a lightweight proof system that gives us static guarantees
+and checks at compile time (a form of &#x27;fail fast&#x27; but without the problem of
+leaving &#x27;ticking time bombs&#x27; in our code base that may still present themselves
+in production), then it makes no sense to fail fast in an error-prone way.
+Abstractions such as monads and friends allow us to do this elegantly and
+tersely.&lt;/p&gt;
+&lt;p&gt;It is far more ideal to let pure computations transition gracefully to new
+states, failures to be found at &lt;em&gt;compile time&lt;/em&gt;, and production code to be
+robust and resiliant. If we extend this notion of static analysis to property
+based testing, formal correctness practices, and even linters, among other
+things, there are several smarter alternatives to failing quickly and
+validating the correctness of our programs.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

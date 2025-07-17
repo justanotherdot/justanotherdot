@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="What makes a good pull request?">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Pull Requests (or PRs) are a tango between two parties; the code author and the code reviewer which I will simply refer to as the &#x27;author&#x27; and &#x27;reviewer&#x27; in the remainder of this article. In a pull request, the author has provided code to solve a particular problem and the reviewer is there to provide a feedback mechanism to the author.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="What makes a good pull request?">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Pull Requests (or PRs) are a tango between two parties; the code author and the code reviewer which I will simply refer to as the &#x27;author&#x27; and &#x27;reviewer&#x27; in the remainder of this article. In a pull request, the author has provided code to solve a particular problem and the reviewer is there to provide a feedback mechanism to the author.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>What makes a good pull request? &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>What makes a good pull request?</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Pull Requests (or PRs) are a tango between two parties; the code author and the
+code reviewer which I will simply refer to as the &#x27;author&#x27; and &#x27;reviewer&#x27; in the
+remainder of this article. In a pull request, the author has provided code to
+solve a particular problem and the reviewer is there to provide a feedback
+mechanism to the author.&lt;/p&gt;
+&lt;h2&gt;Code review is not a gate keeping task&lt;/h2&gt;
+&lt;p&gt;I once worked for an organisation whose code review process centered around a
+total lack of faith in its developers ability to deliver quality product; tech
+leads acted as the gate keepers to their respective stacks forcing the average
+developer to resort to underhanded tactics in order to get their changes
+merged, regardless of quality or prospective bugs. This, in turn, meant the
+gate keepers felt justified under the guise of &#x27;keeping things safe&#x27;. Thus,
+code wasn&#x27;t being checked properly and wrong or flimsy changes would trickle
+into master, making the code review process utterly broken.&lt;/p&gt;
+&lt;p&gt;As a software engineer, every line of code you ship is code you, or someone
+else, will need to maintain, and as such, you should be fighting to deliver the
+best quality you can offer, regardless of deadline. &lt;strong&gt;Code reviewers are there
+to help people bring their code into the light of day where asking questions is
+the chief tool a reviewer employs&lt;/strong&gt;. This can include, but is not limited to,
+probing to see if:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Is the thought fully fleshed out?&lt;/li&gt;
+&lt;li&gt;Is this implementation correct for the problem it aims to solve?&lt;/li&gt;
+&lt;li&gt;Are the changes sound and principled?&lt;/li&gt;
+&lt;li&gt;Are there any performance or semantic concerns?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I&#x27;m purposefully leaving out stylistic choices here as the discussion often
+leads to the argument around adoption of some automated code-formatting tool.&lt;/p&gt;
+&lt;h2&gt;Raise early and raise often&lt;/h2&gt;
+&lt;p&gt;In &quot;Debugging Team&#x27;s&quot;, the authors kick off the start of the book with a simple
+analogy between two competing inventors. The one inventor does not want to share
+his ideas for fear of them being poached by others, while the rival inventor
+gleefully goes to local places where experts might hang out to get more
+information about how to build her inventions.&lt;/p&gt;
+&lt;p&gt;Software development is no different in that knowing things earlier is always
+better than knowing things later. Raising PRs even before they are &#x27;complete&#x27;
+(and appropriately marking them as WIPs or &#x27;works in progress&#x27;) allows people to
+possibly, time permitting, look into your changes and see if there are any major
+red flags.&lt;/p&gt;
+&lt;p&gt;That said, if you are a reviewer and are asked (or not!) to look at a set of
+changes that is marked as a WIP, try to hold off on a more in-depth review until
+the author changes this status. And to PR raisers, don&#x27;t keep things in WIP
+stage for too long, which brings me to my next point.&lt;/p&gt;
+&lt;h2&gt;PRs are for small chunks of code to merge often&lt;/h2&gt;
+&lt;p&gt;A PR should represent up to a day&#x27;s worth of work. This is beneficial to both
+parties in that it facilitates a &#x27;merge often&#x27; approach for devs (and devs get
+the little adrenaline kick from clicking that green &lt;code&gt;merge&lt;/code&gt; button) and
+reviewers can much more easily review a smaller hunk of changes. A reviewer
+reviewing five PRs in the course of a week has to spend less time grokking
+those individual changes than to review five days worth of work in a single PR.&lt;/p&gt;
+&lt;p&gt;Massive projects poised around scaled tooling and reviews such as the Linux
+kernel would flat out reject a patch with, say, 3k additions and 1k removals. If
+a project of that size and calibre, and that many international hands involved,
+is marking code review of those dimensions as &#x27;unmanageable&#x27;, what hope does a
+startup have at making fast, rapid changes in the same light?&lt;/p&gt;
+&lt;p&gt;Small PRs are also &lt;em&gt;focused&lt;/em&gt; on a clear intent. Asking the author to fix
+neighboring code &#x27;just because&#x27; or refactoring/formatting several adjacent files
+that are not directly tied to the immediate effort of the PR wastes the both
+parties time. Opening a PR to refactor changes and another PR to add new
+functionality is a much better way to get appropriate attention from reviewers.
+As the joke goes:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;10 lines &#x3D; 10 possible bugs, 100 lines &#x3D; lgtm&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;It&#x27;s important to remember that a PR is not to encompass a single ticket or
+issue. Tickets can have several PRs attached to them and all it takes is
+lobbing &lt;code&gt;[FOO-123]&lt;/code&gt; on top of one&#x27;s PR title for Jira or marking &lt;code&gt;#&amp;lt;issue number&amp;gt;&lt;/code&gt; in your description in GitHub. I like to call this act &#x27;linking&#x27; and
+it&#x27;s useful for stakeholders to track down all the changes that have fed into a
+particular ticket.&lt;/p&gt;
+&lt;h2&gt;Context matters&lt;/h2&gt;
+&lt;p&gt;Reviewers need to discuss with the author about the purpose of a set of changes
+and how close or far off they are from that goal, but if the reviewer is
+unclear about this goal, it&#x27;s difficult for them to strike up a discussion with
+the author.&lt;/p&gt;
+&lt;p&gt;In the context of OSS, raising a patch directly to a project such as the Linux
+kernel is poor practice. If you want to make a change in any capacity it&#x27;s best
+first to contact the people who own the code on public channels. This provides
+auditing and clear context for others. &lt;strong&gt;Your first instinct should be to raise
+a PR unless it&#x27;s a feature. If you feel uncertain about whether or not your
+change is warranted, it&#x27;s best to raise an issue first, instead.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;That said, raising PRs should feel natural; PRs are cheap and can be closed and
+their branches pruned as need be, but regardless of the cost of raising a PR,
+it&#x27;s critical to include appropriate information. Some important things to
+mention may be:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What does this set of changes solve?&lt;/li&gt;
+&lt;li&gt;Is there a specific task (issue/ticket) that this relates to?&lt;/li&gt;
+&lt;li&gt;Is this blocked or blocking any other PRs/issues/tickets?&lt;/li&gt;
+&lt;li&gt;Is there any additional information that will help the reviewer know about my
+manual testing of this ticket (screenshots, output from tooling, et. al.)?&lt;/li&gt;
+&lt;li&gt;Have you updated tests and documentation accordingly? Have you added tests
+that the reviewer can skip to first to immediately see how you&#x27;re proposed
+changes are supposed to work and in what cases?&lt;/li&gt;
+&lt;li&gt;Is there current behaviour to contrast the new behaviour to?&lt;/li&gt;
+&lt;li&gt;Are there breaking changes present?&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The traditional approach for this was to include commentary in your actual
+commit messages and headers. I don&#x27;t think times have really changed in this
+regard and the more context you sprinkle about the better, so long as you are
+clear about your intent and you don&#x27;t waste the reader&#x27;s time.&lt;/p&gt;
+&lt;h2&gt;Check out changes locally when it makes sense&lt;/h2&gt;
+&lt;p&gt;A really healthy habit for reasonably sized changes is to always check out a PR
+and see if it works for you. Some projects have powerful processes for testing
+full &#x27;e2e/raw hardware&#x27; scenarios such as Intel&#x27;s &lt;a href&#x3D;&quot;https://01.org/lkp/documentation/0-day-test-service&quot;&gt;zero-day testing
+bot&lt;/a&gt; which actually boots
+up machines to test out differing version of the Linux kernel. While continuous
+integration can catch a lot, it&#x27;s important to sometimes get a human eye for
+regressions that may not, or cannot, be encoded in automated tests. We all make
+mistakes, and reviewers are there to add a layer of sanity checks to our
+changes.&lt;/p&gt;
+&lt;p&gt;Use common sense. If a change is pretty sensible (e.g. a single line change to
+update a variable name), you probably don&#x27;t need to spend the time pulling the
+change down, compiling, running the tests, and so forth. As the developer&#x27;s
+mantra goes, &quot;Don&#x27;t be the machine&quot;!&lt;/p&gt;
+&lt;h2&gt;Clean up your mess&lt;/h2&gt;
+&lt;p&gt;Your changes have been merged and you can go on with your life, but before you
+reach for beverage of choice, you should prune your dead branches. I actually
+have a git bash script for this that I place in my &lt;code&gt;PATH&lt;/code&gt; so I can call it as
+&lt;code&gt;git wash&lt;/code&gt;. The script is &lt;a href&#x3D;&quot;https://gist.github.com/justanotherdot/3e3a16df805d09a37e1c26bbedd23fcc&quot;&gt;here&lt;/a&gt;. When
+run without arguments, this will delete the current branch you are on locally
+and remotely so long as the branch specified to &lt;code&gt;git wash&lt;/code&gt; is not master and the
+remote branch is not protected. If you need other git functionality like this,
+any script in your path with the name &lt;code&gt;git-&amp;lt;thing&amp;gt;&lt;/code&gt; can be run as &lt;code&gt;git &amp;lt;thing&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+&lt;p&gt;Reviewing many small changes is much more manageable for a reviewer than
+reviewing large, tangled changes. Decomposition in programming gives us the
+ability to stitch together many small, verified solutions that lead up to an
+equally trustworthy result and the same is no different in the process of
+supplying code changes to a project; breaking up the changes you need to make
+into reasonable chunks that can fit in everyone&#x27;s heads not only helps to
+provide code changes faster but it also paves foundations for robust and
+resilient code.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

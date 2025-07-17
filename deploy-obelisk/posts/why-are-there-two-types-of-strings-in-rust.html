@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Why Are There Two Types of Strings In Rust?">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="Understanding the distinction between str and String can be painful if you need to get something done in Rust now. Rust doesn&#x27;t sugar coat a lot of the ugliness and complexity of string handling from developers like other languages do and therefore helps in avoiding critical mistakes in the future.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Why Are There Two Types of Strings In Rust?">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="Understanding the distinction between str and String can be painful if you need to get something done in Rust now. Rust doesn&#x27;t sugar coat a lot of the ugliness and complexity of string handling from developers like other languages do and therefore helps in avoiding critical mistakes in the future.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Why Are There Two Types of Strings In Rust? &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Why Are There Two Types of Strings In Rust?</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Understanding the distinction between &lt;code&gt;str&lt;/code&gt; and &lt;code&gt;String&lt;/code&gt; can be painful if you
+need to get something done in Rust &lt;em&gt;now&lt;/em&gt;. Rust doesn&#x27;t sugar coat a lot of the
+ugliness and complexity of string handling from developers like other languages
+do and therefore helps in avoiding critical mistakes in the future.&lt;/p&gt;
+&lt;p&gt;By construction, both string types are valid UTF-8. This ensures there are no
+misbehaving strings in a program. A &lt;code&gt;char&lt;/code&gt; is always four-bytes in Rust, but a
+string doesn&#x27;t have to be composed of just four-byte chunks (that would be a
+UTF-32 encoding!). Being UTF-8 means that Strings can be encoded with
+variable-width code points, but you can iterate across the &lt;code&gt;char&lt;/code&gt;s if you want
+without them being stored as such.&lt;/p&gt;
+&lt;p&gt;I&#x27;ll cover the remaining difference between a &lt;code&gt;String&lt;/code&gt; and a &lt;code&gt;str&lt;/code&gt; through
+arrays, vecs, and slices.&lt;/p&gt;
+&lt;p&gt;An array is a contiguous chunk of memory where every element is the same type
+and adjacent. Arrays are, however, of a fixed size. If we want to actually grow
+or shrink an array we can turn to a &lt;code&gt;Vec&lt;/code&gt; which is sometimes known as a
+&quot;resizable array&quot;. This type abstracts away the housekeeping around allocating
+bigger or smaller arrays.&lt;/p&gt;
+&lt;p&gt;A vec grow as elements fill the backing memory near or at capacity. Without
+getting too distracted, a vec doesn&#x27;t quite use an array but it does use a
+contiguous chunk of allocated memory that is similar to an array. Vecs also
+shrink to size if requested. The perks of ownership in Rust mean we, the vec,
+can do whatever we please to the data we own. We can always borrow owned things
+to temporarily read or change data. Why do you need more?&lt;/p&gt;
+&lt;p&gt;A slice is a view into a portion, or &lt;em&gt;slice&lt;/em&gt;, of owned, contiguous memory.
+Whenever we have a slice we know we can access its elements safely without
+exposing any elements outside of the portion described by the slice and without
+copying any data over to a new owner. Slices give us the capacity to provide
+entire views of the original data rather than just a segment.&lt;/p&gt;
+&lt;p&gt;This relationship between an owned piece of data and a view into an owned piece
+of data is pervasive in Rust. Not every view may exclude access outside of its
+elements but it may provide a copy-free access such as an &lt;code&gt;Entry&lt;/code&gt; for a
+&lt;code&gt;BTreeMap&lt;/code&gt; or a &lt;code&gt;Cursor&lt;/code&gt; to a &lt;code&gt;File&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;This is the same relationship between &lt;code&gt;String&lt;/code&gt; and &lt;code&gt;str&lt;/code&gt;. A &lt;code&gt;String&lt;/code&gt; is the
+&lt;code&gt;Vec&lt;/code&gt; and &lt;code&gt;str&lt;/code&gt; is the slice. Since a slice is its own type, we can borrow it to
+change or read as we please. This is the difference between &lt;code&gt;str&lt;/code&gt; and &lt;code&gt;&amp;amp;str&lt;/code&gt; in
+that you will only ever manipulate a &lt;code&gt;&amp;amp;str&lt;/code&gt; but it&#x27;s technically a borrowed
+&quot;string slice&quot; &lt;code&gt;str&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;There is one bit of &quot;magic&quot; that Rust allows which is that taking a borrow to an
+owned string to a function will cast it to a string slice for you.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;let s &#x3D; String::new();
+fn takes_a_string_slice(the_string: &amp;amp;str) {
+  // reads the_string.
+}
+takes_a_string_slice(&amp;amp;s);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is a convenience so that you don&#x27;t have to describe the bounds as you would
+for an array or vector slice, a la &lt;code&gt;&amp;amp;xs[0..n]&lt;/code&gt;, although you &lt;em&gt;can&lt;/em&gt; use the same
+syntax to create a slice into a portion of a string if you want.&lt;/p&gt;
+&lt;p&gt;As a final point, the backing store of a &lt;code&gt;String&lt;/code&gt; is actually &lt;code&gt;Vec&lt;/code&gt;; &lt;code&gt;String&lt;/code&gt;
+just brings along the requirement that the contents are valid UTF-8 and heaps of
+convenience functions, as does &lt;code&gt;&amp;amp;str&lt;/code&gt;. A slice is what we commonly call a &quot;fat
+pointer&quot; which consists of two machine words: one pointing to the start of data
+and another dictating the length. In this sense casting between a slice and back
+is cheap in the sense that we do not copy any data besides creating a fat
+pointer which is possibly reused it when we borrow.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>

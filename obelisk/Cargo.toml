@@ -1,0 +1,16 @@
+[package]
+name = "obelisk"
+version = "0.1.0"
+authors = ["Ryan James Spencer <spencer.ryanjames@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+serde = { workspace = true }
+serde_yaml = { workspace = true }
+handlebars = { workspace = true }
+pulldown-cmark = { workspace = true }
+chrono = { workspace = true }
+walkdir = { workspace = true }
+lazy_static = { workspace = true }
+regex = { workspace = true }
+chrono-tz = { workspace = true }

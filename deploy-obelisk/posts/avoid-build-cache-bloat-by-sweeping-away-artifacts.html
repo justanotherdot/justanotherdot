@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ryan James Spencer" />
+    <meta name="description" content="the blog of Ryan James Spencer" />
+    <meta http-equiv="content-language" content="en">
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- OPEN GRAPH BEG -->
+
+    <!--
+
+    <meta property="og:url" content="https://justanotherdot.com">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Avoid Build Cache Bloat By Sweeping Away Artifacts">
+    <meta property="og:image" content="https://justanotherdot.com/assets/images/">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:description" content="With regular pruning, Rust build artifacts can become a nuisance for CI pipelines and developer workstations. With a little bit of shell scripting and the aid of a cargo subcommand, we can automate away the toil of cleaning up the various projects we hack at.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@_justanotherdot">
+    <meta name="twitter:creator" content="@_justanotherdot">
+    <meta name="twitter:title" content="Avoid Build Cache Bloat By Sweeping Away Artifacts">
+    <meta name="twitter:image" content="https://justanotherdot.com/assets/images/">
+    <meta name="twitter:description" content="With regular pruning, Rust build artifacts can become a nuisance for CI pipelines and developer workstations. With a little bit of shell scripting and the aid of a cargo subcommand, we can automate away the toil of cleaning up the various projects we hack at.">
+
+    -->
+    <!-- OPEN GRAPH END -->
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../assets/style.css" />
+    <title>Avoid Build Cache Bloat By Sweeping Away Artifacts &#8226; Ryan James Spencer</title>
+
+    <script async defer data-domain="justanotherdot.com" src="https://plausible.io/js/plausible.js"></script>
+
+  </head>
+  <body>
+    <div class="layout centered">
+      <div class="container container-half-desktop container-full-mobile">
+        <div class="header">
+          <h1>Avoid Build Cache Bloat By Sweeping Away Artifacts</h1>
+          <a href="/"><h3 class="subtitle">Ryan James Spencer</h3></a>
+        </div>
+        <div class="content">
+          &lt;p&gt;Incremental builds can get huge in Rust and there is no builtin way for them to get pruned over time. This can be particularly important for developers or build bots working with a limited sized disk drive. I have seen some build caches on projects I work on in production into the range of several gigabytes and this is the size &lt;em&gt;after&lt;/em&gt; compression!&lt;/p&gt;
+&lt;p&gt;The easiest way to keep these projects clean is to &lt;a href&#x3D;&quot;https://github.com/holmgr/cargo-sweep&quot;&gt;instrument &lt;code&gt;cargo-sweep&lt;/code&gt; to run regularly&lt;/a&gt;. You can dump the command into a crontab to run at regular periods. For build bots it can pay to pull down a shared cache or caches and clean them at regular intervals, either as part of preexisting steps or as dedicated steps.&lt;/p&gt;
+&lt;p&gt;We can tell the crontab to run a script and stuff our logic in the script; this way we don&#x27;t have to change the crontab if we want to change the behavior. Our script will run &lt;code&gt;cargo sweep&lt;/code&gt; recursively across all our projects, pruning objects older than thirty days.&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-bash&quot;&gt;#/bin/sh -eux
+if ! cargo sweep &amp;gt;/dev/null 2&amp;gt;&amp;amp;1 ; then
+  cargo install cargo-sweep
+fi
+export PATH&#x3D;&quot;$PATH:$HOME/.cargo/bin&quot;
+cd &quot;$HOME&quot;
+cargo sweep -r -t 30
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can write to a crontab with a one-liner. This  will make our script run every hour every day. You can adjust the period based on the expression given. If you are unfamiliar with crontab expressions, you can play with crontab expressions to produce human readable output, &lt;a href&#x3D;&quot;https://crontab.guru/&quot;&gt;such as this site&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-bash&quot;&gt;# Assuming you&#x27;ve named the above script &#x60;clean-build-artifacts&#x60;
+# and have put it under /usr/local/bin/
+echo &#x27;0 */1 * * * /usr/local/bin/clean-build-artifacts&#x27; | sudo crontab -u $(whomami) -
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;we could replicate the same behavior that &lt;code&gt;cargo sweep&lt;/code&gt; does with a shell script, but we would need to replicate a lot of the behavior that it offers. By default &lt;code&gt;cargo clean&lt;/code&gt; is a sledgehammer that will remove &lt;em&gt;everything.&lt;/em&gt; This may, in fact, be what you want; perhaps every thirty days you want to build everything fresh again. This can be particularly handy if you are using scheduled CI builds to check for broken windows across your pipelines and you want the sanity that comes with a fresh build.&lt;/p&gt;
+&lt;p&gt;Which leads me into another use for &lt;code&gt;cargo sweep&lt;/code&gt; that isn&#x27;t time based: sweeping toolchains. You could additionally add a cronjob to sweep toolchains every month or so, like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-bash&quot;&gt;#/bin/sh -eux
+if ! cargo sweep &amp;gt;/dev/null 2&amp;gt;&amp;amp;1 ; then
+  cargo install cargo-sweep
+fi
+export PATH&#x3D;&quot;$PATH:$HOME/.cargo/bin&quot;
+cd &quot;$HOME&quot;
+for project in $(find . -name &quot;Cargo.toml&quot; -type f | grep -vE &quot;(registry|.rustup|.cargo|target)&quot; | xargs dirname); do
+  cd &quot;$project&quot;
+  current_toolchain&#x3D;$(rustup toolchain list | grep &quot;override&quot; | awk &#x27;{print $1}&#x27;)
+  if [ &quot;$current_toolchain&quot; ]; then
+    cargo sweep --toolchains&#x3D;&quot;$current_toolchain&quot;
+  else
+    rustup toolchain list | grep &quot;default&quot; | awk &#x27;{print $1}&#x27; | xargs -I{} cargo sweep --toolchains&#x3D;&quot;{}&quot;
+  fi
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;What does this script do? We have the same preamble as before that installs &lt;code&gt;cargo-sweep&lt;/code&gt; if it&#x27;s not present on the system and sets the correct &lt;code&gt;PATH&lt;/code&gt; environment variable, just in case. We change into our &lt;code&gt;HOME&lt;/code&gt; directory and then look for all the projects that are only present for our projects. Then, we go into each project and try to see if there is an override for the toolchain, usually caused by the presence of a &lt;code&gt;rust-toolchain&lt;/code&gt; file, and if there is none, we will clean the default toolchain, instead. When this script is done, all the projects will be cleaned of build artifacts created by unsupported or non-default compilers. Running this on a project of mine of mine that includes a &lt;code&gt;rust-toolchain&lt;/code&gt; gives me:&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-bash&quot;&gt;&amp;lt;snip&amp;gt;
+[INFO] Cleaned 761.8599634170532 MiB
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;which is a pretty hefty savings all things considered! I can name the above script &lt;code&gt;clean-build-artifacts-toolchains&lt;/code&gt; and install the script to run monthly by running:&lt;/p&gt;
+&lt;pre&gt;&lt;code class&#x3D;&quot;language-bash&quot;&gt;echo &#x27;0 0 1 * * /usr/local/bin/clean-build-artifacts-toolchains&#x27; | sudo crontab -u $(whomami) -
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This script will run on the first of every month. The best part of dumping these sorts of things into scripts is that they can easily be reused by name, rather than lots of copy-pasting. In particular, we can now take these scripts and have a job run it over our build caches like we mentioned before as a step in a pipeline or even as a dedicated monthly schedule build that will clean out old cruft that we are unlikely to need again. Reducing the size of your build caches means the total time taken to pull down the cache and unpack it is less, speeding up overall build times.&lt;/p&gt;
+
+        </div>
+        <!-- NEWSLETTER BEGIN -->
+        <div class="centered">
+          <hr>
+          <div class="newsletter">
+            <h2 class="centered">Want updates when I release new articles?</h2>
+            <div>
+              <script async data-uid="c3c1e70aed" src="https://crafty-experimenter-867.ck.page/c3c1e70aed/index.js"></script>
+            </div>
+          </div>
+        </div>
+        <!-- NEWSLETTER END -->
+      </div>
+    </div>
+  </body>
+</html>
