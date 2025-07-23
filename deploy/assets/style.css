@@ -391,6 +391,12 @@ template {
   line-height: 1.5;
 }
 
+/* Fix bold font rendering overridden by universal selector */
+b,
+strong {
+  font-weight: 600;
+}
+
 h1,.title {
   font-weight: 600;
   font-family: 'FiraSans SemiBold', sans-serif;
