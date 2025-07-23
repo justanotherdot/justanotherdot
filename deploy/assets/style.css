@@ -94,7 +94,7 @@ abbr[title] {
 
 b,
 strong {
-  font-weight: bolder;
+  font-weight: 600;
 }
 
 /**
@@ -367,6 +367,14 @@ template {
 }
 
 @font-face {
+  font-family: 'FiraSans';
+  src: url('../assets/fonts/FiraSans-SemiBold.woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: fallback;
+}
+
+@font-face {
   font-family: 'FiraSans SemiBold';
   src: url('../assets/fonts/FiraSans-SemiBold.woff2');
   font-weight: normal;
@@ -391,11 +399,6 @@ template {
   line-height: 1.5;
 }
 
-/* Fix bold font rendering overridden by universal selector */
-b,
-strong {
-  font-weight: 600;
-}
 
 h1,.title {
   font-weight: 600;
