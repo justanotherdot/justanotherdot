@@ -10,6 +10,94 @@
     <language>en-us</language>
     
     <item>
+      <title>R³</title>
+      <author>Ryan James Spencer</author>
+      <link>https://justanotherdot.com/posts/r3.html</link>
+      <guid>https://justanotherdot.com/posts/r3.html</guid>
+      <pubDate>Wed, 20 Aug 2025 08:37:26 +1000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[
+        <p>Systems fail. We know this, yet we often conflate the terms we use to discuss failure. &quot;Reliability&quot; gets mixed up with robustness and resilience, making it harder to reason about what's actually broken and how to fix it.</p>
+<p>I want to define these terms, which I'll affectionately refer to as R³ from here on:</p>
+<p><strong>Reliability</strong>: The probability a system performs correctly during a specific duration. Think &quot;how often does this work as expected?&quot; Often quantified as <a href="https://ieeexplore.ieee.org/document/7827907">MTBF (mean time between failures)</a>.</p>
+<p><strong>Robustness</strong>: The system's ability to handle unexpected inputs, conditions, or perturbations while maintaining functionality. A <a href="https://insights.sei.cmu.edu/blog/tactics-and-patterns-for-software-robustness/">robust system degrades gracefully</a> rather than failing catastrophically.</p>
+<p><strong>Resilience</strong>: The system's ability to recover from failures, adapt to changes, and maintain essential functions even under stress. It's about <a href="https://www.it-cisq.org/how-to-measure-software-resilience/">bouncing back and learning from disruptions</a>.</p>
+<p>In an ideal world, code &quot;just works&quot; and there are no bugs, no resource constraints (infinite memory, CPU, disk, network bandwidth), zero latency, no network issues, instant deployments, and other fantasies. A boy can dream!</p>
+<h2>The limits of perfection</h2>
+<p>Let's imagine a world where we have 100% reliability. This means we never have to worry about resilience and get &quot;perfect robustness&quot; out of the deal—no matter what you throw at a system, it can handle it and gives you back what you expect. But for a system to have perfect reliability, it needs to:</p>
+<ul>
+<li>never fail</li>
+<li>have infinite resources</li>
+<li>never have any bugs (hah!)</li>
+<li>perform at effectively constant time, if not instantly</li>
+</ul>
+<p>But we know these conditions can't be true all the time. No system has 100% reliability. In software reliability, a 100% reliable system is one that's never deployed, and that's not very useful.</p>
+<p>Because systems can't be 100% reliable, we need to consider resilience. We often measure how often they fail and the mean time between failures. This MTBF, among other metrics, forms the reliability SLOs we strive against. When resilience comes into the picture, it's how quickly we can recover when we fail. If the system goes down completely for a week versus a day, this difference isn't tracked in reliability measurements! We want to know how long it takes to get back up and running again.</p>
+<p>What would perfect resilience look like? If we had perfect resilience, we could recover instantly, effectively giving us perfect reliability—and we've already shown we can't have perfect reliability given the constraints of our world (physics, costs, other complexities).</p>
+<p>So we know our systems will fail, and we know they'll take some time to recover. Since we have to accept some imperfection (acceptable loss, thresholds of tolerance), we need to extend this notion of acceptable loss to one more area: expressivity. A system has a certain degree of expressivity for what it allows users to express or do. A perfectly robust system (100% robustness) accepts all inputs and handles them accordingly. But there's a definition of robustness that can accept much but do very little, often captured by Postel's Law:</p>
+<blockquote>
+<p>Be conservative in what you do, be liberal in what you accept from others</p>
+</blockquote>
+<p>The practical implication is that we must accept fundamental uncertainty and work within probabilistic bounds rather than chasing impossible absolutes <em>for most things</em>. But here's the crucial insight: the relative importance of each factor in R³ is highly context-dependent on your domain and what constraints you're working within.</p>
+<p>Consider the investment curves: robustness is often relatively easy to achieve early on with good input validation and graceful degradation patterns. But you could sink 1000x the investment into resilience improvements, with diminishing returns that vary dramatically by domain. A high-frequency trading system will happily take reduced reliability in favor of decreased latency, while medical device software will sacrifice almost everything else for safety guarantees.</p>
+<p>This leads us to an important framework for thinking about system properties.</p>
+<h2>Make a model</h2>
+<p>Now that we've defined R³, we need to <a href="https://www.hillelwayne.com/post/safety-and-liveness/">share some terms that all three sit within</a>:</p>
+<ul>
+<li><strong>Safety</strong>: &quot;Bad things don't happen.&quot; The system never enters an undesirable state.</li>
+<li><strong>Liveness</strong>: &quot;Good things eventually happen.&quot; The system makes progress toward desired outcomes.</li>
+</ul>
+<p>We can see how a system where &quot;bad things don't happen&quot; is very hard to attain. But for more local cases, we <em>can</em> be deterministic and ensure this as a property. The same is true for liveness—we can't guarantee that good things will happen in a system, but we can usually predict with great confidence that we'll get good things from the system.</p>
+<p>It's also possible to produce deterministic models of our systems or portions thereof and scrutinize these models aggressively. Many products—FoundationDB, ClickHouse, TigerBeetle, Netflix, S3, and high-speed financial trading systems—use deterministic simulation testing to scrutinize their system properties.</p>
+<p>Jeff Barr once said <a href="https://queue.acm.org/detail.cfm?id=3434573">&quot;S3 effectively has to exist until the heat death of the universe,&quot;</a> which was true for a product that others existentially depend on. S3's most counterintuitive decision was &quot;radical simplicity&quot;; while competitors added features, AWS focused on building &quot;malloc for the internet&quot;—just Get, Put, List. This simplicity enabled evolvability without breaking changes. Eventually S3 evolved from 8 to 350+ microservices, but the <a href="https://aws.amazon.com/blogs/aws/reinvent-2020-liveblog-werner-vogels-keynote/">API from March 14, 2006 still works unchanged</a>.</p>
+<p>The meta-lesson: successful systems choose their constraints wisely and engineer excellence within those constraints. You can't solve for all constraints, and you can't achieve impossible outcomes, but you can push up against the asymptotic edges. </p>
+<p>The key is understanding the ROI of pushing each constraint. Once when working on a database, we made an active decision not to support full SQL because we didn't need to—this meant we could handle much less data complexity but be much faster as a result in terms of query performance. The downside was that authors of data written out to parquet tables would need to consider that we couldn't join data dynamically, so joins would have to be precomputed as part of model runs. This was fine because the runs themselves were designed to be incremental and asynchronous.</p>
+<p>We often can make our lives much easier by pushing whatever is probabilistic and uncertain to the edges, or into pockets, where the rest of our system can be verified in any way you like, because the core becomes pure functions and data.</p>
+<h2>Acceptable loss</h2>
+<p>We have acceptable tolerances because of the limits of our reality <em>and</em> cost. We have to pay some cost to get back close to whatever we deem acceptable. But there's a crucial insight here: the three factors of R³ have interconnected investment curves with very different characteristics.</p>
+<p>Robustness often has relatively low upfront costs—good input validation, graceful error handling, defensive programming practices. But reliability and resilience investments can have long tail characteristics where you could sink orders of magnitude more resources for incremental improvements. The missing piece many don't consider is that robust systems can actually reduce the investment needed in resilience, because they fail less catastrophically and recover more predictably.</p>
+<p>Consider high-frequency trading systems: they won't need to consider much robustness because of the rigidity of their domain. Despite occasional changes to protocols or methodologies, there are sometimes rapid changes to trading laws or conventions. In this domain, some HFT systems will happily take reduced reliability in favor of decreased latency. </p>
+<p>It's not impossible to assume a mental model where we harden the pieces that break in practice: database goes out before, or during, a major event? Have a standby on hand, make it redundant, put a load balancer in front of it, throttle requests, set up circuit breakers, <em>whatever</em>. The trickier part, and why people reach for these options, is that you ideally find these issues <em>before</em> &quot;bad things happen&quot; (chaos engineering, deterministic simulation testing, formal verification, automated testing in general).</p>
+<p>Concretely, consider taking in JSON payloads: the user can send whatever JSON they like, but as long as we get at least the fields we care about, we can do our work. If we push up this expressivity or functionality, we increase complexity around maintainability and extensibility in the system. To provide any sort of functionality, we have to take on the debt of that functionality existing!</p>
+<p>Sure, this isn't the most <a href="https://apenwarr.ca/log/20230605">nuanced or commonplace definition of technical debt</a>, but in this case we're thinking about extremes: there's some code deployed and we have to keep the lights on, while also considering that our feature set is never complete. Many of the same points about perfect reliability and resiliency apply here indirectly with perfect robustness, and we have to consider that the inputs we handle may not always be handled the way we want, potentially leading to system downtime.</p>
+<p>Robustness specifically addresses failures not only for a platform but also for failures or limiting factors in the software development lifecycle itself. The pressure to feature-factory your way out of PMF, or the fear of deleting features lest you lose The One that gave your product any spark, can be daunting. The tradeoff for considering every imaginable edge case is, transitively, a more reliable and resilient system, but it comes at the cost of extra code, time spent simplifying complexity, or the upfront cost of testing.</p>
+<p>As a quick aside, all of these same notions basically copy over to performance analysis and benchmarking, too. A system's ability to behave 'instantaneously' is held back by the fact that the code has to do <em>something</em> to produce a result, even if that's looking up a value or writing to I/O, and so on. We have to decide what limit is worth reaching for, all things considered. </p>
+<p>The context-dependency here is crucial: ClickHouse users will greatly appreciate every single nanosecond shaved off, whereas for a web app, there are diminishing returns past the point where <a href="https://danluu.com/input-lag/">users can't sensibly detect a difference</a>. A web application is going to have different characteristics and priorities than a real-time system or a batch processing pipeline.</p>
+<h2>Fragile agile</h2>
+<p>Any discussion of reliability will inevitably lead to discussions of organizational learning and antifragility. As a mindset, this is essential. We need to lean into organizational learning for better and smarter collective action. True organizational antifragility means extracting maximum learning from every failure. Building institutional memory isn't only about failures—it can be our reflections on what is and isn't working, on what is making us slow or speeding us up.</p>
+<p>However, in software engineering, many feel that being hands-off—expecting the system to simply harden thanks to problems it suffers through—is lazy at best, if not unprofessional. The determinism we spoke about earlier is important: if we keep our systems complex, hard to reason about, and fundamentally chaotic, we'll remain working with emergent properties. But managing complexity is a core part of our trade. Excellent developers know how to simplify things, which is often how we wind up with maxims like &quot;choose boring tech.&quot;</p>
+<p>This brings us to technical maturity: being <em>balanced</em> in how we reason about and work with problems. We don't assume we'll get perfection and waste cycles trying to get there, and we don't act carelessly. Part of technical maturity is knowing where the line in the sand is, for both taking on risk and handling failures.</p>
+<p>At some companies with lots of firefighting, you'll find plenty of old guard types who want nothing to do with any sort of change. There are dragons lurking in every corner. This is the problem with people who are on call constantly: every upside is dwarfed by the what-if of a system collapse. This cycle then means nothing positive can be instituted to improve matters, only making matters worse as time progresses. You'll also find plenty of cowboy types, who either feel compelled by the business or out of a very strong risk appetite, yeet changes into production with little care for planning, backwards compatibility, or even user empathy.</p>
+<h2>Intermezzo: technical maturity</h2>
+<p>So how do we decide what risks to take? The best engineers know how to marry risks to probabilities and discuss derisking in ways that actually help make decisions rather than handwaving:</p>
+<ul>
+<li>Something seems insecure? Discuss a threat model.</li>
+<li>Database might go down while we're all asleep? Imagine how it can all fail, or try it in some controlled and degenerate way.</li>
+<li>Team's stuck in decision paralysis over some options? Make tangible, but cheap, variants to try.</li>
+</ul>
+<p>And, most importantly: <strong>How likely is any of this?</strong></p>
+<p>Marrying risk to probability helps you understand what's being left on the table. Every decision always has the default decision (do nothing), and that carries its own risks, too. Most engineering decisions end up relying on vague risk intuition (&quot;this feels risky&quot;) rather than calibrated assessment. This leads to poor resource allocation and decision paralysis.</p>
+<p><a href="https://www.amazon.com/How-Measure-Anything-Intangibles-Business/dp/1118539273/ref=sr_1_1?crid=3FE7KIKT7OHSS&amp;dib=eyJ2IjoiMSJ9.DkJb1d8WVhOqpuOuWQ_oEylLt9_Qwgfu3Vz-R7BJTDhSb2Dv3EqIta9tFyzGrk4NHT525XeBYFXjD31a36IjBbnPcYDaOnQcumBGSkbexm5MyLtw6lSCKqq53qFntfNWpOgOmWLphn7aT-02mya9MHziAqVUiGnvzQHHWhkMHtkCA6f6wYeTxlcyS22LRGnl_Yw32XyVFjvnwkI7sPTBZvl6zOP1iG1QrjrI2AXuJRY.7HXWMPpMw0Hsm4Jiq8c-Fu9L0pWAqCUD5l9Xh-Blr1k&amp;dib_tag=se&amp;keywords=how+to+measure+anything&amp;qid=1755588043&amp;s=books&amp;sprefix=how+to+measure+anyt%2Cstripbooks-intl-ship%2C468&amp;sr=1-1">Douglas Hubbard's calibration techniques</a> provide practical tools:</p>
+<p><strong>Start with ranges</strong>: Instead of &quot;70% chance,&quot; ask what's the 90% confidence <em>interval</em>?</p>
+<ul>
+<li>Confidence here means frequencies: &quot;How many times out of 100 would I be right about this?&quot;</li>
+<li>Interval here means: &quot;The iPhone was released after 1970 and before this year.&quot;</li>
+</ul>
+<p><strong>Time-bounded assessment is crucial</strong>: &quot;What's my confidence this risk materializes in the next 30 days? 6 months? 2 years?&quot;</p>
+<p>When we talk about any probability, we have to bound that in time, too. The website isn't &quot;poorly maintained&quot; because its lifetime MTBF is low; perhaps there were years of struggling in the dark and having lots of failures and attempts with different clients, but now availability is rock solid, so we'd best consider how this has performed historically in the last six months and be bounded in terms of future possibilities, too.</p>
+<p>A great tool for building shared risk intelligence is keeping shared risk registers:</p>
+<ul>
+<li>&quot;Legacy auth system has a major security vulnerability that can be exploited: 20% chance major failure next month, 30% in next 3 months, 60% next 12 months&quot;</li>
+<li>&quot;We don't authenticate our notification webhook endpoint from Databricks: &lt;possible scenarios, as intervals, with confidence&gt;&quot;</li>
+</ul>
+<p>This isn't about the numbers being spot-on accurate. Collectively as a team you can calibrate every time you have more data, comparing estimates and reasoning and ultimately developing more organizational knowledge.</p>
+<p>This approach is good for making concerns concrete and for considering how much effort it's worth for tackling work. We can't tackle everything, and sometimes it's better to be in motion than stuck trying to make a decision. When you have a risk portfolio you (<em>and</em> your team!) collectively manage—whether informally across discussions or more formally over time in a tool of your choice—you can stop a lot of the vagueries of engineering and focus on the more essential and high-leverage work.</p>
+<p>The key insight: entropy exists, nothing is perfect, but we can still build systems that work reliably within the constraints we choose. Success comes from choosing those constraints wisely and engineering excellence within them.</p>
+
+        ]]></content:encoded>
+    </item>
+    
+    <item>
       <title>Mental cartography</title>
       <author>Ryan James Spencer</author>
       <link>https://justanotherdot.com/posts/mental-cartography.html</link>
